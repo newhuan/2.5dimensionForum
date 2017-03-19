@@ -13,9 +13,10 @@ UserSchema = new mongoose.Schema({
         type: String
     },
     shopCar: {
-        type: Array
+        type: Array,
+        // default: []
     }
-});
+}, { collection: 'user'});// mongoose always add a 's' after the name of collection if you do not have the second param,because mongoose always want to be smart
 
 // 定义Model
 let UserModel = mongoose.model('user', UserSchema);
