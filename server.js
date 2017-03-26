@@ -17,6 +17,10 @@ let DB_CONN_STR = 'mongodb://localhost:27017/bishe';
 /************************model***************/
 let User = require('./models/user');
 let Post = require('./models/posts');
+let Site = require('./models/sites');
+let SubjectIds = require('./models/subjectIds');
+let subject = require('./models/subjects');
+
 /***************************************/
 
 
@@ -130,7 +134,7 @@ app.get('/api/signUp',function (req,res) {
     // return;
 });
 
-function getId() {
+function getId(part) {
     let id = '';
     for(let i = 0; i < 10; i++) {
         let random = Math.random() * 2;
@@ -143,12 +147,12 @@ function getId() {
             id += chars[ranChar];
         }
     }
-    return id;
+    return part + id;
 }
 console.log('getId', getId());
 //add post
 app.post('/api/addPost',function (req, res) {
-    let postId = getId();//get an id for this post
+    let postId = getId('post');//get an id for this post
     console.log('addPost', postId, req.body.userName, req.body.title, req.body.mainText);
     mongoose.connect(DB_CONN_STR);
     let PostEntity = new Post({
