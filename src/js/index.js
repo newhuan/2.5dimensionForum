@@ -6,6 +6,7 @@ $('window').on('load',function () {
 });
 let $signIn = $('#sign-in');
 let $signUp = $('#sign-up');
+let $2017 = $('#year-2017');
 $signIn.on('click',function () {
    // console.log(1) ;
     $.ajax({
@@ -32,6 +33,21 @@ $signUp.on('click',function () {
         },
         success : function (res) {
             console.log(res.msg_id);
+        }
+    })
+});
+
+
+$2017.on('click', function () {
+    console.log('2017-clicked');
+    $.ajax({
+        type : 'get',
+        url : '/api/getSucjectsWithYear',
+        data : {
+            "year" : "2017"
+        },
+        success : function (res) {
+            console.log('getSucjectsWithYear', res);
         }
     })
 });

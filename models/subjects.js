@@ -1,6 +1,7 @@
 /**
  * Created by huhanwen on 2017/3/26.
  */
+let mongoose = require('mongoose');
 // 定义Schema
 SubjectSchema = new mongoose.Schema({
     id: {// id
@@ -20,10 +21,10 @@ SubjectSchema = new mongoose.Schema({
         type: Array
     },
     clickNum: {
-        type: Double
+        type: String
     },
     commentNum: {
-        type: Double
+        type: String
     }
 }, { collection: 'subjects'});// mongoose always add a 's' after the name of collection if you do not have the second param,because mongoose always want to be smart
 

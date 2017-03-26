@@ -19,7 +19,7 @@ let User = require('./models/user');
 let Post = require('./models/posts');
 let Site = require('./models/sites');
 let SubjectIds = require('./models/subjectIds');
-let subject = require('./models/subjects');
+let Subject = require('./models/subjects');
 
 /***************************************/
 
@@ -149,7 +149,7 @@ function getId(part) {
     }
     return part + id;
 }
-console.log('getId', getId());
+console.log('getId', getId('test'));
 //add post
 app.post('/api/addPost',function (req, res) {
     let postId = getId('post');//get an id for this post
@@ -181,5 +181,61 @@ app.post('/api/addPost',function (req, res) {
 
         }
     });
+
+});
+
+//send subject messages when site open
+app.get('/api/getSucjectsWithYear', function (req, res) {
+   console.log('getSucjectsWithYear', req.query.year);
+   mongoose.connect(DB_CONN_STR);
+    /************* staff *****************/
+    let year = req.query.year;
+    let resData = {
+        year: year,
+        subjects: [],
+    };
+    SubjectIds.findOne({ "year": year }, function (err, doc) {
+        if(err){
+            console.log('getSucjectsWithYear:SubjectIds:error', err);
+        }else{
+            console.log('SubjectIds', doc);
+            let subjectIds = doc.subjectIds;
+            let len = subjectIds.length;
+            for(let i = 0; i < len; i++) {
+                Subject.findOne({"id": subjectIds[i].id}, function (err, doc) {
+                    if(err) {
+                        console.log('getSucjectsWithYear:subject:error', err);
+                    }else{
+                        console.log('subject', doc);
+                        let sites = doc.copyRights;
+                        let siteLen = sites.length;
+                        let copyRights = [];
+                        for(let i = 0; i < siteLen; i++){
+                            Site.find({"id": sites[i].id}, function (err, doc) {
+                                if(err){
+                                    console.log('getSucjectsWithYear:Site:error', err);
+                                }else {
+                                    console.log('site', doc);
+                                    copyRights.push(doc);
+                                }
+                            });
+                        }
+                        //TODO:setTimeOut is just a compromise, must be change to 连表查询
+                        setTimeout(function () {
+                            doc.copyRights = copyRights;
+                            resData.subjects.push(doc);
+                        }, 4);
+
+                    }
+                })
+            }
+
+        }
+    });
+    setTimeout(function () {
+        db.close();
+        res.json(resData);
+    }, 200);
+
 
 });

@@ -1,6 +1,7 @@
 /**
  * Created by huhanwen on 2017/3/26.
  */
+let mongoose = require('mongoose');
 // 定义Schema
 SubjectIdSchema = new mongoose.Schema({
     year: {// 年份

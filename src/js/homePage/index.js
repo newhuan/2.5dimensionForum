@@ -2,6 +2,7 @@
  * Created by huhanwen on 2017/3/26.
  */
 let $addPost = $('#add-post');
+
 $addPost.on('click',function () {
    $.ajax({
        type : 'post',
