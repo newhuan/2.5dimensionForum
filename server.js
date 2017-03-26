@@ -16,6 +16,7 @@ let DB_CONN_STR = 'mongodb://localhost:27017/bishe';
 
 /************************model***************/
 let User = require('./models/user');
+let Post = require('./models/posts');
 /***************************************/
 
 
@@ -55,6 +56,14 @@ app.listen(app.get('port'), function () {
     console.log('Server started: http://localhost:' +   app.get('port') + '/');
 });
 
+/**************** arrays for random ******************/
+let ints = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+let chars = [];
+for(let i = 0;i < 26; i++) {
+    chars.push(String.fromCharCode('a'.charCodeAt(0) + i))
+}
+/***************************************/
+
 //signIn
 app.get('/api/signIn',function (req,res) {
     console.log('signIn');
@@ -78,11 +87,12 @@ app.get('/api/signIn',function (req,res) {
     // console.log()
 
 });
+
+//sign up
 app.get('/api/signUp',function (req,res) {
-    console.log('signUp');
+    console.log('signUp', req.query.user);
     mongoose.connect(DB_CONN_STR);
     /*********** do some staff ***************/
-    console.log(req.query.user);
     User.find({user:req.query.user}, function (error, docs) {
         if(error) {
             console.log("error :" + error);
@@ -116,10 +126,56 @@ app.get('/api/signUp',function (req,res) {
             }
         }
     });
-
-
-
     /**************************/
-
     // return;
+});
+
+function getId() {
+    let id = '';
+    for(let i = 0; i < 10; i++) {
+        let random = Math.random() * 2;
+        if(random < 1) {
+            let ranInt = parseInt(Math.random() * 11);
+            id += ints[ranInt];
+            continue;
+        }else {
+            let ranChar = parseInt(Math.random() * 27);
+            id += chars[ranChar];
+        }
+    }
+    return id;
+}
+console.log('getId', getId());
+//add post
+app.post('/api/addPost',function (req, res) {
+    let postId = getId();//get an id for this post
+    console.log('addPost', postId, req.body.userName, req.body.title, req.body.mainText);
+    mongoose.connect(DB_CONN_STR);
+    let PostEntity = new Post({
+        id : postId,
+        userName  : req.body.userName,
+        title: req.body.title,
+        mainText: req.body.mainText,
+        responses: []
+    });
+    PostEntity.save(function(error,doc){
+        if(error){
+            console.log("error :" + error);
+        }else{
+            console.log('PostEntitySave', doc);
+            User.update({user: req.body.userName}, {"$push": {'posts': {"id": postId}}}, function (error, docs) {
+                if (error) {
+                    console.log("error :" + error);
+                } else {
+                    console.log('User', docs); //
+                    db.close();
+                    res.json({
+                        "postId" : postId,
+                    });
+                }
+            });
+
+        }
+    });
+
 });
