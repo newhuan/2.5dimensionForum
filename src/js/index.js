@@ -8,6 +8,7 @@ let $signIn = $('#sign-in');
 let $signUp = $('#sign-up');
 let $2017 = $('#year-2017');
 let $subjectList = $('.subject-container');
+let $responses = $('.response');
 $signIn.on('click',function () {
    // console.log(1) ;
     $.ajax({
@@ -55,7 +56,7 @@ $2017.on('click', function () {
 
 $subjectList.on('click', function (e) {
    let evt = e || window.event;
-   let id = e.target.id;
+   let id = $(this).attr("subjectid");
    console.log('click:id', id);
    $.ajax({
        type: "get",
@@ -67,9 +68,25 @@ $subjectList.on('click', function (e) {
            console.log('res', res);
        }
    })
+    evt.stopPropagation();
 });
 
-
+$responses.on('click', function (e) {
+   let evt = e || window.event;
+   let id = $(this).attr('subjectid');
+    console.log('comment:id', id);
+    $.ajax({
+        type: 'get',
+        url: "/api/commentAdded",
+        data: {
+            subjectId: id
+        },
+        success: function (res) {
+            console.log('res', res);
+        }
+    });
+    evt.stopPropagation();
+});
 
 
 

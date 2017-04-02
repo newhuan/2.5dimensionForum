@@ -264,7 +264,34 @@ app.get('/api/subjectClicked', function (req, res) {
     })
 });
 
-
+app.get('/api/commentAdded', function (req, res) {
+   console.log('/api/commentAdded', req.query.subjectId);
+   mongoose.connect(DB_CONN_STR);
+/*********************************************/
+    let id = req.query.subjectId;
+    Subject.findOne({"id": id}, function (err, doc) {
+        if(err){
+            console.log("/api/commentAdded:error", err);
+        }else {
+            doc.commentNum++;
+            doc.save(function (err) {
+                if(err) {
+                    console.log('/api/commentAdded:addError', err);
+                    res.json({
+                        "msg_id": "0"
+                    });
+                    // return
+                }else {
+                    console.log('add success');
+                    res.json({
+                        "msg_id": '1'
+                    });
+                    // return
+                }
+            })
+        }
+    })
+});
 
 
 
