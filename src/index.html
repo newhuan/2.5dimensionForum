@@ -3,38 +3,68 @@
 <head>
 	<meta charset="UTF-8">
 	<title>2.5次元论坛</title>
+	<link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
+<script type='text/templete' id = 'subject-templete'>
+	<li class="subject-container" subjectid = "{{id}}">
+				<div class="avatar">{{avatar}}</div>
+				<div class="title">
+					<a href="/post/{{id}}#click{{clickNum}}&comment{{commentNum}}">{{subName}}</a>
+				</div>
+				<div class="click-num">
+					<span>{{clickNum}}</span>
+				</div>
+				<div class="comment-num">
+					<span>{{commentNum}}</span>
+				</div>
+	</li>
+</script>
 <header>
 	<div class="layout">
 		<ul>
-			<li>logo</li>
-			<li>
-				<a href="htmls/headLine.html">头条</a></li>
-			<li>
+			<li class="logo">
+				logo
+			</li>
+			<li class="blank"></li>
+
+			<li class="header-btn">
+				<a href="htmls/headLine.html">头条</a>
+			</li>
+
+			<li class="header-btn">
 				<a href="htmls/homePage.html">主区</a>
 			</li>
-			<li>
+
+			<li class="header-btn">
 				<a href="htmls/ranks.html">排行榜</a>
 			</li>
-			<li>
+
+			<li class="header-btn">
 				<button id = 'sign-in'>登陆</button>
+			</li>
+
+			<li class="header-btn">
 				<button id = "sign-up">注册</button>
+			</li>
+
+			<li class="header-btn">
 				<button style="display: none" id = "sing-out">登出</button>
 			</li>
 		</ul>
 	</div>
 </header>
+<div class="line20"></div>
 <nav>
 	<div class="layout">
 		<ul>
-			<li id = 'year-2017'>2017</li>
-			<li>2016</li>
-			<li>2015</li>
-			<li>2014</li>
-			<li>2013</li>
-			<li>2012</li>
-			<li>
+			<li class="years active" id = 'year-2017'>2017</li>
+			<li class="years">2016</li>
+			<li class="years">2015</li>
+			<li class="years">2014</li>
+			<li class="years">2013</li>
+			<li class="years">2012</li>
+			<li class="years-container">
 				<label for="years"></label>
 				<select name="years" id="years">
 					<option value="2011">2011</option>
@@ -47,14 +77,26 @@
 	</div>
 </nav>
 <article>
-<ul class="subject-list">
-	<li class="subject-container" subjectid = "subjectId">
-		subject
-		<span class="response" subjectid = "subjectId">
-			===response===
-		</span>
-	</li>
-</ul>
+	<div class="layout">
+		<ul class="subject-list">
+			<!--<li class="subject-container" subjectid = "subjectId">-->
+				<!--<div class="avatar">avatar</div>-->
+				<!--<div class="title">-->
+					<!--<span>title</span>-->
+				<!--</div>-->
+				<!--<div class="click-num">-->
+					<!--<span>5</span>-->
+				<!--</div>-->
+				<!--<div class="comment-num">-->
+					<!--<span>5</span>-->
+				<!--</div>-->
+				<!--&lt;!&ndash;<span class="response" subjectid = "subjectId">&ndash;&gt;-->
+			<!--&lt;!&ndash;===response===&ndash;&gt;-->
+		<!--&lt;!&ndash;</span>&ndash;&gt;-->
+			<!--</li>-->
+		</ul>
+	</div>
+
 </article>
 <footer>
 
