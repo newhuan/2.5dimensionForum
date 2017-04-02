@@ -1,0 +1,11 @@
+{
+  "user": "newhuan",
+  "password": "123456",
+  "posts": ["postId"],
+  "photo": "avatar",
+  "responses":[{
+    "postId": "postId",
+    "responseId": "responseId",
+    "test": "response-text"
+  }]
+}

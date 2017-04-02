@@ -210,21 +210,27 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
                         let sites = doc.copyRights;
                         let siteLen = sites.length;
                         let copyRights = [];
-                        for(let i = 0; i < siteLen; i++){
-                            Site.find({"id": sites[i].id}, function (err, doc) {
+                        for(let j = 0; j < siteLen; j++){
+                            Site.find({"id": sites[j].id}, function (err, doc) {
                                 if(err){
                                     console.log('getSucjectsWithYear:Site:error', err);
                                 }else {
                                     console.log('site', doc);
                                     copyRights.push(doc);
+                                    if(i == len -1 && j == siteLen - 1) {
+                                        setTimeout(function () {
+                                            db.close();
+                                            res.json(resData);
+                                        }, 10);
+                                    }
                                 }
                             });
                         }
                         //TODO:setTimeOut is just a compromise, must be change to 连表查询
-                        setTimeout(function () {
+                        // setTimeout(function () {
                             doc.copyRights = copyRights;
                             resData.subjects.push(doc);
-                        }, 4);
+                        // }, 4);
 
                     }
                 })
@@ -232,10 +238,62 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
 
         }
     });
-    setTimeout(function () {
-        db.close();
-        res.json(resData);
-    }, 200);
-
-
 });
+//add subject clickNum
+app.get('/api/subjectClicked', function (req, res) {
+   console.log('subjectClicked', req.query.subjectId);
+   mongoose.connect(DB_CONN_STR);
+/************* staff *********************/
+    let id = req.query.subjectId;
+    Subject.findOne({"id": id}, function (err, doc) {
+        if(err){
+            console.log('subjectClicked:error', err);
+        }else{
+            doc.clickNum++;
+            doc.save(function (err) {
+                if(err){
+                    console.log('subjectClicked:saveError', err)
+                }else {
+                    console.log('add success');
+                    res.json({
+                        "msg_id": "1"
+                    })
+                }
+            })
+        }
+    })
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

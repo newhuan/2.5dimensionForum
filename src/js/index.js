@@ -7,6 +7,7 @@ $('window').on('load',function () {
 let $signIn = $('#sign-in');
 let $signUp = $('#sign-up');
 let $2017 = $('#year-2017');
+let $subjectList = $('.subject-container');
 $signIn.on('click',function () {
    // console.log(1) ;
     $.ajax({
@@ -51,3 +52,37 @@ $2017.on('click', function () {
         }
     })
 });
+
+$subjectList.on('click', function (e) {
+   let evt = e || window.event;
+   let id = e.target.id;
+   console.log('click:id', id);
+   $.ajax({
+       type: "get",
+       url: "/api/subjectClicked",
+       data: {
+           subjectId: id
+       },
+       success: function (res) {
+           console.log('res', res);
+       }
+   })
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
