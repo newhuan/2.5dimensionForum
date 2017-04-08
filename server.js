@@ -21,6 +21,7 @@ let Post = require('./models/posts');
 let Site = require('./models/sites');
 let SubjectIds = require('./models/subjectIds');
 let Subject = require('./models/subjects');
+let Response = require('./models/responses');
 
 /***************************************/
 
@@ -397,6 +398,39 @@ app.get('/api/getPost', function (req, res) {
 
 });
 
+//get responseList with postId
+app.get('/api/getResponseList', function (req, res) {
+   console.log('/api/getResponseList', req.query.postId);
+   mongoose.connect(DB_CONN_STR);
+/*****************************************/
+    let id = req.query.postId;
+    let responseList = [];
+    Post.findOne({"id": id}, function (err, doc) {
+       if(err){
+           console.log('getResponseListErrorAtGetPost', err);
+           db.close();
+       } else {
+           let responseIds = doc.responses;
+           for(let i = 0, len = responseIds.length; i < len; i++) {
+               Response.findOne({"id": responseIds[i].id}, function (err, doc) {
+                   if(err) {
+                       console.log('getResponseListErrorAtGetResponses', err);
+                   }else {
+                       responseList.push(doc);
+                       if(i == len - 1) {
+                           setTimeout(function () {
+                               db.close();
+                               res.json(responseList);
+                           }, 0)
+                       }
+
+                   }
+               })
+           }
+       }
+    });
+/*****************************************/
+});
 
 
 
