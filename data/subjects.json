@@ -9,5 +9,9 @@
     "name": "爱奇艺"
   }],
   "commentNum": "1",
-  "clickNum": "1"
+  "clickNum": "1",
+  "postList": [{
+    "id": "postId"
+  }]
+
 }

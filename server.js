@@ -11,7 +11,8 @@ let bodyParser = require('body-parser');
 let mongoose = require('./mongoose');
 
 mongoose.set('debug', true);
-let DB_CONN_STR = 'mongodb://localhost:27017/bishe';
+const pageNum = '20';
+const DB_CONN_STR = 'mongodb://localhost:27017/bishe';
 
 
 /************************model***************/
@@ -149,6 +150,7 @@ function getId(part) {
     }
     return part + id;
 }
+
 console.log('getId', getId('test'));
 //add post
 app.post('/api/addPost',function (req, res) {
@@ -239,6 +241,7 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
         }
     });
 });
+
 //add subject clickNum
 app.get('/api/subjectClicked', function (req, res) {
    console.log('subjectClicked', req.query.subjectId);
@@ -252,18 +255,21 @@ app.get('/api/subjectClicked', function (req, res) {
             doc.clickNum++;
             doc.save(function (err) {
                 if(err){
-                    console.log('subjectClicked:saveError', err)
+                    console.log('subjectClicked:saveError', err);
+                    db.close();
                 }else {
                     console.log('add success');
                     res.json({
                         "msg_id": "1"
-                    })
+                    });
+                    db.close();
                 }
             })
         }
     })
 });
 
+//add num of comment
 app.get('/api/commentAdded', function (req, res) {
    console.log('/api/commentAdded', req.query.subjectId);
    mongoose.connect(DB_CONN_STR);
@@ -280,12 +286,14 @@ app.get('/api/commentAdded', function (req, res) {
                     res.json({
                         "msg_id": "0"
                     });
+                    db.close();
                     // return
                 }else {
                     console.log('add success');
                     res.json({
                         "msg_id": '1'
                     });
+                    db.close();
                     // return
                 }
             })
@@ -293,7 +301,101 @@ app.get('/api/commentAdded', function (req, res) {
     })
 });
 
+//get subject Detail with subjectId
+app.get('/api/getSubjectDetail', function (req, res) {
+    console.log('/api/getSubjectDetail', req.query.subjectId);
+    mongoose.connect(DB_CONN_STR);
+/***************************************/
+    let id = req.query.subjectId;
+    Subject.findOne({"id": id}, function (err, doc) {
+       if(err) {
+           console.log('getSubjectDetail:error', err);
+           res.json({
+               "msg_id": "0",
+               "message": "getSubjectDetailError"
+           });
+           db.close();
+       }else {
+           res.json(doc);
+           db.close();
+       }
+    });
 
+
+
+/***************************************/
+});
+
+//get subject post list with subjectId and page num
+//num of every page is 20=> const pageNum
+app.get('/api/getPostList', function (req, res) {
+   console.log('/api/getPostList', req.query.subjectId);
+   mongoose.connect(DB_CONN_STR);
+/************************************/
+    let id = req.query.subjectId;
+    let page = req.query.page;
+    Subject.findOne({"id": id}, function (err, doc) {
+       if(err){
+           console.log('getPostListErrorAtGetSubject', err);
+           db.close();
+       } else {
+           let list = doc.postList;
+           let listNum = list.length;
+           let resData = {
+               total: listNum,
+               postList: []
+           };
+           let start = (page - 1) * pageNum;
+           let later = page * pageNum;
+           let end = later > listNum ? listNum : later;
+           for(let i = start; i < end; i++) {
+               Post.findOne({"id": list[i].id}, function (err, doc) {
+                   if(err){
+                       console.log('getPostListErrorAtGetPost', err);
+                       db.close();
+                       res.json(resData);
+                   }else {
+                       resData.postList.push(doc);
+                       if(i == end - 1) {
+                           setTimeout(function () {
+                               db.close();
+                               res.json(resData);
+                           }, 0);
+                       }
+                   }
+               })
+           }
+       }
+    });
+
+
+
+/************************************/
+
+
+
+});
+
+//get post message with post id
+app.get('/api/getPost', function (req, res) {
+    console.log('/api/getPost', req.query.postId);
+    mongoose.connect(DB_CONN_STR);
+/*****************************************/
+    let id = req.query.postId;
+    Post.findOne({"id": id}, function (err, doc) {
+        if(err) {
+            console.log('api/getPost:error', err);
+            res.json({
+                msg_id: '0',
+                message: 'get_post_message error'
+            })
+        }else {
+            res.json(doc);
+        }
+    })
+
+
+});
 
 
 

@@ -25,6 +25,9 @@ SubjectSchema = new mongoose.Schema({
     },
     commentNum: {
         type: String
+    },
+    postList: {
+        type: Array
     }
 }, { collection: 'subjects'});// mongoose always add a 's' after the name of collection if you do not have the second param,because mongoose always want to be smart
 
