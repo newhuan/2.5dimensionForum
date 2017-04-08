@@ -5,7 +5,7 @@ const root = 'http://localhost:3000/';
 $('window').ready(function () {
     let subjectId = getUrlParam('id');
     let postIdList = [];
-
+    //init page
     $.ajax({
         type:'get',
         data:{
@@ -35,6 +35,9 @@ $('window').ready(function () {
             });
         }
     });
+//    init end
+//    isLogin
+    isLogin(setLogin);
 
 });
 function setAbstract(data) {
@@ -62,3 +65,8 @@ function setPostList(postList) {
         $postList.append($(postStr));
     }
 }
+
+function setLogin(status) {
+    console.log(status);
+}
+

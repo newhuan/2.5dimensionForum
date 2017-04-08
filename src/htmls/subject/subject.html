@@ -47,11 +47,7 @@
 	<div class="post-list" id="post-list">
 
 	</div>
-	<div class="page-controller">
-		<div class="to-prev" id="to-prev">上一页</div>
-		<div class="page-num">1</div>
-		<div class="to-next" id="to-next">下一页</div>
-	</div>
+	<!-- post tpl -->
 	<script id="post-tpl" type="text/template">
 		<div class="user-name" id="user-name">
 			{{userName}}
@@ -60,6 +56,19 @@
 			<a href="../post/post.html?id={{postId}}">{{postTitle}}</a>
 		</div>
 	</script>
+
+	<div class="page-controller">
+		<div class="to-prev" id="to-prev">上一页</div>
+		<div class="page-num">1</div>
+		<div class="to-next" id="to-next">下一页</div>
+	</div>
+
+	<div class="add-post-layout" id="add-post-layout">
+		<label for="post-text">
+			<textarea name="post-text" id="post-text" class="post-text" cols="30" rows="10"></textarea>
+		</label>
+		<button id="add-post">提交</button>
+	</div>
 </article>
 
 <script src="../../assets/plugins/jquery-3.1.0.min.js"></script>

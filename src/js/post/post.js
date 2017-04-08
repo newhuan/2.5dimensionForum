@@ -6,6 +6,7 @@ const root = 'http://localhost:3000/';
 $('window').ready(function () {
     console.log(getUrlParam('id'), getUrlParam('click'), getUrlParam('comment'));
     let postId = getUrlParam('id');
+    //init page message
     $.ajax({
         type: 'get',
         url: root + 'api/getPost',
@@ -39,6 +40,7 @@ $('window').ready(function () {
     })
 
 });
+
 function setPostLayout(data) {
     let $postTitle = $('#post-title');
     let $postText = $('#main-text');
@@ -47,6 +49,7 @@ function setPostLayout(data) {
     $postText.html(data.mainText);
     $userName.html(data.userName);
 }
+
 function setResponseList(responseList) {
     let resTpl = $('#response-tpl').html();
     let $responseList = $('.response-list');
