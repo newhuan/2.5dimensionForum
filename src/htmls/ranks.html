@@ -3,9 +3,74 @@
 <head>
 	<meta charset="UTF-8">
 	<title>ranks</title>
+	<link rel="stylesheet" href="../css/ranks/ranks.css">
 </head>
 <body>
-排行榜test
-<a href="../index.html">主页</a>
+<!--排行榜test-->
+<!--<a href="../index.html">主页</a>-->
+<header>
+	<div class="layout">
+		<ul>
+			<li class="logo">
+				<a href="../index.html">logo</a>
+			</li>
+			<li class="blank"></li>
+
+			<li class="header-btn">
+				<a href="headLine.html">头条</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="homePage.html">主区</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="ranks.html">排行榜</a>
+			</li>
+
+			<li class="header-btn">
+				<button id = 'sign-in'>登陆</button>
+			</li>
+
+			<li class="header-btn">
+				<button id = "sign-up">注册</button>
+			</li>
+
+			<li class="header-btn">
+				<button style="display: none" id = "sing-out">登出</button>
+			</li>
+		</ul>
+	</div>
+</header>
+<div class="line20"></div>
+
+<div class="title">
+	<h4>点击榜</h4>
+</div>
+<ul class="rankingList clickList">
+
+</ul>
+<div class="title">
+	<h4>评论榜</h4>
+</div>
+<ul class="rankingList commentList">
+
+</ul>
+
+<script type="text/template" id="tpl-ranks-click">
+	<li>
+		<span class="num">{{ranking}}</span>
+		<a href="subject/subject.html?id={{subjectId}}&click={{clickNum}}">{{subName}}</a>
+	</li>
+</script>
+
+<script type="text/template" id="tpl-ranks-comment">
+	<li>
+		<span class="num">{{ranking}}</span>
+		<a href="subject/subject.html?id={{subjectId}}&comment={{commentNum}}">{{subName}}</a>
+	</li>
+</script>
+<script src="../assets/plugins/jquery-3.1.0.min.js"></script>
+<script src="../js/ranks/ranks.js"></script>
 </body>
 </html>

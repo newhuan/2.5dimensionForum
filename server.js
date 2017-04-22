@@ -22,6 +22,8 @@ let Site = require('./models/sites');
 let SubjectIds = require('./models/subjectIds');
 let Subject = require('./models/subjects');
 let Response = require('./models/responses');
+let clickRanking = require('./models/clickRankings');
+let commentRanking = require('./models/commentRankings');
 
 /***************************************/
 
@@ -432,9 +434,110 @@ app.get('/api/getResponseList', function (req, res) {
 /*****************************************/
 });
 
+//get rankingList
+app.get('/api/getRankingList', function (req, res) {
+    console.log('/api/getRankingList');
+    mongoose.connect(DB_CONN_STR);
+/*****************************************************/
+    let data = [[],[]];
+    for(let i = 0; i < 10; i++) {
+        clickRanking.find({"ranking": (i+1)}, function (err, doc) {
+            if(err) {
+                console.log('getRankingListError', err);
+                res.json(data)
+            } else {
+                data[0].push(doc[0]);
+            }
+        });
+        commentRanking.find({"ranking": (i+1)}, function (err, doc) {
+          if(err) {
+              console.log('getRankingListError', err);
+              res.json(data)
+          }  else {
+              data[1].push(doc[0]);
+              if(i == 9) {
+                  setTimeout(function () {
+                      db.close();
+                     res.json(data);
+                  }, 1)
+              }
+          }
+        })
+    }
 
+});
 
+//set rankings
+let rankId = setInterval(function () {
+    setClickRankings();
+    setCommentRankings();
 
+}, 1000 * 60);
+function setClickRankings() {
+    console.log('setClickRankings');
+    mongoose.connect(DB_CONN_STR);
+    Subject.find(function (err, doc) {
+        if(err) {
+            console.log('setClickRankingsError', err);
+        } else {
+            let data = [...doc];
+            data.sort(function (a, b) {
+                return b.clickNum - a.clickNum
+            });
+            console.log(data);
+            for(let i = 0, len = data.length; i < len; i++) {
+                clickRanking.findOne({"subjectId": data[i].id}, function (err, doc) {
+                if(err) {
+                    console.log('setClickRankingsError_clickRanking', err, i)
+                } else {
+                    doc.ranking = i + 1;
+                    doc.save(function (err) {
+                        if(err) {
+                            console.log('setClickRankingsError_clickRanking', err)
+                        }
+                    })
+                }
+                })
+            }
+        }
+    })
+}
+//set rankings
+function setCommentRankings() {
+    console.log('setCommentRankings');
+    // mongoose.connect(DB_CONN_STR);
+    Subject.find(function (err, doc) {
+        if(err) {
+            console.log('setCommentRankingsError', err);
+        } else {
+            let data = [...doc];
+            data.sort(function (a, b) {
+                return b.commentNum - a.commentNum
+            });
+            console.log(data);
+            for(let i = 0, len = data.length; i < len; i++) {
+                commentRanking.findOne({"subjectId": data[i].id}, function (err, doc) {
+                    if(err) {
+                        console.log('setCommentRankingsError_CommentRankings', err, i)
+                    } else {
+                        doc.ranking = i + 1;
+                        doc.save(function (err) {
+                            if(err) {
+                                console.log('setCommentRankingsError_CommentRankings', err)
+                            }
+
+                        });
+                        if(i == len - 1) {
+                            setTimeout(function () {
+                                db.close();
+                            }, 10);
+                        }
+                    }
+                })
+            }
+        }
+    })
+}
 
 
 
