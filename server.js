@@ -17,6 +17,7 @@ const DB_CONN_STR = 'mongodb://localhost:27017/bishe';
 
 /************************model***************/
 let User = require('./models/user');
+let Admin = require('./models/admin');
 let Post = require('./models/posts');
 let Site = require('./models/sites');
 let SubjectIds = require('./models/subjectIds');

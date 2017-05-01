@@ -7,6 +7,7 @@ $('window').ready(function () {
    // search posts
    let $postSearchBtn = $('#postSearch');
     $postSearchBtn.on('click', function (e) {
+        refreshPostList();
         let id = $('#post-id').val();
         let title = $('#post-title').val();
         let userName = $('#post-user-name').val();
@@ -17,7 +18,7 @@ $('window').ready(function () {
                 id, title, userName
             },
             success: function (res) {
-                console.log(res)
+                console.log(res);
                 showPosts(res);
             },
             error: function (e) {
@@ -30,6 +31,7 @@ $('window').ready(function () {
     let $postList = $('.post-list');
     $postList.delegate('.delete-post', 'click', function (e) {
         console.log('$postDeleteBtnClicked');
+
         let postId = $(this).parent().find('.post-id-ipt').val();
         let userName = $(this).parent().parent().parent().find('#post-user-name').val();
         console.log(postId);
@@ -58,4 +60,10 @@ function showPosts(data) {
         post = post.replace('{{postTitle}}', data[i].title);
         $postList.append($(post));
     }
+}
+function refreshPostList() {
+    $('.post-list').html('');
+}
+function refreshUserList() {
+    $('.user-list').html('');
 }

@@ -94,6 +94,9 @@ function setPostList(postList) {
     let $postList = $('#post-list');
 
     for(let i = 0, len = postList.length;i < len; i++) {
+        if(postList[i] == null){
+            continue;
+        }
         console.log("id", postList[i].id);
         let postStr = postTpl.replace('{{userName}}', postList[i].userName);
         postStr = postStr.replace('{{postTitle}}', postList[i].title);
