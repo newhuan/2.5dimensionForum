@@ -245,8 +245,8 @@ app.post('/api/deleteUser', function (req, res) {
     }
 });
 
-app.get('/api/getSites', function (req, res) {
-   console.log('/api/getSites');
+app.get('/api/getAllSites', function (req, res) {
+   console.log('/api/getAllSites');
     mongoose.connect(DB_CONN_STR);
     /*********** do some staff ***************/
     Site.find({name: {$exists: true}}, function (err, doc) {
@@ -264,6 +264,40 @@ app.get('/api/getSites', function (req, res) {
         }
         db.close();
     })
+});
+
+app.get('/api/getSites', function (req, res) {
+    console.log('/api/getSites');
+    mongoose.connect(DB_CONN_STR);
+    /*********** do some staff ***************/
+    let sites = req.query.sites;
+    let sitesRes = [];
+    for(let i = 0, len = sites.length; i < len; i++) {
+        if(!sites[i]) {
+            continue;
+        }
+        Site.findOne({id: sites[i]}, function (err, doc) {
+            if(err) {
+                console.log('get sitesError', err);
+                res.json({
+                    state:0,
+                    msg: "get sites fail"
+                });
+                db.close();
+            }else {
+                sitesRes.push(doc);
+                if(i == len - 1) {
+                    res.json( {
+                        state: 1,
+                        res: sitesRes
+                    });
+                    // db.close();
+                }
+            }
+
+        })
+    }
+
 });
 
 function getId(part) {
@@ -628,20 +662,29 @@ app.get('/api/getPostList', function (req, res) {
 //get post message with post id
 app.get('/api/getPost', function (req, res) {
     console.log('/api/getPost', req.query.postId);
-    mongoose.connect(DB_CONN_STR);
-/*****************************************/
-    let id = req.query.postId;
-    Post.findOne({"id": id}, function (err, doc) {
-        if(err) {
-            console.log('api/getPost:error', err);
-            res.json({
-                msg_id: '0',
-                message: 'get_post_message error'
-            })
-        }else {
-            res.json(doc);
-        }
-    })
+    // setTimeout(function () {
+        mongoose.connect(DB_CONN_STR);
+        /*****************************************/
+        let id = req.query.postId;
+        Post.findOne({"id": id}, function (err, doc) {
+            if(err) {
+                console.log('api/getPost:error', err);
+                res.json({
+                    msg_id: '0',
+                    message: 'get_post_message error'
+                });
+                db.close();
+            }else {
+                res.json(doc);
+                // setTimeout(function () {
+                    db.close();
+                // }, 20);
+
+
+            }
+        });
+    // },20);
+
 
 
 });

@@ -72,6 +72,12 @@ header {
   border-radius: 4px;
   padding: 4px; }
 
+.site-item {
+  width: 100px;
+  font-size: 14px;
+  float: left;
+  padding: 4px; }
+
 .line20 {
   width: 100%;
   height: 20px; }

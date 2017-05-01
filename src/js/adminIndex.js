@@ -184,7 +184,7 @@ function showSites(data) {
 function getSites() {
     $.ajax({
         type: "get",
-        url: root + "api/getSites",
+        url: root + "api/getAllSites",
         data: {
 
         },

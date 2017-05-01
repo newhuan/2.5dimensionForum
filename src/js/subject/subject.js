@@ -16,6 +16,7 @@ $('window').ready(function () {
             // let data = JSON.parse(res);
             console.log(res);
             setAbstract(res);
+            getSites(res.copyRights);
             // postIdList = data.postList;
             $.ajax({
                 type:'get',
@@ -103,6 +104,32 @@ function setPostList(postList) {
         postStr = postStr.replace('{{postId}}',postList[i].id);
         $postList.append($(postStr));
     }
+}
+function setSites(data) {
+    let siteTpl = $('#site-tpl').html();
+    let $siteList = $('.site-list');
+    for(let i = 0, len = data.length; i < len; i++) {
+        let site = siteTpl.replace('{{id}}', data[i].id);
+        site = site.replace('{{name}}', data[i].name);
+        $siteList.append($(site));
+    }
+}
+
+function getSites(data) {
+    $.ajax({
+        type: 'get',
+        url: root + 'api/getSites',
+        data: {
+            sites: data
+        },
+        success: function (res) {
+            console.log(res);
+            setSites(res.res);
+        },
+        error: function (e) {
+            console.log('getSitesError',e);
+        }
+    })
 }
 
 function setLogin(status) {
