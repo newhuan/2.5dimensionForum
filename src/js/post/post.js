@@ -37,8 +37,40 @@ $('window').ready(function () {
             document.write('404 Not Found');
         }
 
-    })
+    });
 
+//    submit response
+    let $submitBtn = $('#add-response');
+    $submitBtn.on('click', function (e) {
+        let status = localStorage.getItem('dem2p5_status');
+        if(!status){
+            alert('请先登陆');
+            return;
+        }
+
+        let mainText = $('#response-text').val();
+        let userName = localStorage.getItem('dem2p5_user');
+        let postId = getUrlParam('id');
+        if(!checkEmpty(mainText, userName, postId)) {
+            alert('请填写完整再提交');
+            return;
+        }
+        $.ajax({
+            type: 'post',
+            url: root + 'api/addResponse',
+            data: {
+                userName,
+                mainText,
+                postId
+            },
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    })
 });
 
 function setPostLayout(data) {

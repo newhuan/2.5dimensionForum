@@ -195,6 +195,44 @@ app.post('/api/addPost',function (req, res) {
     });
 
 });
+//add response
+app.post('/api/addResponse', function (req, res) {
+    let responseId = getId('response');//get an id for this post
+    console.log('addResponse', responseId, req.body.userName, req.body.postId, req.body.mainText);
+    mongoose.connect(DB_CONN_STR);
+    let ResponseEntity = new Response({
+        id : responseId,
+        user  : req.body.userName,
+        text: req.body.mainText
+    });
+    ResponseEntity.save(function(error,doc){
+        if(error){
+            console.log("error :" + error);
+        }else{
+            console.log('ResponseEntitySave', doc);
+            User.update({user: req.body.userName}, {"$push": {'responses': {"id": responseId}}}, function (error, docs) {
+                if (error) {
+                    console.log("error :" + error);
+                } else {
+                    console.log('User', docs); //
+                    Post.update({id: req.body.postId}, {"$push": {'responses': {"id": responseId}}}, function (err, docs) {
+                        if(err) {
+                            console.log("error :" + error);
+                        } else {
+                            console.log('response', docs);
+                            db.close();
+                            res.json({
+                                "responseId" : responseId,
+                            });
+                        }
+                    });
+
+                }
+            });
+
+        }
+    });
+});
 
 //send subject messages when site open
 app.get('/api/getSucjectsWithYear', function (req, res) {

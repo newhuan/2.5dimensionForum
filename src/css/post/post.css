@@ -42,6 +42,15 @@ a {
   width: 100%;
   height: 20px; }
 
+.page-controller {
+  float: right; }
+  .page-controller .page-item {
+    float: left;
+    border: 1px solid #000;
+    padding: 0 4px;
+    margin-right: 4px;
+    cursor: pointer; }
+
 header {
   background-color: antiquewhite; }
   header ul li {
@@ -57,5 +66,43 @@ header {
   header ul .header-btn {
     width: 50px;
     font-size: 16px; }
+
+.post-layout .row {
+  height: 40px; }
+  .post-layout .row .post-title {
+    width: 400px;
+    float: left;
+    font-size: 24px; }
+  .post-layout .row .user-name {
+    float: left;
+    height: 40px;
+    line-height: 40px; }
+.post-layout .main-text {
+  border: 1px solid #000;
+  padding: 4px; }
+
+.response-list .response-layout {
+  margin-bottom: 4px;
+  border: 1px solid #000;
+  padding: 4px; }
+  .response-list .response-layout .response-user {
+    font-size: 12px;
+    border-bottom: 1px solid #000; }
+  .response-list .response-layout .response-text {
+    padding-top: 4px; }
+
+.add-response #response-text {
+  width: 800px;
+  margin: 0 auto;
+  margin-bottom: 6px;
+  display: block; }
+.add-response button {
+  padding: 0 6px;
+  background-color: #eee;
+  color: #000;
+  display: block;
+  width: 80px;
+  text-align: center;
+  margin: 0 auto; }
 
 /*# sourceMappingURL=post.css.map */
