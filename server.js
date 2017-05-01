@@ -171,7 +171,7 @@ app.post('/api/addPost',function (req, res) {
             console.log("error :" + error);
         }else{
             console.log('PostEntitySave', doc);
-            User.update({user: req.body.userName}, {"$push": {'posts': {"id": postId}}}, function (error, docs) {
+            User.update({user: req.body.userName}, {"$push": {'posts': {"id": postId,"title": title}}}, function (error, docs) {
                 if (error) {
                     console.log("error :" + error);
                 } else {
@@ -512,12 +512,76 @@ app.get('/api/getRankingList', function (req, res) {
 
 });
 
+//delete post
+
+
+//search posts
+app.get('/api/searchPosts', function (req, res) {
+    console.log('/api/searchPosts');
+    mongoose.connect(DB_CONN_STR);
+/***********************************************/
+    let id = req.query.id;
+    let title = req.query.title;
+    let userName = req.query.userName;
+    console.log(id,title,userName);
+    let postList = [];
+    if(userName != '') {
+        User.find({"user":userName}, function (err, doc) {
+            if(err) {
+                console.log('findUserError', err);
+                db.close();
+                return;
+            }
+            console.log("docs",doc);
+            if(id == '' && title == "") {
+                postList.push(doc.posts);
+                db.close();
+                return
+            }
+            if(id != "") {
+                for(let i = 0, len = doc.length; i < len; i++) {
+                    //TODO:add postTitle in addPost
+                    for(let j = 0, postLen = doc[i].posts.length; j < postLen; j++) {
+                        console.log("id", doc[i].posts[j].id, id,doc[i].posts[j].id.indexOf(id));
+                        if(doc[i].posts[j].id.indexOf(id) >= 0) {
+                            postList.push({
+                                title:doc[i].posts[j].title,
+                                id:doc[i].posts[j].id
+                            })
+                        }
+                    }
+                }
+            }
+            if(title != "") {
+                for(let i = 0, len = doc.length; i < len; i++) {
+                    //TODO:add postTitle in addPost
+                    for(let j = 0, postLen = doc[i].posts.length; j < postLen; j++) {
+                        if(doc[i].posts[j].title.indexOf(title) >= 0) {
+                            postList.push({
+                                title:doc[i].posts[j].title,
+                                id:doc[i].posts[j].id
+                            })
+                        }
+                    }
+                }
+            }
+            console.log(postList);
+            setTimeout(function () {
+               let posts = Array.from(new Set(postList));
+               res.json(posts);
+            },40)
+        })
+    }
+
+});
+
 //set rankings
 // let rankId = setInterval(function () {
 //     setClickRankings();
 //     setCommentRankings();
 //
 // }, 1000 * 60);
+
 function setClickRankings() {
     console.log('setClickRankings');
     mongoose.connect(DB_CONN_STR);
@@ -583,7 +647,6 @@ function setCommentRankings() {
         }
     })
 }
-
 
 
 

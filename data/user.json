@@ -1,7 +1,10 @@
 {
   "user": "newhuan",
   "password": "123456",
-  "posts": ["postId"],
+  "posts": [{
+    "id": "postId",
+    "title": "postTitle"
+  }],
   "photo": "avatar",
   "responses":[{
     "postId": "postId",

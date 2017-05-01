@@ -1,0 +1,41 @@
+@import "./_common";
+@import "./_header";
+
+.header-btn{
+  float: right;
+}
+.add-subject-layout{
+  #subject-title-add{
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .subject-text{
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .submit-btn{
+    padding: 0 6px;
+    background-color: #eee;
+    color: #000;
+    display: block;
+    width: 80px;
+    text-align: center;
+    margin:0 auto;
+
+  }
+}
+
+.layout{
+  .userManager-tip{
+
+  }
+  .searchPoints{
+    .search-item{
+
+    }
+  }
+}
