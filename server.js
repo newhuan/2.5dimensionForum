@@ -146,6 +146,7 @@ app.get('/api/searchUser', function (req, res) {
     /*********** do some staff ***************/
     let userName = req.query.userName;
     let jurisdiction = req.query.jurisdiction;
+
     let users = [];
     console.log(userName);
     if(jurisdiction == 0) {
@@ -199,9 +200,49 @@ app.get('/api/searchUser', function (req, res) {
 
         })
     }
-
-
-
+});
+app.post('/api/deleteUser', function (req, res) {
+    console.log('api/deleteUser');
+    mongoose.connect(DB_CONN_STR);
+    /*********** do some staff ***************/
+    let user = req.body.userName;
+    let jurisdiction = req.body.jurisdiction;
+    console.log(jurisdiction,user);
+    if(jurisdiction == 0) {
+        User.remove({user: user}, function (err) {
+            if(err) {
+                console.log('delete user error', err);
+                res.json({
+                    state: 0,
+                    msg: "delete user fail"
+                });
+                db.close();
+            }else {
+                res.json({
+                    state:1,
+                   msg: "delete user success"
+                });
+                db.close();
+            }
+        });
+    }else {
+        Admin.remove({adminUser: user}, function (err) {
+            if(err) {
+                console.log('delete user error', err);
+                res.json({
+                    state: 0,
+                    msg: "delete user fail"
+                });
+                db.close();
+            }else {
+                res.json({
+                    state:1,
+                    msg: "delete user success"
+                });
+                db.close();
+            }
+        });
+    }
 });
 
 function getId(part) {

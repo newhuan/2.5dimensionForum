@@ -56,6 +56,30 @@ $('window').ready(function () {
             })
         }
     });
+   // delete user
+    let $userList = $('.user-list');
+    $userList.delegate('.delete-user', 'click', function () {
+        console.log('delete clicked');
+        let userName = $(this).parent().find('.user-name').find('input').attr('id');
+        let jurisdiction = $(this).parent().find('select').val()=='normal'?0:1;
+        if(!checkEmpty(userName)){
+            alert('请填写完整');
+        }else {
+            $.ajax({
+                type:'post',
+                url: root+ 'api/deleteUser',
+                data: {
+                    userName, jurisdiction
+                },
+                success:function (res) {
+                    console.log(res)
+                },
+                error: function (err) {
+                    console.log('error', err);
+                }
+            })
+        }
+    });
 
    // search posts
    let $postSearchBtn = $('#postSearch');
@@ -127,7 +151,7 @@ function showUsers(data) {
             $userList.append($user);
         }else {
             let user = userTpl.replace('{{userName}}', data[i].adminUser);
-            user = user.replace('{{userName}}', data[i].user);
+            user = user.replace('{{userName}}', data[i].adminUser);
             let $user = $(user);
             $user.find('select').val('admin');
             $userList.append($user);
