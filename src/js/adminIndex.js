@@ -27,6 +27,27 @@ $('window').ready(function () {
     });
 
 //    delete post
+    let $postList = $('.post-list');
+    $postList.delegate('.delete-post', 'click', function (e) {
+        console.log('$postDeleteBtnClicked');
+        let postId = $(this).parent().find('.post-id-ipt').val();
+        let userName = $(this).parent().parent().parent().find('#post-user-name').val();
+        console.log(postId);
+        $.ajax({
+            type:'post',
+            url: root+ 'api/deletePost',
+            data: {
+                postId,userName
+            },
+            success: function (res) {
+                console.log(res);
+                // showPosts(res);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    });
 
 });
 function showPosts(data) {

@@ -513,7 +513,54 @@ app.get('/api/getRankingList', function (req, res) {
 });
 
 //delete post
+app.post('/api/deletePost', function (req, res) {
+   console.log('/api/deletePost');
+    mongoose.connect(DB_CONN_STR);
+    /***********************************************/
+    let id = req.body.postId;
+    let userName = req.body.userName;
+    Post.remove({"id":id}, function (err) {
+        if(err){
+            console.log(err);
+            res.json({
+                state:0,
+                msg:"delete fail"
+            });
+            db.close();
+        }else {
+            console.log('delete post successful');
+            User.findOne({user:userName}, function (err, doc) {
+                if(err){
+                    db.close();
+                    return
+                }
+                for(let i = 0, len = doc.posts.length; i < len; i++) {
+                    if(doc.posts[i].id == id) {
+                        doc.posts.splice(i, 1);
+                        break;
+                    }
+                }
+                doc.save(function (err) {
 
+                    if(err){
+                        res.json({
+                            state:0,
+                            msg:"delete fail"
+                        })
+                    }else {
+                        res.json({
+                            state:1,
+                            msg:"delete successful"
+                        });
+
+                    }
+                    db.close();
+                })
+            });
+
+        }
+    })
+});
 
 //search posts
 app.get('/api/searchPosts', function (req, res) {
