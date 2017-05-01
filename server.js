@@ -409,6 +409,39 @@ app.post('/api/addSubject', function (req, res) {
     let sites = req.body.sites;
     console.log(sites);
     mongoose.connect(DB_CONN_STR);
+    let commentRankingEntity = new commentRanking({
+        ranking:0,
+        subjectId: subjectId,
+        subName: subName,
+        clickNum: 0
+    });
+    commentRankingEntity.save(function (err) {
+        if(err) {
+            console.log("error :" + error);
+            res.json({
+                state: 0,
+                msg: "subject add fail"
+            });
+            db.close();
+        }
+    });
+    let clickRankingEntity = new clickRanking({
+        ranking:0,
+        subjectId: subjectId,
+        subName: subName,
+        clickNum: 0
+    });
+    clickRankingEntity.save(function (err) {
+        if(err) {
+            console.log("error :" + error);
+            res.json({
+                state: 0,
+                msg: "subject add fail"
+            });
+            db.close();
+        }
+    });
+
     let SubjectEntity = new Subject({
         id : subjectId,
         picUrls: [],
@@ -447,7 +480,10 @@ app.post('/api/addSubject', function (req, res) {
                            msg: "subject add successful!"
                        })
                    }
-                    db.close();
+                   setTimeout(function () {
+                       db.close();
+                   },0);
+
                 });
 
             });
@@ -870,12 +906,12 @@ app.get('/api/searchPosts', function (req, res) {
 
 });
 
-//set rankings
-// let rankId = setInterval(function () {
-//     setClickRankings();
-//     setCommentRankings();
-//
-// }, 1000 * 60);
+// set rankings
+let rankId = setInterval(function () {
+    setClickRankings();
+    setCommentRankings();
+    clearInterval(rankId);
+}, 1000);
 
 function setClickRankings() {
     console.log('setClickRankings');
@@ -888,12 +924,13 @@ function setClickRankings() {
             data.sort(function (a, b) {
                 return b.clickNum - a.clickNum
             });
-            console.log(data);
+            // console.log(data);
             for(let i = 0, len = data.length; i < len; i++) {
                 clickRanking.findOne({"subjectId": data[i].id}, function (err, doc) {
                 if(err) {
                     console.log('setClickRankingsError_clickRanking', err, i)
                 } else {
+                    console.log(doc);
                     doc.ranking = i + 1;
                     doc.save(function (err) {
                         if(err) {
@@ -918,7 +955,7 @@ function setCommentRankings() {
             data.sort(function (a, b) {
                 return b.commentNum - a.commentNum
             });
-            console.log(data);
+            // console.log(data);
             for(let i = 0, len = data.length; i < len; i++) {
                 commentRanking.findOne({"subjectId": data[i].id}, function (err, doc) {
                     if(err) {
