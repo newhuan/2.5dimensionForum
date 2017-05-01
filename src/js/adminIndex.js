@@ -30,6 +30,32 @@ $('window').ready(function () {
        }
     });
 
+   // search users
+    let $userSearch = $('#user-search');
+    $userSearch.on('click', function (e) {
+        refreshUserList();
+        let userName = $('#user-name').val();
+        let jurisdiction = $('#user-jurisdiction').val();
+        if(!checkEmpty(userName,jurisdiction)) {
+            alert('请填写完整');
+        }else {
+            $.ajax({
+                type:'get',
+                url: root + 'api/searchUser',
+                data: {
+                    userName,
+                    jurisdiction:jurisdiction == 'normal'?0:1
+                },
+                success: function (res) {
+                    console.log(res);
+                    showUsers(res.res);
+                },
+                error: function (e) {
+                    console.log("error", e);
+                }
+            })
+        }
+    });
 
    // search posts
    let $postSearchBtn = $('#postSearch');
@@ -87,6 +113,26 @@ function showPosts(data) {
         let post = postTpl.replace('{{postId}}', data[i].id);
         post = post.replace('{{postTitle}}', data[i].title);
         $postList.append($(post));
+    }
+}
+function showUsers(data) {
+    let userTpl = $('#user-item-template').html();
+    let $userList = $('.user-list');
+    for(let i = 0, len = data.length; i < len; i++) {
+        if(!data[i].jurisdiction){
+            let user = userTpl.replace('{{userName}}', data[i].user);
+            user = user.replace('{{userName}}', data[i].user);
+            let $user = $(user);
+            $user.find('select').val('normal');
+            $userList.append($user);
+        }else {
+            let user = userTpl.replace('{{userName}}', data[i].adminUser);
+            user = user.replace('{{userName}}', data[i].user);
+            let $user = $(user);
+            $user.find('select').val('admin');
+            $userList.append($user);
+        }
+
     }
 }
 function refreshPostList() {

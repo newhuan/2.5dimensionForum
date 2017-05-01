@@ -51,14 +51,13 @@
 	<div class="layout">
 		<div class="userManager-tip">用户管理</div>
 		<div class="searchPoints">
-			<label>id:<input class="search-item" id="user-id" type="text"></label>
 			<label>userName:<input class="search-item" id="user-name" type="text" ></label>
 			<label>权限:<select class="search-item" id="user-jurisdiction">
 				<option value="normal">normal</option>
 				<option value="admin">admin</option>
 			</select>
 			</label>
-			<button>搜索</button>
+			<button id="user-search">搜索</button>
 		</div>
 		<div class="user-list">
 
@@ -67,7 +66,7 @@
 			<div class="user-item">
 				<div class="user-name">
 					<label>
-						<input type="text" value="{{userName}}">
+						<input id="{{userName}}" type="text" value="{{userName}}">
 					</label>
 				</div>
 				<div class="jurisdiction">

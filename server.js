@@ -139,6 +139,71 @@ app.get('/api/signUp',function (req,res) {
     // return;
 });
 
+//search user
+app.get('/api/searchUser', function (req, res) {
+   console.log('api/searchUser');
+    mongoose.connect(DB_CONN_STR);
+    /*********** do some staff ***************/
+    let userName = req.query.userName;
+    let jurisdiction = req.query.jurisdiction;
+    let users = [];
+    console.log(userName);
+    if(jurisdiction == 0) {
+        User.find({user: {$exists: true}}, function (err, doc) {
+            if(err) {
+                console.log('error', err);
+                res.json({
+                    state:0,
+                    msg: "search user error"
+                });
+                db.close();
+            }else {
+                for(let i = 0, len = doc.length; i < len; i++) {
+                    if(doc[i].user.indexOf(userName) >= 0) {
+                        users.push(doc[i]);
+                        if(i == len - 1) {
+                            res.json({
+                                state: 1,
+                                res: users
+                            });
+                            db.close();
+                        }
+                    }
+                }
+            }
+
+        })
+    }else {
+        Admin.find({adminUser: {$exists: true}}, function (err, doc) {
+            if(err) {
+                console.log('error', err);
+                res.json({
+                    state:0,
+                    msg: "search user error"
+                });
+                db.close();
+            }else {
+                for(let i = 0, len = doc.length; i < len; i++) {
+                    if(doc[i].adminUser.indexOf(userName) >= 0) {
+                        users.push(doc[i]);
+                        if(i == len - 1) {
+                            res.json({
+                                state: 1,
+                                res: users
+                            });
+                            db.close();
+                        }
+                    }
+                }
+            }
+
+        })
+    }
+
+
+
+});
+
 function getId(part) {
     let id = '';
     for(let i = 0; i < 10; i++) {
@@ -155,6 +220,7 @@ function getId(part) {
 }
 
 console.log('getId', getId('test'));
+
 //add post
 app.post('/api/addPost',function (req, res) {
     let postId = getId('post');//get an id for this post
@@ -197,6 +263,7 @@ app.post('/api/addPost',function (req, res) {
     });
 
 });
+
 //add response
 app.post('/api/addResponse', function (req, res) {
     let responseId = getId('response');//get an id for this post
@@ -673,6 +740,10 @@ app.get('/api/searchPosts', function (req, res) {
                 for(let i = 0, len = doc.length; i < len; i++) {
                     //TODO:add postTitle in addPost
                     for(let j = 0, postLen = doc[i].posts.length; j < postLen; j++) {
+                        console.log(doc[i].posts[j].title);
+                        if(!doc[i].posts[j].title){
+                            continue;
+                        }
                         if(doc[i].posts[j].title.indexOf(title) >= 0) {
                             postList.push({
                                 title:doc[i].posts[j].title,
