@@ -39,6 +39,41 @@ $('window').ready(function () {
 //    isLogin
     isLogin(setLogin);
 
+//    add post
+    let $submitBtn = $('#add-post');
+    $submitBtn.on('click', function (e) {
+        let status = localStorage.getItem('dem2p5_status');
+        if(!status){
+            alert('请先登陆');
+            return;
+        }
+
+        let mainText = $('#post-text').val();
+        let userName = localStorage.getItem('dem2p5_user');
+        let title = $('#post-title-add').val();
+        let subjectId = getUrlParam('id');
+        if(!checkEmpty(mainText, userName , title, subjectId)) {
+            alert('请填写完整再提交');
+            return;
+        }
+        $.ajax({
+            type: 'post',
+            url: root + 'api/addPost',
+            data: {
+                userName,
+                title,
+                mainText,
+                subjectId
+            },
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    })
+
 });
 function setAbstract(data) {
     let $avatar = $('#avatar');
@@ -59,6 +94,7 @@ function setPostList(postList) {
     let $postList = $('#post-list');
 
     for(let i = 0, len = postList.length;i < len; i++) {
+        console.log("id", postList[i].id);
         let postStr = postTpl.replace('{{userName}}', postList[i].userName);
         postStr = postStr.replace('{{postTitle}}', postList[i].title);
         postStr = postStr.replace('{{postId}}',postList[i].id);

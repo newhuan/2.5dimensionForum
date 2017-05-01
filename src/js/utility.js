@@ -68,3 +68,12 @@ function login(user, pwd, afterLogin) {
         }
     })
 }
+//check empty
+function checkEmpty(...vals) {
+    for(let i = 0, len = vals.length; i < len; i++) {
+        if(vals[i] == '') {
+            return false;
+        }
+    }
+    return true;
+}

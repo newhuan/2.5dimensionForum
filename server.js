@@ -143,11 +143,10 @@ function getId(part) {
     for(let i = 0; i < 10; i++) {
         let random = Math.random() * 2;
         if(random < 1) {
-            let ranInt = parseInt(Math.random() * 11);
+            let ranInt = parseInt(Math.random() * 10);
             id += ints[ranInt];
-            continue;
         }else {
-            let ranChar = parseInt(Math.random() * 27);
+            let ranChar = parseInt(Math.random() * 26);
             id += chars[ranChar];
         }
     }
@@ -177,10 +176,18 @@ app.post('/api/addPost',function (req, res) {
                     console.log("error :" + error);
                 } else {
                     console.log('User', docs); //
-                    db.close();
-                    res.json({
-                        "postId" : postId,
+                    Subject.update({id: req.body.subjectId}, {"$push": {'postList': {"id": postId}}}, function (err, docs) {
+                        if(err) {
+                            console.log("error :" + error);
+                        } else {
+                           console.log('subject', docs);
+                            db.close();
+                            res.json({
+                                "postId" : postId,
+                            });
+                        }
                     });
+
                 }
             });
 
@@ -468,11 +475,11 @@ app.get('/api/getRankingList', function (req, res) {
 });
 
 //set rankings
-let rankId = setInterval(function () {
-    setClickRankings();
-    setCommentRankings();
-
-}, 1000 * 60);
+// let rankId = setInterval(function () {
+//     setClickRankings();
+//     setCommentRankings();
+//
+// }, 1000 * 60);
 function setClickRankings() {
     console.log('setClickRankings');
     mongoose.connect(DB_CONN_STR);
