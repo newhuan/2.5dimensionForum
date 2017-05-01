@@ -4,6 +4,33 @@
  */
 const root = 'http://localhost:3000/';
 $('window').ready(function () {
+
+   // add subject
+    let $addSubject = $('#add-subject');
+    $addSubject.on('click', function () {
+        let subName = $('#subject-title-add').val();
+        let abstract = $('#subject-abstract').val();
+        let year = $('#subject-year').val();
+       if(!checkEmpty(subName,abstract,year)) {
+           alert('请填写完整');
+       }else {
+            $.ajax({
+                type:'post',
+                url: root + 'api/addSubject',
+                data: {
+                    subName,abstract,year
+                },
+                success: function (res) {
+                    console.log(res);
+                },
+                error: function (e) {
+                    console.log('error', e);
+                }
+            })
+       }
+    });
+
+
    // search posts
    let $postSearchBtn = $('#postSearch');
     $postSearchBtn.on('click', function (e) {
@@ -50,6 +77,7 @@ $('window').ready(function () {
             }
         })
     });
+
 
 });
 function showPosts(data) {

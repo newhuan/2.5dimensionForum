@@ -23,7 +23,7 @@ $('window').ready(function () {
         },
         success : function (res) {
             console.log('getSucjectsWithYear', res);
-            let subjects = res.subjects;
+            let subjects = res.res.subjects;
             for(let i = 0, len = subjects.length; i < len; i++) {
                 let temp = subjectTemplete;
                 temp = temp.replace(/\{\{subName\}\}/g, subjects[i].subName);

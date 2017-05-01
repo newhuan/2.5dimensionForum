@@ -4,7 +4,7 @@
 const root = 'http://localhost:3000/';
 
 $('window').ready(function () {
-    console.log(getUrlParam('id'), getUrlParam('click'), getUrlParam('comment'));
+    console.log(getUrlParam('id'));
     let postId = getUrlParam('id');
     //init page message
     $.ajax({

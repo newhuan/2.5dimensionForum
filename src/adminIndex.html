@@ -34,11 +34,14 @@
 		<div class="add-subject-tip">添加主题</div>
 		<div class="add-subject-layout" id="add-subject-layout">
 			<label for="subject-title-add">
-				<input type="text" id="subject-title-add" placeholder="标题">
+				<input type="text" class="subject-ipt" id="subject-title-add" placeholder="标题">
+			</label>
+			<label for="subject-year">
+				<input type="text" class="subject-ipt" id="subject-year" placeholder="年份">
 			</label>
 
-			<label for="subject-text">
-				<textarea name="subject-text" id="subject-text" class="subject-text" cols="30" rows="10" placeholder="简介"></textarea>
+			<label for="subject-abstract">
+				<textarea name="subject-text" id="subject-abstract" class="subject-ipt subject-text" cols="30" rows="10" placeholder="简介"></textarea>
 			</label>
 			<button id="add-subject" class="submit-btn">提交</button>
 		</div>
@@ -115,6 +118,7 @@
 
 </article>
 <script src = 'assets/plugins/jquery-3.1.0.min.js'></script>
+<script src="./js/utility.js"></script>
 <script src="./js/adminIndex.js"></script>
 </body>
 </html>

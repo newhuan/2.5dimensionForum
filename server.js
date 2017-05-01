@@ -160,10 +160,11 @@ app.post('/api/addPost',function (req, res) {
     let postId = getId('post');//get an id for this post
     console.log('addPost', postId, req.body.userName, req.body.title, req.body.mainText);
     mongoose.connect(DB_CONN_STR);
+    let title =  req.body.title;
     let PostEntity = new Post({
         id : postId,
         userName  : req.body.userName,
-        title: req.body.title,
+        title: title,
         mainText: req.body.mainText,
         responses: []
     });
@@ -235,6 +236,61 @@ app.post('/api/addResponse', function (req, res) {
     });
 });
 
+//add subject
+app.post('/api/addSubject', function (req, res) {
+    let subjectId = getId('subject');//get an id for this post
+    console.log('addSubject', subjectId, req.body.subName, req.body.abstract, req.body.year);
+    let subName = req.body.subName;
+    let abstract = req.body.abstract;
+    let year = req.body.year;
+    mongoose.connect(DB_CONN_STR);
+    let SubjectEntity = new Subject({
+        id : subjectId,
+        picUrls: [],
+        subName  : subName,
+        abstract: abstract,
+        copyRights: [],
+        clickNum: 0,
+        commentNum: 0,
+        postList: []
+    });
+    SubjectEntity.save(function(error,doc){
+        if(error){
+            console.log("error :" + error);
+            res.json({
+                state: 0,
+                msg: "subject add fail"
+            })
+        }else{
+            console.log(year);
+            SubjectIds.findOne({"year": year}, function (err, doc) {
+                console.log('SubjectEntitySave', doc);
+                doc.subjectIds.push({
+                    id:subjectId
+                });
+                doc.save(function (err,doc) {
+                   if(err) {
+                       console.log(err);
+                       res.json({
+                           state: 0,
+                           msg: "subject add fail"
+                       })
+                   }else {
+                       console.log(doc);
+                       res.json({
+                           state: 1,
+                           msg: "subject add successful!"
+                       })
+                   }
+                    db.close();
+                });
+
+            });
+        }
+
+    });
+});
+
 //send subject messages when site open
 app.get('/api/getSucjectsWithYear', function (req, res) {
    console.log('getSucjectsWithYear', req.query.year);
@@ -256,31 +312,44 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
                 Subject.findOne({"id": subjectIds[i].id}, function (err, doc) {
                     if(err) {
                         console.log('getSucjectsWithYear:subject:error', err);
+                        res.json({
+                            state:0,
+                            res: []
+                        });
+                        db.close();
                     }else{
                         console.log('subject', doc);
-                        let sites = doc.copyRights;
-                        let siteLen = sites.length;
-                        let copyRights = [];
-                        for(let j = 0; j < siteLen; j++){
-                            Site.find({"id": sites[j].id}, function (err, doc) {
-                                if(err){
-                                    console.log('getSucjectsWithYear:Site:error', err);
-                                }else {
-                                    console.log('site', doc);
-                                    copyRights.push(doc);
-                                    if(i == len -1 && j == siteLen - 1) {
-                                        setTimeout(function () {
-                                            db.close();
-                                            res.json(resData);
-                                        }, 10);
-                                    }
-                                }
+                        resData.subjects.push(doc);
+                        if(i == len-1) {
+                            res.json({
+                                state: 1,
+                                res: resData
                             });
+                            db.close();
                         }
-                        //TODO:setTimeOut is just a compromise, must be change to 连表查询
-                        // setTimeout(function () {
-                            doc.copyRights = copyRights;
-                            resData.subjects.push(doc);
+                        // let sites = doc.copyRights;
+                        // let siteLen = sites.length;
+                        // let copyRights = [];
+                        // for(let j = 0; j < siteLen; j++){
+                        //     Site.find({"id": sites[j].id}, function (err, doc) {
+                        //         if(err){
+                        //             console.log('getSucjectsWithYear:Site:error', err);
+                        //         }else {
+                        //             console.log('site', doc);
+                        //             copyRights.push(doc);
+                        //             if(i == len -1 && j == siteLen - 1) {
+                        //                 // setTimeout(function () {
+                        //                     db.close();
+                        //                     res.json(resData);
+                        //                 // }, 10);
+                        //             }
+                        //         }
+                        //     });
+                        // }
+                        // //TODO:setTimeOut is just a compromise, must be change to 连表查询
+                        // // setTimeout(function () {
+                        //     doc.copyRights = copyRights;
+                        //     resData.subjects.push(doc);
                         // }, 4);
 
                     }
