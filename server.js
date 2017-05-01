@@ -245,6 +245,27 @@ app.post('/api/deleteUser', function (req, res) {
     }
 });
 
+app.get('/api/getSites', function (req, res) {
+   console.log('/api/getSites');
+    mongoose.connect(DB_CONN_STR);
+    /*********** do some staff ***************/
+    Site.find({name: {$exists: true}}, function (err, doc) {
+        if(err) {
+            console.log('get sitesError', err);
+            res.json({
+                state:0,
+                msg: "get sites fail"
+            });
+        }else {
+            res.json({
+                state: 1,
+                res: doc
+            })
+        }
+        db.close();
+    })
+});
+
 function getId(part) {
     let id = '';
     for(let i = 0; i < 10; i++) {
@@ -351,13 +372,15 @@ app.post('/api/addSubject', function (req, res) {
     let subName = req.body.subName;
     let abstract = req.body.abstract;
     let year = req.body.year;
+    let sites = req.body.sites;
+    console.log(sites);
     mongoose.connect(DB_CONN_STR);
     let SubjectEntity = new Subject({
         id : subjectId,
         picUrls: [],
         subName  : subName,
         abstract: abstract,
-        copyRights: [],
+        copyRights: sites,
         clickNum: 0,
         commentNum: 0,
         postList: []

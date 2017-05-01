@@ -43,6 +43,16 @@
 			<label for="subject-abstract">
 				<textarea name="subject-text" id="subject-abstract" class="subject-ipt subject-text" cols="30" rows="10" placeholder="简介"></textarea>
 			</label>
+			<div class="site-list">
+
+			</div>
+			<script type="text/template" id="site-item-template">
+				<div class="site-item">
+					<label>
+						<input id="{{id}}" class="site-checkbox" name="sites" type="checkbox" value="{{name}}">{{name}}
+					</label>
+				</div>
+			</script>
 			<button id="add-subject" class="submit-btn">提交</button>
 		</div>
 	</div>

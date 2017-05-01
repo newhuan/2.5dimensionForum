@@ -5,6 +5,8 @@
 const root = 'http://localhost:3000/';
 $('window').ready(function () {
 
+   // show sites
+    getSites();
    // add subject
     let $addSubject = $('#add-subject');
     $addSubject.on('click', function () {
@@ -14,11 +16,19 @@ $('window').ready(function () {
        if(!checkEmpty(subName,abstract,year)) {
            alert('请填写完整');
        }else {
+           let sites = [];
+           let $siteItems = $('.site-checkbox');
+           for(let i = 0, len = $siteItems.length; i < len; i++) {
+               if($siteItems[i].checked) {
+                   sites.push($siteItems[i].getAttribute('id'));
+               }
+           }
+
             $.ajax({
                 type:'post',
                 url: root + 'api/addSubject',
                 data: {
-                    subName,abstract,year
+                    subName,abstract,year,sites
                 },
                 success: function (res) {
                     console.log(res);
@@ -159,6 +169,34 @@ function showUsers(data) {
 
     }
 }
+
+function showSites(data) {
+    let siteTpl = $('#site-item-template').html();
+    let $siteList = $('.site-list');
+    for(let i = 0, len = data.length; i < len; i++) {
+        let site = siteTpl.replace('{{name}}', data[i].name);
+        site = site.replace('{{name}}', data[i].name);
+        site = site.replace('{{id}}', data[i].id);
+        $siteList.append($(site));
+    }
+}
+
+function getSites() {
+    $.ajax({
+        type: "get",
+        url: root + "api/getSites",
+        data: {
+
+        },
+        success: function (res) {
+            console.log(res);
+            showSites(res.res);
+        },error: function (e) {
+            console.log('get site error', e);
+        }
+    })
+}
+
 function refreshPostList() {
     $('.post-list').html('');
 }
