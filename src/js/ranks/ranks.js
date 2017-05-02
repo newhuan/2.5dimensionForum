@@ -3,7 +3,19 @@
  */
 // import ROOT from '../root';
 const root = 'http://localhost:3000/';
-function setClickList(data) {
+function setClickList(dataInit) {
+    // console.log(dataInit);
+    let data = [];
+    dataInit.forEach(function (key) {
+       if(key!=null) {
+           data.push(key);
+       }
+    });
+    data.sort(function (key1, key2) {
+        // console.log(key1, key2);
+        return key1.ranking - key2.ranking;
+    });
+    // console.log(data);
     let tpl = $('#tpl-ranks-click').html();
     let $clickUl = $('.clickList');
     for(let i = 0, len = data.length; i < len; i++) {
@@ -17,7 +29,18 @@ function setClickList(data) {
     }
 }
 
-function setCommentList(data) {
+function setCommentList(dataInit) {
+    console.log(dataInit);
+    let data = [];
+    dataInit.forEach(function (key) {
+        if(key!=null) {
+            data.push(key);
+        }
+    });
+    data.sort(function (key1, key2) {
+        // console.log(key1, key2);
+        return key1.ranking - key2.ranking;
+    });
     let tpl = $('#tpl-ranks-comment').html();
     let $commentUl = $('.commentList');
     for(let i = 0, len = data.length; i < len; i++) {
@@ -39,9 +62,9 @@ $('document').ready(function () {
        },
        success: function (data) {
            // let data = JSON.parse(res);
-           console.log(...data[0],...data[1]);
+           // console.log(...data[0],...data[1]);
            setClickList(data[0]);
-           setCommentList(data[0]);
+           setCommentList(data[1]);
        }
    })
 });

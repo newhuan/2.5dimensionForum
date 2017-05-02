@@ -25,6 +25,9 @@ $('window').ready(function () {
             console.log('getSucjectsWithYear', res);
             let subjects = res.res.subjects;
             for(let i = 0, len = subjects.length; i < len; i++) {
+                if(subjects[i] == null) {
+                    continue;
+                }
                 let temp = subjectTemplete;
                 temp = temp.replace(/\{\{subName\}\}/g, subjects[i].subName);
                 temp = temp.replace(/\{\{clickNum\}\}/g, subjects[i].clickNum);
@@ -83,22 +86,23 @@ $2017.on('click', function () {
     })
 });
 
-// $subjectList.on('click', function (e) {
-//    let evt = e || window.event;
-//    let id = $(this).attr("subjectid");
-//    console.log('click:id', id);
-//    $.ajax({
-//        type: "get",
-//        url: "/api/subjectClicked",
-//        data: {
-//            subjectId: id
-//        },
-//        success: function (res) {
-//            console.log('res', res);
-//        }
-//    })
-//     evt.stopPropagation();
-// });
+$subjectList.delegate('li', 'click', function (e) {
+   let evt = e || window.event;
+   let id = $(this).attr("subjectid");
+   console.log('click:id', id);
+   $.ajax({
+       type: "get",
+       url: "/api/subjectClicked",
+       data: {
+           subjectId: id
+       },
+       success: function (res) {
+           console.log('res', res);
+       }
+   });
+    evt.stopPropagation();
+});
+
 //
 // $responses.on('click', function (e) {
 //    let evt = e || window.event;
