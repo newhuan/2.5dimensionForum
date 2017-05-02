@@ -26,7 +26,8 @@ let Subject = require('./models/subjects');
 let Response = require('./models/responses');
 let clickRanking = require('./models/clickRankings');
 let commentRanking = require('./models/commentRankings');
-
+let Operation = require('./models/operation');
+let Jurisdiction = require('./models/jurisdiction');
 /***************************************/
 
 
@@ -45,7 +46,7 @@ let connId = setInterval(function () {
     db.close();
     setTimeout(function () {
         mongoose.connect(DB_CONN_STR);
-    },2);
+    }, 2);
 
 }, 1000 * 20);
 /***************************************/
@@ -81,9 +82,9 @@ for(let i = 0;i < 26; i++) {
 }
 /***************************************/
 
-//signIn
-app.get('/api/signIn',function (req,res) {
-    console.log('signIn');
+//sign up
+app.get('/api/signUp',function (req,res) {
+    console.log('signUp');
     //mongoose.connect(DB_CONN_STR);
     /*********** do some staff ***************/
     User.find({user:req.query.user}, function (error, docs) {
@@ -105,12 +106,12 @@ app.get('/api/signIn',function (req,res) {
 
 });
 
-//sign up
-app.get('/api/signUp',function (req,res) {
-    console.log('signUp', req.query.user);
+//sign in
+app.get('/api/signIn', function (req,res) {
+    console.log('signIn', req.query.user);
     //mongoose.connect(DB_CONN_STR);
     /*********** do some staff ***************/
-    User.find({user:req.query.user}, function (error, docs) {
+    User.find({user: req.query.user}, function (error, docs) {
         if(error) {
             console.log("error :" + error);
         } else {
@@ -120,12 +121,20 @@ app.get('/api/signUp',function (req,res) {
                     msg_id : '4',
                     message : 'repeat username'
                 });
-                return;
+                // return;
             }else{
+                let time = getTime();
                 let TestEntity = new User({
                     user : req.query.user,
                     password  : req.query.password,
-                    shopCar: []
+                    responses: [],
+                    posts: [],
+                    photo: "",
+                    tel: "",
+                    address: "",
+                    email: "",
+                    createTime: time,
+                    lastUpdateTime: time
                 });
                 console.log('TestEntity::',TestEntity.user);
                 TestEntity.save(function(error,doc){
@@ -253,6 +262,8 @@ app.post('/api/deleteUser', function (req, res) {
     }
 });
 
+
+
 app.get('/api/getAllSites', function (req, res) {
     console.log('/api/getAllSites');
     //mongoose.connect(DB_CONN_STR);
@@ -323,6 +334,11 @@ function getId(part) {
     return part + id;
 }
 
+function getTime() {
+    let date = new Date();
+    return date.getTime();
+}
+
 console.log('getId', getId('test'));
 
 //add post
@@ -331,12 +347,15 @@ app.post('/api/addPost',function (req, res) {
     console.log('addPost', postId, req.body.userName, req.body.title, req.body.mainText);
     //mongoose.connect(DB_CONN_STR);
     let title =  req.body.title;
+    let time = getTime();
     let PostEntity = new Post({
         id : postId,
         userName  : req.body.userName,
         title: title,
         mainText: req.body.mainText,
-        responses: []
+        responses: [],
+        createTime: time,
+        lastUpdateTime: time
     });
     PostEntity.save(function(error,doc){
         if(error){
@@ -373,10 +392,13 @@ app.post('/api/addResponse', function (req, res) {
     let responseId = getId('response');//get an id for this post
     console.log('addResponse', responseId, req.body.userName, req.body.postId, req.body.mainText);
     //mongoose.connect(DB_CONN_STR);
+    let time = getTime();
     let ResponseEntity = new Response({
         id : responseId,
         user  : req.body.userName,
-        text: req.body.mainText
+        text: req.body.mainText,
+        createTime: time,
+        lastUpdateTime: time
     });
     ResponseEntity.save(function(error,doc){
         if(error){
@@ -415,13 +437,16 @@ app.post('/api/addSubject', function (req, res) {
     let abstract = req.body.abstract;
     let year = req.body.year;
     let sites = req.body.sites;
+    let time = getTime();
     console.log(sites);
     //mongoose.connect(DB_CONN_STR);
     let commentRankingEntity = new commentRanking({
         ranking:0,
         subjectId: subjectId,
         subName: subName,
-        commentNum: 0
+        commentNum: 0,
+        createTime: time,
+        lastUpdateTime: time
     });
     commentRankingEntity.save(function (err) {
         if(err) {
@@ -437,7 +462,9 @@ app.post('/api/addSubject', function (req, res) {
         ranking:0,
         subjectId: subjectId,
         subName: subName,
-        clickNum: 0
+        clickNum: 0,
+        createTime: time,
+        lastUpdateTime: time
     });
     clickRankingEntity.save(function (err) {
         if(err) {
@@ -458,7 +485,9 @@ app.post('/api/addSubject', function (req, res) {
         copyRights: sites,
         clickNum: 0,
         commentNum: 0,
-        postList: []
+        postList: [],
+        createTime: time,
+        lastUpdateTime: time
     });
     SubjectEntity.save(function(error,doc){
         if(error){

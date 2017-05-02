@@ -1,0 +1,46 @@
+[{
+  "id":"0",
+  "description": "addPost",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+},{
+  "id":"1",
+  "description": "addResponse",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+},{
+  "id":"2",
+  "description": "deletePost",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+},{
+  "id":"3",
+  "description": "deleteResponse",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+},{
+  "id":"4",
+  "description": "deleteUser",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+},{
+  "id":"5",
+  "description": "addSubject",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+},{
+  "id":"6",
+  "description": "browseAdminIndex",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+},{
+  "id":"7",
+  "description": "searchUser",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+},{
+  "id":"8",
+  "description": "searchPost",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
+}]

@@ -19,6 +19,12 @@ PostsSchema = new mongoose.Schema({
     },
     responses: {
         type: Array
+    },
+    createTime: {
+        type: String
+    },
+    lastUpdateTime: {
+        type: String
     }
 }, { collection: 'posts'});// mongoose always add a 's' after the name of collection if you do not have the second param,because mongoose always want to be smart
 

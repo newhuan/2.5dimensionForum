@@ -16,6 +16,12 @@ clickRankingsSchema = new mongoose.Schema({
     },
     clickNum: {
         type: String
+    },
+    createTime: {
+        type: String
+    },
+    lastUpdateTime: {
+        type: String
     }
 }, { collection: 'clickRankings'});// mongoose always add a 's' after the name of collection if you do not have the second param,because mongoose always want to be smart
 

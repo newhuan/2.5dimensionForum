@@ -1,5 +1,7 @@
 {
   "id": "copyRightId",
   "domainName": "www.iqiyi.com",
-  "name": "爱奇艺"
+  "name": "爱奇艺",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
 }

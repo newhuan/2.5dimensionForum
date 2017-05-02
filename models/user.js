@@ -21,6 +21,21 @@ UserSchema = new mongoose.Schema({
     },
     photo: {
         type: String
+    },
+    tel: {
+        type: String
+    },
+    address: {
+        type: String
+    },
+    email: {
+        type: String
+    },
+    createTime: {
+        type: String
+    },
+    lastUpdateTime: {
+        type: String
     }
 }, { collection: 'user'});// mongoose always add a 's' after the name of collection if you do not have the second param,because mongoose always want to be smart
 

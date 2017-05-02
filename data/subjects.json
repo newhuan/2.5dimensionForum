@@ -12,6 +12,8 @@
   "clickNum": "1",
   "postList": [{
     "id": "postId"
-  }]
+  }],
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
 
 }

@@ -28,6 +28,12 @@ SubjectSchema = new mongoose.Schema({
     },
     postList: {
         type: Array
+    },
+    createTime: {
+        type: String
+    },
+    lastUpdateTime: {
+        type: String
     }
 }, { collection: 'subjects'});// mongoose always add a 's' after the name of collection if you do not have the second param,because mongoose always want to be smart
 

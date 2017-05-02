@@ -1,5 +1,7 @@
 {
   "id": "responseId",
   "user": "newhuan",
-  "text": "response-text"
+  "text": "response-text",
+  "createTime":"1493724404544",
+  "lastUpdateTime": "1493724404544"
 }

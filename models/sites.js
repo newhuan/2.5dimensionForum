@@ -13,6 +13,12 @@ SiteSchema = new mongoose.Schema({
     },
     name: {
         type: String,
+    },
+    createTime: {
+        type: String
+    },
+    lastUpdateTime: {
+        type: String
     }
 }, { collection: 'sites'});// mongoose always add a 's' after the name of collection if you do not have the second param,because mongoose always want to be smart
 
