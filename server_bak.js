@@ -63,7 +63,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(function (req, res, next) {
     // Set permissive CORS header - this allows this server to be used only as
     // an API server in conjunction with something like webpack-dev-server.
-    //res.setHeader('Access-Control-Allow-Origin', '*');
+    //re5.2.s.setHeader('Access-Control-Allow-Origin', '*');
 
     // Disable caching so we'll always get the latest comments.
     //res.setHeader('Cache-Control', 'no-cache');
@@ -82,33 +82,9 @@ for(let i = 0;i < 26; i++) {
 }
 /***************************************/
 
-//sign up
+//sign up 注册
 app.get('/api/signUp',function (req,res) {
     console.log('signUp');
-    //mongoose.connect(DB_CONN_STR);
-    /*********** do some staff ***************/
-    User.find({user:req.query.user}, function (error, docs) {
-        if(error) {
-            console.log("error :" + error);
-        } else {
-            console.log(docs); //
-            console.log('psd::',docs[0].password,req.query.password);
-            let msg_id = docs[0].password == req.query.password;
-
-            res.json({
-                "msg_id" : msg_id,
-            });
-        }
-    });
-    /**************************/
-    //db.close();
-    // console.log()
-
-});
-
-//sign in
-app.get('/api/signIn', function (req,res) {
-    console.log('signIn', req.query.user);
     //mongoose.connect(DB_CONN_STR);
     /*********** do some staff ***************/
     User.find({user: req.query.user}, function (error, docs) {
@@ -150,6 +126,46 @@ app.get('/api/signIn', function (req,res) {
                 });
 
             }
+        }
+    });
+
+    /**************************/
+    //db.close();
+    // console.log()
+
+});
+
+//sign  登录
+app.get('/api/signIn', function (req,res) {
+    console.log('signIn', req.query.user, req.query.type);
+    //mongoose.connect(DB_CONN_STR);
+    /*********** do some staff ***************/
+    let type = req.query.type;
+    let user = req.query.user;
+    let Model = type == 0 ? User : Admin;
+    let condition = type == 0 ? {
+        user : user
+        } : {
+        adminUser : user
+    };
+    Model.find(condition, function (error, docs) {
+        if(error) {
+            console.log("error :" + error);
+        } else {
+            console.log(docs); //
+            if(docs.length == 0) {
+                res.json({
+                    "msg_id" : 2,
+                    "msg": "user not exist"
+                });
+                return;
+            }
+            console.log('psd::',docs[0].password,req.query.password);
+            let msg_id = docs[0].password == req.query.password ? 1 : 0;
+
+            res.json({
+                "msg_id" : msg_id,
+            });
         }
     });
     /**************************/
@@ -262,6 +278,35 @@ app.post('/api/deleteUser', function (req, res) {
     }
 });
 
+app.post('/api/addSites', function (req, res) {
+   console.log('/api/addSites');
+   let id = getId('site');
+   let time = getTime();
+   let domainName = req.body.domainName;
+   let name = req.body.name;
+   let SiteEntity = new Site({
+       id,
+       domainName,
+       name,
+       createTime: time,
+       lastUpdateTime: time
+   });
+   SiteEntity.save(function (err, doc) {
+       if(err) {
+           console.log('add site error', err);
+           res.json({
+               state: 0,
+               msg: "add site fail"
+           });
+       }else {
+           res.json({
+               state: 1,
+               msg: "add site successful"
+           });
+       }
+   })
+
+});
 
 
 app.get('/api/getAllSites', function (req, res) {
@@ -567,7 +612,7 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
                                         state: 1,
                                         res: resData
                                     });
-                                }, 1);
+                                }, 10);
                             }
 
                         }

@@ -138,6 +138,31 @@ $('window').ready(function () {
         })
     });
 
+//    add site
+    let $addSite = $('#add-site');
+    $addSite.on('click', function (e) {
+        console.log('add site button cilcked');
+        let domainName = $('#domainName').val();
+        let name = $('#name').val();
+        if(!checkEmpty(domainName, name)) {
+            alert('请填写完整');
+        }else {
+            $.ajax({
+                type:'post',
+                url: root + 'api/addSites',
+                data: {
+                    domainName, name
+                },
+                success: function (res) {
+                    console.log(res);
+                    // showPosts(res);
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            })
+        }
+    })
 
 });
 function showPosts(data) {

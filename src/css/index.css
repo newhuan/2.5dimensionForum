@@ -92,6 +92,57 @@ nav {
     border-radius: 4px; }
 
 /***************************/
+.model-layout {
+  width: 500px;
+  height: 300px;
+  position: fixed;
+  left: 50%;
+  margin-left: -250px;
+  top: 50%;
+  margin-top: -150px;
+  overflow: hidden;
+  background: aqua; }
+  .model-layout .model-container {
+    position: relative; }
+    .model-layout .model-container .close {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      margin-left: -10px;
+      background-color: white;
+      color: #000;
+      text-align: center;
+      border-radius: 50%;
+      cursor: pointer; }
+    .model-layout .model-container .row {
+      text-align: center;
+      margin-bottom: 10px;
+      width: 100%; }
+      .model-layout .model-container .row .col {
+        width: 50%;
+        text-align: center;
+        float: left; }
+    .model-layout .model-container .title {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 40px;
+      cursor: pointer; }
+    .model-layout .model-container .active {
+      background-color: #fec502; }
+    .model-layout .model-container .model {
+      transition: all 1s;
+      width: 500px;
+      float: left;
+      height: 300px;
+      background: aqua;
+      box-sizing: border-box;
+      padding: 40px; }
+    .model-layout .model-container .sign-in-model {
+      display: none; }
+
 /*******************************/
 /****** article  ***************/
 /*******************************/

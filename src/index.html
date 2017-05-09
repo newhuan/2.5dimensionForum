@@ -42,6 +42,7 @@
 
 			<li class="header-btn">
 				<button id = 'sign-in'>登陆</button>
+				<em id="user-name" style="display: none"></em>
 			</li>
 
 			<li class="header-btn">
@@ -49,7 +50,7 @@
 			</li>
 
 			<li class="header-btn">
-				<button style="display: none" id = "sing-out">登出</button>
+				<button style="display: none" id = "sign-out">登出</button>
 			</li>
 		</ul>
 	</div>
@@ -77,6 +78,55 @@
 	</div>
 </nav>
 <article>
+
+	<div class="model-layout" style="display: none;">
+		<div class="model-container">
+			<div class="close">×</div>
+			<div class="row title">
+				<div class="title col sign sign-in-tab active">
+					登陆
+				</div>
+				<div class="title sign sign-up-tab col">
+					注册
+				</div>
+			</div>
+			<div class="model sign-up-model">
+
+				<div class="row">
+					<label>用户名: <input type="text" id="user-up"></label>
+
+				</div>
+				<div class="row">
+					<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-up"></label>
+				</div>
+				<div class="row">
+					用户类型: <label><input class="user-type" value="0" name="type" type="radio" checked>用户</label>
+					<label><input class="user-type" value="1" name="type" type="radio">管理员</label>
+				</div>
+				<div class="row">
+					<button id="sign-in-submit">确认</button>
+				</div>
+
+			</div>
+			<div class="model sign-in-model">
+				<div class="row">
+					<label>用户名: <input type="text" id="user-in"></label>
+				</div>
+				<div class="row">
+						<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-in"></label>
+				</div>
+				<div class="row">
+						<label>确认密码: <input type="text" id="rePwd-in"></label>
+				</div>
+				<div class="row">
+					<button id="sign-up-submit">确认</button>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
 	<div class="layout">
 		<ul class="subject-list">
 			<!--<li class="subject-container" subjectid = "subjectId">-->
@@ -102,6 +152,7 @@
 
 </footer>
 <script src = 'assets/plugins/jquery-3.1.0.min.js'></script>
+<script src="./js/utility.js"></script>
 <script src = "js/index.js"></script>
 </body>
 </html>

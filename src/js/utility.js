@@ -13,33 +13,50 @@ function isLogin(setLogin) {
         return false;
     }
     if(!status){
-        setLogin(false);
+        setLogin(-1);
     }else if(status == 0) {
-        setLogin(false);
+        setLogin(-1);
     }else if(status == 1) {
         let user = localStorage.getItem('dem2p5_user');
-        let pwd = localStorage.getItem('dem2p5_pwd');
-        if(user&&pwd){
+        let password = localStorage.getItem('dem2p5_pwd');
+        let type = localStorage.getItem('dem2p5_type');
+        if(user && password && type){
             $.ajax({
                 type: 'get',
                 url: 'http://localhost:3000/' + 'api/signIn',
                 data: {
-                    user:user,
-                    password: pwd
+                    user,
+                    password,
+                    type
                 },
                 success: function (res) {
                     setLogin(res.msg_id)
                 },
                 error: function () {
-                    setLogin(false);
+                    setLogin(-1);
                 }
             })
         }else {
-            setLogin(false);
+            setLogin(-1);
         }
 
     }
 }
+
+//setSignIn
+function setLocalStorageSignIn(user, password, type) {
+    localStorage.setItem('dem2p5_status', 1);
+    localStorage.setItem('dem2p5_user', user);
+    localStorage.setItem('dem2p5_pwd', password);
+    localStorage.setItem('dem2p5_type', type);
+    localStorage.setItem('dem2p5_status', 1);
+}
+
+//setSignOut
+function setLocalStorageSignOut() {
+    localStorage.setItem('dem2p5_status', 0);
+}
+
 
 //login
 function login(user, pwd, afterLogin) {

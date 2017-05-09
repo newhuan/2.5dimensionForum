@@ -70,7 +70,73 @@ nav{
   }
 }
 /***************************/
+.model-layout{
+  width: 500px;
+  height: 300px;
+  position: fixed;
+  left: 50%;
+  margin-left: -250px;
+  top: 50%;
+  margin-top: -150px;
+  overflow: hidden;
+  background: aqua;
+  .model-container{
+    position: relative;
 
+    .close{
+      position: absolute;
+      top:-40px;
+      left:50%;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      margin-left: -10px;
+      background-color: white;
+      color: #000;
+      text-align: center;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .row{
+      text-align: center;
+      margin-bottom: 10px;
+      width: 100%;
+      .col{
+        width: 50%;
+        text-align: center;
+        float: left;
+      }
+    }
+    .title{
+      width: 100%;
+      text-align: center;
+      margin-bottom: 40px;
+      cursor: pointer;
+    }
+    .active{
+      background-color: #fec502;
+    }
+    .model{
+      transition: all 1s;
+      width: 500px;
+      float: left;
+      height: 300px;
+      background: aqua;
+      box-sizing: border-box;
+      padding: 40px;
+
+
+
+    }
+    .sign-up-model{
+
+    }
+    .sign-in-model{
+      display: none;
+    }
+
+  }
+}
 /*******************************/
 /****** article  ***************/
 /*******************************/
