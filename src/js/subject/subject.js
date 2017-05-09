@@ -73,9 +73,52 @@ $('window').ready(function () {
                 console.log(e);
             }
         })
-    })
+    });
 
+//    search post
+    let $searchPostBtn = $('#post-submit-search');
+    $searchPostBtn.on('click', function () {
+       let postTitle = $('#post-title-search').val();
+       let postUser = $('#post-user-search').val();
+       console.log(postUser);
+       let id = "";
+       let subjectId = getUrlParam("id");
+       postTitle = postTitle ? postTitle : "";
+       postUser = postUser ? postUser : "";
+       // console.log(postTitle, postUser);
+       if(postTitle || postUser) {
+           console.log('why');
+           let searchPostPromise = new Promise(function (resolve, reject) {
+               // resolve(1);
+               $.ajax({
+                   type: "get",
+                   url: root + "api/searchPosts",
+                   data: {
+                        id,
+                       title: postTitle,
+                       userName: postUser,
+                       subjectId
+                   },
+                   success: function (res) {
+                       resolve(res);
+                   },
+                   error: function (e) {
+                       reject(e);
+                   }
+               });
+           });
+           searchPostPromise.then(function (res) {
+               console.log(res);
+               setPostList(res.postList);
+           }).catch(function (e) {
+               console.log(e);
+           })
+       }
+
+
+    });
 });
+
 function setAbstract(data) {
     let $avatar = $('#avatar');
     let $subName = $('#subject-name');
@@ -93,7 +136,7 @@ function setAbstract(data) {
 function setPostList(postList) {
     let postTpl = $('#post-tpl').html();
     let $postList = $('#post-list');
-
+    $postList.html("");
     for(let i = 0, len = postList.length;i < len; i++) {
         if(postList[i] == null){
             continue;
@@ -105,6 +148,7 @@ function setPostList(postList) {
         $postList.append($(postStr));
     }
 }
+
 function setSites(data) {
     let siteTpl = $('#site-tpl').html();
     let $siteList = $('.site-list');

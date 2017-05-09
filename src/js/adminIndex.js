@@ -102,7 +102,10 @@ $('window').ready(function () {
             type:'get',
             url: root+ 'api/searchPosts',
             data: {
-                id, title, userName
+                subjectId: id,
+                title,
+                userName,
+                id: ""
             },
             success: function (res) {
                 console.log(res);

@@ -936,62 +936,157 @@ app.get('/api/searchPosts', function (req, res) {
     console.log('/api/searchPosts');
     //mongoose.connect(DB_CONN_STR);
     /***********************************************/
+    //if id is not empty search by id
     let id = req.query.id;
-    let title = req.query.title;
-    let userName = req.query.userName;
-    console.log(id,title,userName);
-    let postList = [];
-    if(userName != '') {
-        User.find({"user":userName}, function (err, doc) {
+    if(id) {
+        Post.find({id: id}, function (err, doc) {
             if(err) {
-                console.log('findUserError', err);
-                //db.close();
+                res.json({
+                    msg_id: -2,
+                    msg: "database error"
+                });
+            }else {
+                res.json({
+                    msg_id: 1,
+                    postList: doc
+                });
                 return;
             }
-            console.log("docs",doc);
-            if(id == '' && title == "") {
-                postList.push(doc.posts);
-                //db.close();
-                return
-            }
-            if(id != "") {
-                for(let i = 0, len = doc.length; i < len; i++) {
-                    //TODO:add postTitle in addPost
-                    for(let j = 0, postLen = doc[i].posts.length; j < postLen; j++) {
-                        console.log("id", doc[i].posts[j].id, id,doc[i].posts[j].id.indexOf(id));
-                        if(doc[i].posts[j].id.indexOf(id) >= 0) {
-                            postList.push({
-                                title:doc[i].posts[j].title,
-                                id:doc[i].posts[j].id
-                            })
-                        }
-                    }
-                }
-            }
-            if(title != "") {
-                for(let i = 0, len = doc.length; i < len; i++) {
-                    //TODO:add postTitle in addPost
-                    for(let j = 0, postLen = doc[i].posts.length; j < postLen; j++) {
-                        console.log(doc[i].posts[j].title);
-                        if(!doc[i].posts[j].title){
-                            continue;
-                        }
-                        if(doc[i].posts[j].title.indexOf(title) >= 0) {
-                            postList.push({
-                                title:doc[i].posts[j].title,
-                                id:doc[i].posts[j].id
-                            })
-                        }
-                    }
-                }
-            }
-            console.log(postList);
-            setTimeout(function () {
-                let posts = Array.from(new Set(postList));
-                res.json(posts);
-            },40)
         })
     }
+
+    //else search by subjectId
+    let title = req.query.title;
+    let userName = req.query.userName;
+    let subjectId = req.query.subjectId ? req.query.subjectId : "";
+    console.log(id, title, userName, subjectId);
+    // let postList = [];
+    let postList_1 = [];
+    //new start
+    if(!subjectId) {
+        res.json({
+            postList: [],
+            msg_id: -1,
+            msg: "subject not exist!"
+        });
+    }else {
+        Subject.findOne({id:subjectId}, function (err, doc) {
+            if(err) {
+                console.log(err);
+                res.json({
+                    postList: [],
+                    msg_id: -2,
+                    msg: "database error!"
+                });
+            }else {
+                if(!doc) {
+                    res.json({
+                        postList: [],
+                        msg_id: -1,
+                        msg: "subject not exist!"
+                    });
+                }else {
+                    console.log(doc);
+                    let postIdList = doc.postList;
+                    let idList = [];
+                    for(let i = 0, len = postIdList.length; i < len; i++) {
+                        idList.push(postIdList[i].id);
+                    }
+                    Post.find({id: {$in: idList}}, function (err, doc) {
+                        if(err) {
+                            console.log(err);
+                            res.json({
+                                postList: [],
+                                msg_id: -2,
+                                msg: "database error!"
+                            });
+                        } else {
+                            for(let i = 0, len = doc.length; i < len; i++) {
+                                if(title && doc[i].title.indexOf(title)>=0 || userName && doc[i].userName.indexOf(userName) >= 0){
+                                    console.log(userName);
+                                    postList_1.push(doc[i]);
+                                    if(i == len-1) {
+                                        setTimeout(function () {
+                                            res.json({
+                                                msg_id: 1,
+                                                postList: postList_1
+                                            });
+                                        }, 2);
+                                    }
+                                }else {
+                                    if(i == len-1) {
+                                        setTimeout(function () {
+                                            res.json({
+                                                msg_id: 1,
+                                                postList: postList_1
+                                            });
+                                        }, 2);
+                                    }
+                                }
+                            }
+
+                        }
+                    })
+                }
+            }
+        })
+
+    }
+
+
+
+    //end
+    // if(userName != '') {
+    //     User.find({"user":userName}, function (err, doc) {
+    //         if(err) {
+    //             console.log('findUserError', err);
+    //             //db.close();
+    //             return;
+    //         }
+    //         console.log("docs",doc);
+    //         if(id == '' && title == "") {
+    //             postList.push(doc.posts);
+    //             //db.close();
+    //             return
+    //         }
+    //         if(id != "") {
+    //             for(let i = 0, len = doc.length; i < len; i++) {
+    //                 //TODO:add postTitle in addPost
+    //                 for(let j = 0, postLen = doc[i].posts.length; j < postLen; j++) {
+    //                     console.log("id", doc[i].posts[j].id, id,doc[i].posts[j].id.indexOf(id));
+    //                     if(doc[i].posts[j].id.indexOf(id) >= 0) {
+    //                         postList.push({
+    //                             title: doc[i].posts[j].title,
+    //                             id: doc[i].posts[j].id
+    //                         })
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         if(title != "") {
+    //             for(let i = 0, len = doc.length; i < len; i++) {
+    //                 //TODO:add postTitle in addPost
+    //                 for(let j = 0, postLen = doc[i].posts.length; j < postLen; j++) {
+    //                     console.log(doc[i].posts[j].title);
+    //                     if(!doc[i].posts[j].title){
+    //                         continue;
+    //                     }
+    //                     if(doc[i].posts[j].title.indexOf(title) >= 0) {
+    //                         postList.push({
+    //                             title:doc[i].posts[j].title,
+    //                             id:doc[i].posts[j].id
+    //                         })
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         console.log(postList);
+    //         setTimeout(function () {
+    //             let posts = Array.from(new Set(postList));
+    //             res.json(posts);
+    //         },40)
+    //     })
+    // }
 
 });
 
