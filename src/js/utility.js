@@ -94,3 +94,7 @@ function checkEmpty(...vals) {
     }
     return true;
 }
+
+function refresh() {
+    window.location.reload(true);
+}

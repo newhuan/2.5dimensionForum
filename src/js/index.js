@@ -47,7 +47,9 @@ $('window').ready(function () {
                 temp = temp.replace(/\{\{clickNum\}\}/g, subjects[i].clickNum);
                 temp = temp.replace(/\{\{commentNum\}\}/g, subjects[i].commentNum);
                 temp = temp.replace(/\{\{id\}\}/g, subjects[i].id);
+                // console.log(temp)
                 let $subject = $(temp);
+                // console.log($subject);
                 $('.subject-list').append($subject);
             }
         }

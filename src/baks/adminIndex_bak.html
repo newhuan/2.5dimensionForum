@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>管理员页面</title>
+	<link rel="stylesheet" href="./assets/plugins/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./css/adminIndex.css">
+
+</head>
+<body>
+<header>
+	<div class="layout">
+		<ul>
+			<li class="logo">
+				logo
+			</li>
+
+			<!--<li class="header-btn">-->
+			<!--欢迎您，<i id=" adminUserName "></i>-->
+			<!--</li>-->
+
+			<li class="header-btn">
+				<button id = 'sign-in'>登陆</button>
+			</li>
+
+			<li class="header-btn">
+				<button style="display: none" id = "sing-out">登出</button>
+			</li>
+		</ul>
+	</div>
+</header>
+
+<article>
+
+	<div class="layout">
+		<div class="add-subject-tip">添加主题</div>
+		<div class="add-subject-layout" id="add-subject-layout">
+			<label for="subject-title-add">
+				<input type="text" class="subject-ipt" id="subject-title-add" placeholder="标题">
+			</label>
+			<label for="subject-year">
+				<input type="text" class="subject-ipt" id="subject-year" placeholder="年份">
+			</label>
+
+			<label for="subject-abstract">
+				<textarea name="subject-text" id="subject-abstract" class="subject-ipt subject-text" cols="30" rows="10" placeholder="简介"></textarea>
+			</label>
+			<div class="site-list">
+
+			</div>
+			<script type="text/template" id="site-item-template">
+				<div class="site-item">
+					<label>
+						<input id="{{id}}" class="site-checkbox" name="sites" type="checkbox" value="{{name}}">{{name}}
+					</label>
+				</div>
+			</script>
+			<button id="add-subject" class="submit-btn">提交</button>
+		</div>
+	</div>
+	<div class="line20"></div>
+
+	<div class="layout">
+		<div class="userManager-tip">用户管理</div>
+		<div class="searchPoints">
+			<label>userName:<input class="search-item" id="user-name" type="text" ></label>
+			<label>权限:<select class="search-item" id="user-jurisdiction">
+				<option value="normal">normal</option>
+				<option value="admin">admin</option>
+			</select>
+			</label>
+			<button id="user-search">搜索</button>
+		</div>
+		<div class="user-list">
+
+		</div>
+		<script type="text/template" id="user-item-template">
+			<div class="user-item">
+				<div class="user-name">
+					<label>
+						<input id="{{userName}}" type="text" value="{{userName}}">
+					</label>
+				</div>
+				<div class="jurisdiction">
+					<label>权限:
+						<select class="search-item user-jurisdiction">
+							<option selected value="normal">normal</option>
+							<option value="admin">admin</option>
+						</select>
+					</label>
+				</div>
+				<button class="delete-user">删除</button>
+				<button class="submit">提交</button>
+
+			</div>
+		</script>
+	</div>
+	<div class="line20"></div>
+	<div class="layout">
+		<div class="post-tip">帖子管理</div>
+		<div class="searchPoints">
+			<label>SubjectId:<input class="search-item" id="post-id" type="text"></label>
+			<label>title:<input class="search-item" id="post-title" type="text" ></label>
+			<label>userName:<input class="search-item" id="post-user-name" type="text" ></label>
+
+			<button id="postSearch">搜索</button>
+		</div>
+		<div class="post-list">
+
+		</div>
+		<script type="text/template" id="post-item-template">
+			<div class="post-item">
+				<div class="post-id">
+					<label>
+						<input class="post-id-ipt" type="text" value="{{postId}}">
+					</label>
+				</div>
+				<div class="post-title">
+					<label>
+						<input class="post-title-ipt" type="text" value="{{postTitle}}">
+					</label>
+				</div>
+				<button class="delete-post">删除</button>
+				<!--<button class="submit">提交</button>-->
+
+			</div>
+		</script>
+	</div>
+	<div class="line20"></div>
+	<div class="layout">
+		<div class="post-tip">添加版权网站</div>
+		<div class="searchPoints">
+			<label>domainName:<input class="search-item" id="domainName" type="text"></label>
+			<label>name:<input class="search-item" id="name" type="text" ></label>
+			<button id="add-site">添加</button>
+		</div>
+		<div class="post-list">
+
+		</div>
+	</div>
+
+</article>
+<div>
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">主题管理</a></li>
+		<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">用户管理</a></li>
+		<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">帖子管理</a></li>
+		<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">版权网站管理</a></li>
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="home">
+
+		</div>
+		<div role="tabpanel" class="tab-pane" id="profile">
+
+		</div>
+		<div role="tabpanel" class="tab-pane" id="messages">
+
+		</div>
+		<div role="tabpanel" class="tab-pane" id="settings">
+
+		</div>
+	</div>
+
+</div>
+<script src = 'assets/plugins/jquery-3.1.0.min.js'></script>
+<script src="./assets/plugins/bootstrap.min.js"></script>
+<script src="./js/utility.js"></script>
+<script src="./js/adminIndex.js"></script>
+<script>
+    $('#myTabs a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show')
+    })
+
+</script>
+</body>
+</html>

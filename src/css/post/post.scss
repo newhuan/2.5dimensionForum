@@ -2,7 +2,7 @@
 @import "../_header";
 
 .post-layout{
-  .row{
+  .my-row{
     height: 40px;
     //border-bottom:1px solid #000;
     .post-title{
@@ -25,11 +25,12 @@
 .response-list{
   .response-layout{
     margin-bottom: 4px;
-    border:1px solid #000;
+    //border:1px solid #000;
     padding:4px;
     .response-user{
       font-size: 12px;
-      border-bottom:1px solid #000;
+      //border-bottom:1px solid #000;
+      color: #778087;
     }
     .response-text{
       padding-top:4px;

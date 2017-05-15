@@ -192,10 +192,22 @@ app.get('/api/searchUser', function (req, res) {
                 });
                 //db.close();
             }else {
+                // console.log(doc);
                 for(let i = 0, len = doc.length; i < len; i++) {
+
                     if(doc[i].user.indexOf(userName) >= 0) {
                         users.push(doc[i]);
                         if(i == len - 1) {
+                            // console.log("over");
+                            res.json({
+                                state: 1,
+                                res: users
+                            });
+                            //db.close();
+                        }
+                    }else {
+                        if(i == len - 1) {
+                            // console.log("over");
                             res.json({
                                 state: 1,
                                 res: users
@@ -1001,6 +1013,13 @@ app.get('/api/searchPosts', function (req, res) {
                                 msg: "database error!"
                             });
                         } else {
+                            if(!title&&!userName) {
+                                res.json({
+                                    msg_id: 1,
+                                    postList:doc
+                                });
+                                return;
+                            }
                             for(let i = 0, len = doc.length; i < len; i++) {
                                 if(title && doc[i].title.indexOf(title)>=0 || userName && doc[i].userName.indexOf(userName) >= 0){
                                     console.log(userName);

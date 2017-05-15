@@ -45,3 +45,44 @@
     }
   }
 }
+.tab-pane{
+  height: 450px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 10px;
+}
+.site-item{
+  width: 80px;
+  float: left;
+}
+.tip{
+  margin-bottom: 10px;
+  margin-left: 10px;
+  font-size: 18px;
+}
+label{
+  line-height: 34px;
+}
+select{
+  width: 66% !important;
+}
+.jurisdiction{
+  float: left;
+  width: 200px;
+}
+.user-name{
+  float: left;
+}
+.post-list{
+  padding-top: 16px;
+}
+.post-item{
+  margin-top: 8px;
+}
+
+.search-subject-tip{
+  border-top: 1px solid #666;
+  margin-top: 20px;
+  line-height: 38px;
+
+}

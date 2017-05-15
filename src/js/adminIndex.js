@@ -109,7 +109,7 @@ $('window').ready(function () {
             },
             success: function (res) {
                 console.log(res);
-                showPosts(res);
+                showPosts(res.postList);
             },
             error: function (e) {
                 console.log(e);
@@ -172,9 +172,13 @@ function showPosts(data) {
     let postTpl = $('#post-item-template').html();
     let $postList = $('.post-list');
     for(let i = 0, len = data.length; i < len; i++) {
+        if(!data[i]){
+            continue;
+        }
         let post = postTpl.replace('{{postId}}', data[i].id);
         post = post.replace('{{postTitle}}', data[i].title);
         $postList.append($(post));
+        console.log($postList);
     }
 }
 function showUsers(data) {

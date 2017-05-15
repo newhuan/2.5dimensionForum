@@ -79,7 +79,7 @@ function setPostLayout(data) {
     let $userName = $("#user-name");
     $postTitle.html(data.title);
     $postText.html(data.mainText);
-    $userName.html(data.userName);
+    $userName.html("发帖人："+data.userName);
 }
 
 function setResponseList(responseList) {

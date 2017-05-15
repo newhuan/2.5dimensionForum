@@ -1,5 +1,6 @@
 header{
-  background-color: antiquewhite;
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.22);
   ul{
     li{
       float: left;
@@ -13,12 +14,16 @@ header{
       font-weight: 800;
     }
     .blank{
-      width: 600px;
+      width: 500px;
     }
     .header-btn{
-      width: 50px;
+      width: 60px;
       font-size: 16px;
     }
 
   }
+}
+body{
+  background-color: #e2e2e2!important;
+  height: 100%;
 }
