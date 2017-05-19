@@ -6,6 +6,9 @@ const root = 'http://localhost:3000/';
 let yearBefore;
 let subjectIdBefore;
 let siteId;
+let userName;
+let jurisdictionBefore;
+let User;
 $('window').ready(function () {
 
    // show sites
@@ -116,6 +119,8 @@ $('window').ready(function () {
                 },
                 success: function (res) {
                     console.log(res);
+                    jurisdictionBefore = res.res[0].user ? 0 : 1;
+                    User = res.res[0].user ? res.res[0].user : res.res[0].adminUser;
                     showUsers(res.res);
                 },
                 error: function (e) {
@@ -151,6 +156,18 @@ $('window').ready(function () {
     });
 
    // change jurisdiction
+    $userList.delegate('.change-jurisdiction', 'click', function () {
+        let jurisdiction = $(this).parent().find('select').val() === 'normal'? 0 : 1;
+        changeJurisdiction(User,jurisdiction,jurisdictionBefore).then(function (res) {
+            console.log(res);
+            if(res.msg_id!==1){
+                alert('修改失败，请稍后重试！');
+            }else {
+                alert('修改成功');
+                refreshUserSearch();
+            }
+        })
+    });
 
    // search posts
    let $postSearchBtn = $('#postSearch');
@@ -365,7 +382,7 @@ function showUsers(data) {
     let userTpl = $('#user-item-template').html();
     let $userList = $('.user-list');
     for(let i = 0, len = data.length; i < len; i++) {
-        if(!data[i].jurisdiction){
+        if(!data[i].adminUser){
             let user = userTpl.replace('{{userName}}', data[i].user);
             user = user.replace('{{userName}}', data[i].user);
             let $user = $(user);
@@ -384,6 +401,29 @@ function showUsers(data) {
 
 function refreshUserList() {
     $('.user-list').html('');
+}
+
+function refreshUserSearch() {
+
+}
+function changeJurisdiction(user, jurisdiction, jurisdictionBefore) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'post',
+            url: root + "api/changeUserJurisdiction",
+            data: {
+                user,
+                jurisdiction,
+                jurisdictionBefore
+            },
+            success: function (res) {
+                resolve(res);
+            },
+            error: function (e) {
+                reject(e);
+            }
+        })
+    })
 }
 
 //Sites

@@ -291,6 +291,122 @@ app.post('/api/deleteUser', function (req, res) {
     }
 });
 
+function userExist(Model, condition) {
+    Model.find(condition, function (err, doc) {
+        if(err) {
+            return true
+        }else {
+            return doc!==null;
+        }
+    })
+}
+
+app.post('/api/changeUserJurisdiction', function (req, res) {
+   let user = req.body.user,
+       jurisdiction = req.body.jurisdiction,
+       jurisdictionBefore = req.body.jurisdictionBefore;
+   console.log("api/changeUserJurisdiction", jurisdiction,jurisdictionBefore, user);
+   if(jurisdiction === jurisdictionBefore){
+       res.json({
+           "msg_id":1,
+           "msg":"nothing changed"
+       });
+       return;
+   }
+   let condition1 = {};
+   let condition2 = {};
+   let model1,model2;
+   //conditions
+   if(jurisdiction == 0){
+       //delete from admin
+       //add into user
+       model1 = Admin;
+       condition1 = {
+           adminUser:user
+       };
+       if(jurisdictionBefore == 1){
+           model2 = User;
+           condition2 = {
+               user
+           };
+       }
+   }else if(jurisdiction == 1) {
+       model1 = User;
+       condition1 = {
+           user
+       };
+       if(jurisdictionBefore == 0) {
+           model2 = Admin;
+           condition2 = {
+               adminUser:user
+           }
+       }
+   }
+//   stuff
+    let data;
+    model1.findOne(condition1, function (err, doc) {
+        if(err) {
+            res.json({
+                "msg_id": -1,
+                "msg": "change jurisdiction fail, database error"
+            });
+        }else {
+            if(doc === null) {
+                res.json({
+                    msg_id: -2,
+                    msg: "invalid user"
+                });
+            }else {
+                data = JSON.parse(JSON.stringify(doc));
+                model1.remove(condition1, function (err) {
+                    if(err){
+                        res.json({
+                            "msg_id": -1,
+                            "msg": "change jurisdiction fail, database error"
+                        });
+                    }else {
+                    //    add in model2
+                        let time = getTime();
+                        let entity = {
+                            password  : data.password,
+                            responses: data.response,
+                            posts: data.posts,
+                            photo: data.photo,
+                            tel: data.tel,
+                            address: data.address,
+                            email: data.email,
+                            createTime: time,
+                            lastUpdateTime: time
+                        };
+                        if(model2 === User){
+                            entity.user = data.user;
+                        }else if(model2 === Admin) {
+                            entity.adminUser = data.user;
+                            entity.jurisdiction = 9;
+                        }
+                        let model2Entity = new model2(entity);
+                        model2Entity.save(function (err) {
+                            if(err){
+                                res.json({
+                                    "msg_id": -1,
+                                    "msg": "change jurisdiction fail, database error"
+                                })
+                            }else {
+                                res.json({
+                                    "msg_id":1,
+                                    "msg": "change jurisdiction successful!"
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        }
+    })
+
+});
+
+//Sites
 app.post('/api/addSites', function (req, res) {
    console.log('/api/addSites');
    let id = getId('site');
@@ -321,7 +437,6 @@ app.post('/api/addSites', function (req, res) {
 
 });
 
-//Sites
 function ifSiteIdValid(siteId) {
     return siteId.length === 14 || siteId==="copyRightId";
 }

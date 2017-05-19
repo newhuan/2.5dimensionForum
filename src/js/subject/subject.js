@@ -138,7 +138,7 @@ function setPostList(postList) {
     let $postList = $('#post-list');
     $postList.html("");
     for(let i = 0, len = postList.length;i < len; i++) {
-        if(postList[i] == null){
+        if(postList[i] === null){
             continue;
         }
         console.log("id", postList[i].id);
@@ -153,6 +153,9 @@ function setSites(data) {
     let siteTpl = $('#site-tpl').html();
     let $siteList = $('.site-list');
     for(let i = 0, len = data.length; i < len; i++) {
+        if(data[i] === null){
+            continue;
+        }
         let site = siteTpl.replace('{{id}}', data[i].id);
         site = site.replace('{{name}}', data[i].name);
         $siteList.append($(site));

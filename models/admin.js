@@ -14,6 +14,13 @@ AdminSchema = new mongoose.Schema({
     jurisdiction: {//权限
         type: String
     },
+    responses: {
+        type: Array,
+        // default: []
+    },
+    posts: {
+        type: Array
+    },
     tel: {
       type: String
     },
