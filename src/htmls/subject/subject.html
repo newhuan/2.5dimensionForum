@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>subject</title>
 	<link rel="stylesheet" href="../../css/subject/subject.css">
+	<link rel="stylesheet" href="../../assets/plugins/css/bootstrap.min.css">
 </head>
 <body>
 <header>
@@ -18,100 +19,138 @@
 				<a href="../../index.html">首页</a>
 			</li>
 
+
 			<li class="header-btn">
-				<button id = 'sign-in'>登陆</button>
+				<button id = 'sign-in' class="btn btn-default">登录</button>
+				<em id="user-name-header" style="display: none; font-style: normal">
+				</em>
 			</li>
 
 			<li class="header-btn">
-				<button id = "sign-up">注册</button>
+				<button id = "sign-up" class="btn btn-default">注册</button>
 			</li>
 
 			<li class="header-btn">
-				<button style="display: none" id = "sing-out">登出</button>
+				<button style="display: none" class="btn btn-default" id = "sign-out">登出</button>
 			</li>
-		</ul>
 	</div>
 </header>
 <div class="line20"></div>
 
-<article>
-	<div class="layout">
-		<div class="abstract-layout">
-			<div class="row">
-				<img src="" alt="" class="avatar" id="avatar">
-				<div class="subject-name" id="subject-name"></div>
-			</div>
-			<div class="row">
-				<div class="abstract" id="abstract"></div>
-			</div>
-			<div class="row">
-				<div class="site-list">
-
+<div class="layout">
+	<article>
+		<div class="layout" >
+			<div class="abstract-layout" id="section-des">
+				<div class="row-my">
+					<img src="" alt="" class="avatar" id="avatar">
+					<div class="subject-name" id="subject-name"></div>
 				</div>
-				<script type="text/template" id="site-tpl">
-					<div id="{{id}}" class="site-item">
-						{{name}}
+				<div class="row-my">
+					<div class="abstract" id="abstract"></div>
+				</div>
+				<div class="row-my">
+					<div class="site-list" style="height: 30px">
+
 					</div>
+					<script type="text/template" id="site-tpl">
+						<div id="{{id}}" class="site-item" >
+							{{name}}
+						</div>
 
-				</script>
+					</script>
+				</div>
 			</div>
-		</div>
-	</div>
-
-	<div class="line20"></div>
-
-	<div class="layout">
-		<div class="search-items">
-			<label>标题: <input type="text" id="post-title-search" placeholder="标题"> </label>
-			<label>发帖人: <input type="text" id="post-user-search" placeholder="发帖人"> </label>
-			<button id="post-submit-search">搜索</button>
 		</div>
 
 		<div class="line20"></div>
 
-		<div class="post-list" id="post-list">
+		<div class="layout">
+			<div class="search-items">
+				<form class="form-horizontal">
 
-		</div>
-	</div>
+					<div class="form-group col-sm-4">
+						<label class="col-sm-3 control-label">标题: </label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"  id="post-title-search" placeholder="标题">
+						</div>
+					</div>
+					<div class="form-group col-sm-4">
+						<label class="col-sm-4 control-label" for="post-user-search">发帖人:</label>
+						<div class="col-sm-8">
+						<input type="text" class="form-control"   id="post-user-search" placeholder="发帖人">
+						</div>
+					</div>
+					<div class="form-group col-sm-1">
+						<button type="button" id="post-submit-search" class="btn btn-default">搜索</button>
+					</div>
+					<div class="form-group col-sm-1"></div>
+					<div class="form-group col-sm-1">
+						<button type="button" onclick="refresh()" class="btn btn-default">取消</button>
+					</div>
 
-	<!-- post tpl -->
-	<script id="post-tpl" type="text/template">
-		<div class="post-item">
-			<div class="user-name" id="user-name">
-				{{userName}}
+				</form>
+
+
+
+
+
 			</div>
-			<div class="post-title" id="post-title">
-				<a href="../post/post.html?id={{postId}}">{{postTitle}}</a>
+
+			<div class="line20"></div>
+
+			<div class="post-list" id="post-list" style="margin-top: 50px">
+
 			</div>
 		</div>
 
-	</script>
-	<div class="line20"></div>
-	<div class="layout">
-		<div class="page-controller">
-			<div class="page-item to-prev" id="to-prev">上一页</div>
-			<div class="page-item page-num">1</div>
-			<div class="page-item to-next" id="to-next">下一页</div>
+		<!-- post tpl -->
+		<script id="post-tpl" type="text/template">
+			<div class="post-item">
+				<div class="post-title" id="post-title">
+					<a href="../post/post.html?id={{postId}}">{{postTitle}}</a>
+				</div>
+				<div class="user-name" id="user-name">
+					发帖人：{{userName}}
+				</div>
+
+			</div>
+
+		</script>
+		<div class="line20"></div>
+		<div class="layout">
+			<div class="page-controller">
+				<div style="float:right;">
+					<button class="btn btn-default">上一页</button>
+					<button class="btn btn-default">1</button>
+					<button class="btn btn-default">下一页</button>
+				</div>
+			</div>
 		</div>
-	</div>
 
-	<div class="line20"></div>
-	<div class="layout">
-		<div class="add-post-layout" id="add-post-layout">
-			<label for="post-title-add">
-				<input type="text" id="post-title-add" placeholder="标题">
-			</label>
+		<div class="line20"></div>
+		<div class="layout add-post-layout2">
+			<div class="add-post-layout" id="add-post-layout">
+				<form>
+					<label for="post-title-add">
+						<input class="form-control" type="text" id="post-title-add" placeholder="标题">
+					</label>
 
-			<label for="post-text">
-				<textarea name="post-text" id="post-text" class="post-text" cols="30" rows="10" placeholder="内容"></textarea>
-			</label>
-			<button id="add-post" class="submit-btn">提交</button>
+					<label for="post-text">
+						<textarea style="height: 200px" name="post-text" id="post-text" class="post-text form-control" cols="10" row-mys="10" placeholder="内容"></textarea>
+					</label>
+
+					<button type="button" id="add-post" class="submit-btn btn btn-default">提交</button>
+				</form>
+
+			</div>
 		</div>
-	</div>
 
-</article>
+	</article>
+</div>
+
 
 <script src="../../assets/plugins/jquery-3.1.0.min.js"></script>
+<script src="../../assets/plugins/bootstrap.min.js"></script>
 <script src="../../js/utility.js"></script>
 <script src="../../js/subject/subject.js"></script>
 </body>

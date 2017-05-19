@@ -17,6 +17,9 @@ SubjectSchema = new mongoose.Schema({
     abstract: {//简介
         type: String,
     },
+    year: {
+      type: String
+    },
     copyRights: {
         type: Array
     },

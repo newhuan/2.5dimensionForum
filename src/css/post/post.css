@@ -3,9 +3,18 @@
   margin: 0;
   padding: 0; }
 
+.clearHei:after {
+  content: '.';
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+  display: block;
+  height: 0; }
+
 .layout {
   width: 1000px;
-  margin: 0 auto; }
+  margin: 0 auto;
+  background-color: white; }
 
 .layout:after {
   content: '.';
@@ -52,7 +61,8 @@ a {
     cursor: pointer; }
 
 header {
-  background-color: antiquewhite; }
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.22); }
   header ul li {
     float: left;
     height: 40px;
@@ -62,18 +72,22 @@ header {
     font-size: 24px;
     font-weight: 800; }
   header ul .blank {
-    width: 600px; }
+    width: 500px; }
   header ul .header-btn {
-    width: 50px;
+    width: 60px;
     font-size: 16px; }
 
-.post-layout .row {
+body {
+  background-color: #e2e2e2 !important;
+  height: 100%; }
+
+.post-layout .my-row {
   height: 40px; }
-  .post-layout .row .post-title {
+  .post-layout .my-row .post-title {
     width: 400px;
     float: left;
     font-size: 24px; }
-  .post-layout .row .user-name {
+  .post-layout .my-row .user-name {
     float: left;
     height: 40px;
     line-height: 40px; }
@@ -83,11 +97,10 @@ header {
 
 .response-list .response-layout {
   margin-bottom: 4px;
-  border: 1px solid #000;
   padding: 4px; }
   .response-list .response-layout .response-user {
     font-size: 12px;
-    border-bottom: 1px solid #000; }
+    color: #778087; }
   .response-list .response-layout .response-text {
     padding-top: 4px; }
 

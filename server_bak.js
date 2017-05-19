@@ -192,10 +192,22 @@ app.get('/api/searchUser', function (req, res) {
                 });
                 //db.close();
             }else {
+                // console.log(doc);
                 for(let i = 0, len = doc.length; i < len; i++) {
+
                     if(doc[i].user.indexOf(userName) >= 0) {
                         users.push(doc[i]);
                         if(i == len - 1) {
+                            // console.log("over");
+                            res.json({
+                                state: 1,
+                                res: users
+                            });
+                            //db.close();
+                        }
+                    }else {
+                        if(i == len - 1) {
+                            // console.log("over");
                             res.json({
                                 state: 1,
                                 res: users
@@ -234,6 +246,7 @@ app.get('/api/searchUser', function (req, res) {
         })
     }
 });
+
 app.post('/api/deleteUser', function (req, res) {
     console.log('api/deleteUser');
     //mongoose.connect(DB_CONN_STR);
@@ -527,6 +540,7 @@ app.post('/api/addSubject', function (req, res) {
         picUrls: [],
         subName  : subName,
         abstract: abstract,
+        year,
         copyRights: sites,
         clickNum: 0,
         commentNum: 0,
@@ -728,10 +742,138 @@ app.get('/api/getSubjectDetail', function (req, res) {
             //db.close();
         }
     });
-
-
-
     /***************************************/
+});
+
+//update subject
+app.post('/api/updateSubject', function (req, res) {
+   console.log('api/updateSubject',req.body.subName,req.body.year,req.body.abstract,req.body.copyRight);
+   let subName = req.body.subName,
+       year = req.body.year,
+       yearBefore = req.body.yearBefore,
+       abstract = req.body.abstract,
+       copyRights = req.body.copyRights,
+       subjectId = req.body.subjectId;
+    Subject.findOne({"id": subjectId}, function (err, doc) {
+        doc.subName = subName;
+        doc.year = year;
+        doc.abstract = abstract;
+        doc.copyRights = copyRights;
+        doc.save(function (err) {
+            if(err){
+                res.json({
+                    "msg_id": -1,
+                    "msg": "服务器错误!"
+                });
+            }else {
+                if(yearBefore === year) {
+                    res.json({
+                        "msg_id": 1,
+                        "msg":"update success"
+                    });
+                    return;
+                }
+
+                SubjectIds.findOne({year}, function (err, doc) {
+                    if(err) {
+                        res.json({
+                            "msg_id": -1,
+                            "msg": "服务器错误!"
+                        });
+                    }else {
+                        doc.subjectIds.push({
+                                id: subjectId
+                        });
+                        doc.save(function (err) {
+                            if(err){
+                                res.json({
+                                    "msg_id": -1,
+                                    "msg": "服务器错误!"
+                                });
+                            }else {
+                                SubjectIds.findOne({year:yearBefore}, function (err, doc) {
+                                    if(err) {
+                                        res.json({
+                                            "msg_id": -1,
+                                            "msg": "服务器错误!"
+                                        });
+                                    }else {
+                                        doc.subjectIds.some(function (key,index) {
+                                            if(key.id === subjectId) {
+                                                doc.subjectIds.splice(index,1);
+                                                return true;
+                                            }else {
+                                                return false;
+                                            }
+                                        });
+                                        doc.save(function (err) {
+                                            if(err) {
+                                                res.json({
+                                                    "msg_id": -1,
+                                                    "msg": "服务器错误!"
+                                                });
+                                            }else {
+                                                res.json({
+                                                    "msg_id": '1',
+                                                    "msg": "update success!"
+                                                });
+                                            }
+                                        });
+                                    }
+
+                                });
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    });
+});
+
+//delete subject
+app.post('/api/deleteSubject', function (req, res) {
+    let subjectId = req.body.subjectId,
+        year = req.body.year;
+    console.log('api/deleteSubject', subjectId, year);
+    Subject.remove({id:subjectId}, function (err) {
+        if(err) {
+            res.json({
+                "msg_id": "-1",
+                "msg":"delete error,database errot"
+            })
+        }else {
+            SubjectIds.findOne({year}, function (err, doc) {
+                if(err) {
+                    res.json({
+                        "msg_id": "-1",
+                        "msg":"delete error,database errot"
+                    });
+                }else {
+                    doc.subjectIds.some(function (key, index) {
+                        if(key.id === subjectId) {
+                            doc.subjectIds.splice(index,1);
+                            return true
+                        }else {
+                            return false;
+                        }
+                    });
+                    doc.save(function (err) {
+                        if(err){
+                            res.json({
+                                "msg_id": "-1",
+                                "msg":"delete error,database errot"
+                            });
+                        }else{
+                            res.json({
+                                "msg_id": "1"
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    })
 });
 
 //get subject post list with subjectId and page num
@@ -1001,6 +1143,13 @@ app.get('/api/searchPosts', function (req, res) {
                                 msg: "database error!"
                             });
                         } else {
+                            if(!title&&!userName) {
+                                res.json({
+                                    msg_id: 1,
+                                    postList:doc
+                                });
+                                return;
+                            }
                             for(let i = 0, len = doc.length; i < len; i++) {
                                 if(title && doc[i].title.indexOf(title)>=0 || userName && doc[i].userName.indexOf(userName) >= 0){
                                     console.log(userName);
@@ -1106,16 +1255,16 @@ function setClickRankings() {
         } else {
             let data = [...doc];
             data.sort(function (a, b) {
-                console.log(b.clickNum, a.clickNum);
+                // console.log(b.clickNum, a.clickNum);
                 return b.clickNum - a.clickNum
             });
-            console.log(data);
+            // console.log(data);
             for(let i = 0, len = data.length; i < len; i++) {
                 clickRanking.findOne({"subjectId": data[i].id}, function (err, doc) {
                     if(err) {
                         console.log('setClickRankingsError_clickRanking', err, i)
                     } else {
-                        console.log(doc);
+                        // console.log(doc);
                         doc.ranking = i + 1;
                         doc.clickNum = data[i].clickNum;
                         doc.save(function (err) {

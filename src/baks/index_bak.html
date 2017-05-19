@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>2.5次元论坛</title>
+	<link rel="stylesheet" href="./assets/plugins/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+<script type='text/templete' id = 'subject-templete'>
+	<li class="subject-container" subjectid = "{{id}}">
+				<!--<div class="avatar">{{avatar}}</div>-->
+				<div class="title">
+					<a href="htmls/subject/subject.html?id={{id}}&click={{clickNum}}&comment={{commentNum}}">{{subName}}</a>
+				</div>
+				<div class="click-num">
+					<span>{{clickNum}}</span>
+				</div>
+				<div class="comment-num">
+					<span>{{commentNum}}</span>
+				</div>
+	</li>
+</script>
+<header>
+	<div class="layout">
+		<ul>
+			<li class="logo">
+				logo
+			</li>
+			<li class="blank"></li>
+
+			<li class="header-btn">
+				<a href="htmls/headLine.html">头条</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="htmls/homePage.html">主区</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="htmls/ranks.html">排行榜</a>
+			</li>
+
+			<li class="header-btn">
+				<button id = 'sign-in'>登陆</button>
+				<em id="user-name" style="display: none"></em>
+			</li>
+
+			<li class="header-btn">
+				<button id = "sign-up">注册</button>
+			</li>
+
+			<li class="header-btn">
+				<button style="display: none" id = "sign-out">登出</button>
+			</li>
+		</ul>
+	</div>
+</header>
+<div class="line20"></div>
+<nav>
+	<div class="layout">
+		<ul>
+			<li class="years active" id = 'year-2017'>2017</li>
+			<li class="years">2016</li>
+			<li class="years">2015</li>
+			<li class="years">2014</li>
+			<li class="years">2013</li>
+			<li class="years">2012</li>
+			<li class="years-container">
+				<label for="years"></label>
+				<select name="years" id="years">
+					<option value="2011">2011</option>
+					<option value="2010">2010</option>
+					<option value="2009">2009</option>
+					<option value="2008">2008</option>
+				</select>
+			</li>
+		</ul>
+	</div>
+</nav>
+<article>
+
+	<div class="model-layout" style="display: none;">
+		<div class="model-container">
+			<div class="close">×</div>
+			<div class="row title">
+				<div class="title col sign sign-in-tab active">
+					登陆
+				</div>
+				<div class="title sign sign-up-tab col">
+					注册
+				</div>
+			</div>
+			<div class="model sign-up-model">
+
+				<div class="row">
+					<label>用户名: <input type="text" id="user-up"></label>
+
+				</div>
+				<div class="row">
+					<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-up"></label>
+				</div>
+				<div class="row">
+					用户类型: <label><input class="user-type" value="0" name="type" type="radio" checked>用户</label>
+					<label><input class="user-type" value="1" name="type" type="radio">管理员</label>
+				</div>
+				<div class="row">
+					<button id="sign-in-submit">确认</button>
+				</div>
+
+			</div>
+			<div class="model sign-in-model">
+				<div class="row">
+					<label>用户名: <input type="text" id="user-in"></label>
+				</div>
+				<div class="row">
+					<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-in"></label>
+				</div>
+				<div class="row">
+					<label>确认密码: <input type="text" id="rePwd-in"></label>
+				</div>
+				<div class="row">
+					<button id="sign-up-submit">确认</button>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<div class="layout">
+		<ul class="subject-list">
+			<!--<li class="subject-container" subjectid = "subjectId">-->
+			<!--<div class="avatar">avatar</div>-->
+			<!--<div class="title">-->
+			<!--<span>title</span>-->
+			<!--</div>-->
+			<!--<div class="click-num">-->
+			<!--<span>5</span>-->
+			<!--</div>-->
+			<!--<div class="comment-num">-->
+			<!--<span>5</span>-->
+			<!--</div>-->
+			<!--&lt;!&ndash;<span class="response" subjectid = "subjectId">&ndash;&gt;-->
+			<!--&lt;!&ndash;===response===&ndash;&gt;-->
+			<!--&lt;!&ndash;</span>&ndash;&gt;-->
+			<!--</li>-->
+		</ul>
+	</div>
+
+</article>
+<footer>
+
+</footer>
+<script src = 'assets/plugins/jquery-3.1.0.min.js'></script>
+<script src="assets/plugins/bootstrap.min.js"></script>
+<script src="./js/utility.js"></script>
+<script src = "js/index.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>2.5次元论坛</title>
+	<link rel="stylesheet" href="./assets/plugins/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+<script type='text/templete' id = 'subject-templete'>
+	<li class="subject-container" subjectid = "{{id}}">
+				<!--<div class="avatar">{{avatar}}</div>-->
+				<div class="title">
+					<a href="htmls/subject/subject.html?id={{id}}&click={{clickNum}}&comment={{commentNum}}">{{subName}}</a>
+				</div>
+				<div class="click-num">
+					<span>{{clickNum}}</span>
+				</div>
+				<div class="comment-num">
+					<span>{{commentNum}}</span>
+				</div>
+	</li>
+</script>
+<header>
+	<div class="layout">
+		<ul>
+			<li class="logo">
+				logo
+			</li>
+			<li class="blank"></li>
+
+			<li class="header-btn">
+				<a href="htmls/headLine.html">头条</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="htmls/homePage.html">主区</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="htmls/ranks.html">排行榜</a>
+			</li>
+
+			<li class="header-btn">
+				<button id = 'sign-in'>登陆</button>
+				<em id="user-name" style="display: none"></em>
+			</li>
+
+			<li class="header-btn">
+				<button id = "sign-up">注册</button>
+			</li>
+
+			<li class="header-btn">
+				<button style="display: none" id = "sign-out">登出</button>
+			</li>
+		</ul>
+	</div>
+</header>
+<div class="line20"></div>
+<nav>
+	<div class="layout">
+		<ul>
+			<li class="years active" id = 'year-2017'>
+				2017</li>
+			<li class="years">2016</li>
+			<li class="years">2015</li>
+			<li class="years">2014</li>
+			<li class="years">2013</li>
+			<li class="years">2012</li>
+			<li class="years-container">
+				<label for="years"></label>
+				<select name="years" id="years">
+					<option value="2011">2011</option>
+					<option value="2010">2010</option>
+					<option value="2009">2009</option>
+					<option value="2008">2008</option>
+				</select>
+			</li>
+		</ul>
+	</div>
+</nav>
+<article>
+
+	<div class="model-layout" style="display: none;">
+		<div class="model-container">
+			<div class="close">×</div>
+			<div class="row title">
+				<div class="title col sign sign-in-tab active">
+					登陆
+				</div>
+				<div class="title sign sign-up-tab col">
+					注册
+				</div>
+			</div>
+
+			<div class="model sign-up-model">
+
+				<div class="row">
+					<label>用户名: <input type="text" id="user-up"></label>
+
+				</div>
+				<div class="row">
+					<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-up"></label>
+				</div>
+				<div class="row">
+					用户类型: <label><input class="user-type" value="0" name="type" type="radio" checked>用户</label>
+					<label><input class="user-type" value="1" name="type" type="radio">管理员</label>
+				</div>
+				<div class="row">
+					<button id="sign-in-submit">确认</button>
+				</div>
+
+			</div>
+			<div class="model sign-in-model">
+				<div class="row">
+					<label>用户名: <input type="text" id="user-in"></label>
+				</div>
+				<div class="row">
+					<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-in"></label>
+				</div>
+				<div class="row">
+					<label>确认密码: <input type="text" id="rePwd-in"></label>
+				</div>
+				<div class="row">
+					<button id="sign-up-submit">确认</button>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<div class="layout">
+		<ul class="subject-list">
+			<!--<li class="subject-container" subjectid = "subjectId">-->
+			<!--<div class="avatar">avatar</div>-->
+			<!--<div class="title">-->
+			<!--<span>title</span>-->
+			<!--</div>-->
+			<!--<div class="click-num">-->
+			<!--<span>5</span>-->
+			<!--</div>-->
+			<!--<div class="comment-num">-->
+			<!--<span>5</span>-->
+			<!--</div>-->
+			<!--&lt;!&ndash;<span class="response" subjectid = "subjectId">&ndash;&gt;-->
+			<!--&lt;!&ndash;===response===&ndash;&gt;-->
+			<!--&lt;!&ndash;</span>&ndash;&gt;-->
+			<!--</li>-->
+		</ul>
+	</div>
+
+</article>
+<footer style=" margin-bottom: 200px">
+	<div class="layout">
+		<div style="float:right;">
+			<button class="btn btn-default">上一页</button>
+			<button class="btn btn-default">1</button>
+			<button class="btn btn-default">下一页</button>
+		</div>
+	</div>
+
+
+</footer>
+<script src = 'assets/plugins/jquery-3.1.0.min.js'></script>
+<script src="assets/plugins/bootstrap.min.js"></script>
+<script src="./js/utility.js"></script>
+<script src = "js/index.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>2.5次元论坛</title>
+	<link rel="stylesheet" href="./assets/plugins/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+<script type='text/templete' id = 'subject-templete'>
+	<li class="subject-container" subjectid = "{{id}}">
+				<!--<div class="avatar">{{avatar}}</div>-->
+				<div class="title">
+					<a href="htmls/subject/subject.html?id={{id}}&click={{clickNum}}&comment={{commentNum}}">{{subName}}</a>
+				</div>
+				<div class="click-num">
+					<span>{{clickNum}}</span>
+				</div>
+				<div class="comment-num">
+					<span>{{commentNum}}</span>
+				</div>
+	</li>
+</script>
+<header>
+	<div class="layout">
+		<ul>
+			<li class="logo">
+				logo
+			</li>
+			<li class="blank"></li>
+
+			<li class="header-btn">
+				<a href="htmls/headLine.html">头条</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="htmls/homePage.html">主区</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="htmls/ranks.html">排行榜</a>
+			</li>
+
+			<li class="header-btn">
+				<button id = 'sign-in' class="btn btn-default">登录</button>
+				<em id="user-name" style="display: none"></em>
+			</li>
+
+			<li class="header-btn">
+				<button id = "sign-up" class="btn btn-default">注册</button>
+			</li>
+
+			<li class="header-btn">
+				<button style="display: none" id = "sign-out">登出</button>
+			</li>
+		</ul>
+	</div>
+</header>
+<div class="line20"></div>
+<nav>
+	<div class="layout">
+		<ul>
+			<li class="years active" id = 'year-2017'>
+				2017</li>
+			<li class="years">2016</li>
+			<li class="years">2015</li>
+			<li class="years">2014</li>
+			<li class="years">2013</li>
+			<li class="years">2012</li>
+			<li class="years-container">
+				<label for="years"></label>
+				<select name="years" id="years">
+					<option value="2011">2011</option>
+					<option value="2010">2010</option>
+					<option value="2009">2009</option>
+					<option value="2008">2008</option>
+				</select>
+			</li>
+		</ul>
+	</div>
+</nav>
+<article>
+
+	<div class="model-layout" style="display: none;">
+		<div class="model-container">
+			<div class="close">×</div>
+			<div class="row title">
+				<div class="title col sign sign-in-tab active">
+					登陆
+				</div>
+				<div class="title sign sign-up-tab col">
+					注册
+				</div>
+			</div>
+
+			<div class="model sign-up-model">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="inputEmail3" class="col-sm-2 control-label">用户名</label>
+						<div class="col-sm-10">
+							<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<div class="radio">
+								<label>
+									<input class="user-type radio" value="0" name="type" type="radio" checked>用户
+								</label>
+							</div>
+							<div class="radio">
+								<label>
+									<input class="user-type radio" value="0" name="type" type="radio">管理员
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-default">登录</button>
+						</div>
+					</div>
+				</form>
+				<!--<div class="row">-->
+				<!--<label>用户名: <input type="text" id="user-up"></label>-->
+
+				<!--</div>-->
+				<!--<div class="row">-->
+				<!--<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-up"></label>-->
+				<!--</div>-->
+				<!--<div class="row">-->
+				<!--用户类型: <label><input class="user-type" value="0" name="type" type="radio" checked>用户</label>-->
+				<!--<label><input class="user-type" value="1" name="type" type="radio">管理员</label>-->
+				<!--</div>-->
+				<!--<div class="row">-->
+				<!--<button id="sign-in-submit">确认</button>-->
+				<!--</div>-->
+
+			</div>
+			<div class="model sign-in-model">
+				<div class="row">
+					<label>用户名: <input type="text" id="user-in"></label>
+				</div>
+				<div class="row">
+					<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-in"></label>
+				</div>
+				<div class="row">
+					<label>确认密码: <input type="text" id="rePwd-in"></label>
+				</div>
+				<div class="row">
+					<button id="sign-up-submit">确认</button>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<div class="layout">
+		<ul class="subject-list">
+			<!--<li class="subject-container" subjectid = "subjectId">-->
+			<!--<div class="avatar">avatar</div>-->
+			<!--<div class="title">-->
+			<!--<span>title</span>-->
+			<!--</div>-->
+			<!--<div class="click-num">-->
+			<!--<span>5</span>-->
+			<!--</div>-->
+			<!--<div class="comment-num">-->
+			<!--<span>5</span>-->
+			<!--</div>-->
+			<!--&lt;!&ndash;<span class="response" subjectid = "subjectId">&ndash;&gt;-->
+			<!--&lt;!&ndash;===response===&ndash;&gt;-->
+			<!--&lt;!&ndash;</span>&ndash;&gt;-->
+			<!--</li>-->
+		</ul>
+	</div>
+
+</article>
+<footer style=" margin-bottom: 200px">
+	<div class="layout">
+		<div style="float:right;">
+			<button class="btn btn-default">上一页</button>
+			<button class="btn btn-default">1</button>
+			<button class="btn btn-default">下一页</button>
+		</div>
+	</div>
+
+
+</footer>
+<script src = 'assets/plugins/jquery-3.1.0.min.js'></script>
+<script src="assets/plugins/bootstrap.min.js"></script>
+<script src="./js/utility.js"></script>
+<script src = "js/index.js"></script>
+</body>
+</html>

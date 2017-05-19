@@ -3,6 +3,8 @@
  * Created by huhanwen on 2017/5/1.
  */
 const root = 'http://localhost:3000/';
+let yearBefore;
+let subjectIdBefore;
 $('window').ready(function () {
 
    // show sites
@@ -39,6 +41,61 @@ $('window').ready(function () {
             })
        }
     });
+   // search subject
+    let $searchSubject = $('#search-subject-btn');
+    $searchSubject.on('click', function () {
+        let subjectId = $('#subject-id-search').val();
+        searchSubject(subjectId).then(function (res) {
+            if(res === null){
+                alert('不存在此主题!');
+            }else {
+                showSubject(res);
+            }
+        })
+    });
+
+   // update subject
+    let $updateSubject = $('#update-subject');
+    $updateSubject.on('click', function () {
+        let id = $('#subject-id-search').val();
+        let subName = $('#subject-title-search').val();
+        let year = $('#subject-year-search').val();
+        let abstract = $('#subject-abstract-search').val();
+        let copyRights = getCheckedSites('site-list-search');
+        console.log(subName, year, abstract, copyRights);
+        updateSubject({
+            subjectId: id,
+            subName,
+            year,
+            yearBefore,
+            abstract,
+            copyRights
+        }).then(function (res) {
+            console.log(res);
+            if(res.msg_id === '1') {
+                alert('修改成功！');
+            }else {
+                alert('修改失败，请稍后再试！');
+            }
+        })
+    });
+
+   // delete subject
+    let $deleteSubject = $('#delete-subject');
+    $deleteSubject.on('click', function () {
+        if(!subjectIdBefore||!yearBefore){
+            alert('请先确定要查找的主题id');
+        }else {
+            deleteSubject(subjectIdBefore, yearBefore).then(function (res) {
+                if(res.msg_id === '1') {
+                    alert('删除成功！');
+                }else {
+                    alert('删除失败，请稍后重试！');
+                }
+            });
+        }
+
+    });
 
    // search users
     let $userSearch = $('#user-search');
@@ -66,6 +123,7 @@ $('window').ready(function () {
             })
         }
     });
+
    // delete user
     let $userList = $('.user-list');
     $userList.delegate('.delete-user', 'click', function () {
@@ -91,6 +149,8 @@ $('window').ready(function () {
         }
     });
 
+   // change jurisdiction
+
    // search posts
    let $postSearchBtn = $('#postSearch');
     $postSearchBtn.on('click', function (e) {
@@ -109,7 +169,7 @@ $('window').ready(function () {
             },
             success: function (res) {
                 console.log(res);
-                showPosts(res);
+                showPosts(res.postList);
             },
             error: function (e) {
                 console.log(e);
@@ -165,18 +225,106 @@ $('window').ready(function () {
                 }
             })
         }
-    })
+    });
+
+//  search site
+
+//  update site
+
+//    delete site
+
 
 });
+//subject
+function searchSubject(id) {
+    return new Promise(function(resolve, reject){
+        $.ajax({
+            type:'get',
+            url: root + "api/getSubjectDetail",
+            data: {
+                subjectId: id
+            },
+            success:function (res) {
+                resolve(res);
+            },
+            error: function (e) {
+                reject(e);
+            }
+        })
+    })
+}
+
+function showSubject(data) {
+    subjectIdBefore = data.id;
+    yearBefore = data.year ? data.year : 2017;
+    $('#subject-title-search').val(data.subName);
+    $('#subject-year-search').val(yearBefore);
+    $('#subject-abstract-search').val(data.abstract);
+    let $sites = $('#site-list-search');
+    for(let i = 0, len = data.copyRights.length; i < len;i++) {
+        $sites.children().find('#'+data.copyRights[i]).attr({
+            checked:true
+        });
+    }
+}
+
+function updateSubject(data) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'post',
+            data,
+            url: root + "api/updateSubject",
+            success: function (res) {
+                resolve(res);
+            },error: function (e) {
+                reject(e);
+            }
+        })
+    })
+}
+
+function deleteSubject(id, year) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type:'post',
+            data:{
+                subjectId:id,
+                year
+            },
+            url:root+ 'api/deleteSubject',
+            success: function (res) {
+                resolve(res);
+            },
+            error: function (e) {
+                reject(e);
+            }
+        })
+    })
+}
+
+function refreshSubject() {
+
+}
+
+//Post
 function showPosts(data) {
     let postTpl = $('#post-item-template').html();
     let $postList = $('.post-list');
     for(let i = 0, len = data.length; i < len; i++) {
+        if(!data[i]){
+            continue;
+        }
         let post = postTpl.replace('{{postId}}', data[i].id);
         post = post.replace('{{postTitle}}', data[i].title);
         $postList.append($(post));
+        console.log($postList);
     }
 }
+
+function refreshPostList() {
+    $('.post-list').html('');
+}
+//User
 function showUsers(data) {
     let userTpl = $('#user-item-template').html();
     let $userList = $('.user-list');
@@ -198,6 +346,11 @@ function showUsers(data) {
     }
 }
 
+function refreshUserList() {
+    $('.user-list').html('');
+}
+
+//Sites
 function showSites(data) {
     let siteTpl = $('#site-item-template').html();
     let $siteList = $('.site-list');
@@ -225,9 +378,15 @@ function getSites() {
     })
 }
 
-function refreshPostList() {
-    $('.post-list').html('');
+function getCheckedSites(listID) {
+    let sites = Array.from($('#' + listID).find('.site-checkbox'));
+    let copyRights = [];
+    sites.forEach(function (key) {
+        // console.log(key.is('checked'));
+        if($(key).is(':checked')){
+            copyRights.push($(key).attr('id'));
+        }
+    });
+    return copyRights;
 }
-function refreshUserList() {
-    $('.user-list').html('');
-}
+
