@@ -321,6 +321,10 @@ app.post('/api/addSites', function (req, res) {
 
 });
 
+//Sites
+function ifSiteIdValid(siteId) {
+    return siteId.length === 14 || siteId==="copyRightId";
+}
 
 app.get('/api/getAllSites', function (req, res) {
     console.log('/api/getAllSites');
@@ -341,6 +345,24 @@ app.get('/api/getAllSites', function (req, res) {
         }
         //db.close();
     })
+});
+
+app.get('/api/getSiteByName', function (req, res) {
+   let name = req.query.name;
+   console.log('api/getSiteByName', name);
+   Site.findOne({name}, function (err, doc) {
+       if(err) {
+           res.json({
+               "msg_id": -1,
+               "msg":"get site error, database error!"
+           });
+       }else {
+           res.json({
+               "msg_id":1,
+                site:doc
+           });
+       }
+   })
 });
 
 app.get('/api/getSites', function (req, res) {
@@ -375,6 +397,69 @@ app.get('/api/getSites', function (req, res) {
         })
     }
 
+});
+
+app.post('/api/updateSite', function (req, res) {
+   let id = req.body.id;
+   let name = req.body.name;
+   let domainName = req.body.domainName;
+   console.log('api/updateSite',name);
+   if(ifSiteIdValid(id)) {
+        res.json({
+            "msg_id": -2,
+            "msg": "update site fail, invalid siteId"
+        });
+        return;
+   }
+   Site.findOne({id}, function (err, doc) {
+       if(err) {
+           res.json({
+               "msg_id":-1,
+               "msg":"update site error, database error"
+           });
+       }else {
+           doc.name = name;
+           doc.domainName = domainName;
+           doc.save(function (err) {
+               if(err) {
+                   res.json({
+                       "msg_id":-1,
+                       "msg": "update site fail, database error"
+                   });
+               }else {
+                   res.json({
+                       "msg_id":1,
+                       "msg":"update site succsee"
+                   })
+               }
+           })
+       }
+   })
+});
+
+app.post('/api/deleteSite', function (req, res) {
+    let id = req.body.id;
+    console.log('api/deleteSite', id);
+    if(!ifSiteIdValid(id)){
+        res.json({
+            "msg_id": -2,
+            "msg":"delete site faid, invalid siteId"
+        });
+        return;
+    }
+    Site.remove({id}, function (err) {
+        if(err){
+            res.json({
+                "msg_id":-1,
+                "msg":"delete site fail, database error"
+            });
+        }else {
+            res.json({
+                "msg_id": 1,
+                "msg": "delete site success!"
+            })
+        }
+    })
 });
 
 function getId(part) {

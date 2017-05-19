@@ -5,6 +5,7 @@
 const root = 'http://localhost:3000/';
 let yearBefore;
 let subjectIdBefore;
+let siteId;
 $('window').ready(function () {
 
    // show sites
@@ -228,12 +229,47 @@ $('window').ready(function () {
     });
 
 //  search site
+    let $searchSite = $('#site-search-btn');
+    $searchSite.on('click', function () {
+       let name = $('#site-id-search').val();
+        searchSite(name).then(function (res) {
+            console.log(res);
+            if(res.msg_id != 1){
+                alert('搜索失败，请稍后重试！');
+            }else {
+                showSiteSearchResult(res.site);
+            }
+        })
+    });
 
 //  update site
+    let $updateSite = $('#site-update-btn');
+    $updateSite.on('click', function () {
+        let domainName = $('#site-search-result-domain-name').val();
+        let name = $('#site-search-result-name').val();
+        updateSite(siteId, name, domainName).then(function (res) {
+            console.log(res);
+            if(res.msg_id != 1) {
+                alert('修改失败，请稍后重试！');
+            }else {
+                alert("修改成功！");
+            }
+        })
+    });
 
 //    delete site
-
-
+    let $deleteSite = $('#site-delete-btn');
+    $deleteSite.on('click', function () {
+        deleteSite(siteId).then(function (res) {
+            console.log(res);
+            if(res.msg_id!==1) {
+                alert("删除失败，请稍后重试!");
+            }else {
+                alert('删除成功!');
+                refreshSiteSearch();
+            }
+        })
+    })
 });
 //subject
 function searchSubject(id) {
@@ -360,6 +396,81 @@ function showSites(data) {
         site = site.replace('{{id}}', data[i].id);
         $siteList.append($(site));
     }
+}
+
+function showSiteSearchResult(data) {
+    refreshSiteSearch();
+    if(data === null){
+        alert('搜索结果不存在！')
+    }else {
+        $('#site-search-result-domain-name').val(data.domainName);
+        $('#site-search-result-name').val(data.name);
+    }
+
+}
+
+function refreshSiteSearch() {
+    $('#site-search-result-domain-name').val("");
+    $('#site-search-result-name').val("");
+}
+
+function searchSite(name) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type:'get',
+            url: root+ "api/getSiteByName",
+            data: {
+                name
+            },
+            success: function (res) {
+                if(res.site !== null){
+                    siteId = res.site.id;
+                }
+                resolve(res);
+            },
+            error: function (e) {
+                reject(e);
+            }
+        })
+    })
+}
+
+function updateSite(id, name, domainName) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type:'post',
+            url: root + "api/updateSite",
+            data: {
+                id,
+                name,
+                domainName
+            },
+            success: function (res) {
+                resolve(res);
+            },
+            error: function (e) {
+                reject(e);
+            }
+        })
+    })
+}
+
+function deleteSite(id) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'post',
+            url: root + 'api/deleteSite',
+            data: {
+                id
+            },
+            success: function (res) {
+                resolve(res);
+            },
+            error: function (e) {
+                reject(e);
+            }
+        })
+    })
 }
 
 function getSites() {
