@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /********** common **************/
 * {
   margin: 0;
@@ -119,3 +120,126 @@ body {
   margin: 0 auto; }
 
 /*# sourceMappingURL=post.css.map */
+=======
+/********** common **************/
+* {
+  margin: 0;
+  padding: 0; }
+
+.clearHei:after {
+  content: '.';
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+  display: block;
+  height: 0; }
+
+.layout {
+  width: 1000px;
+  margin: 0 auto;
+  background-color: white; }
+
+.layout:after {
+  content: '.';
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+  display: block;
+  height: 0; }
+
+ul, li {
+  list-style: none; }
+
+ul:after {
+  content: '.';
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+  display: block;
+  height: 0; }
+
+li:after {
+  content: '.';
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+  display: block;
+  height: 0; }
+
+a {
+  color: black;
+  text-decoration: none; }
+
+.line20 {
+  width: 100%;
+  height: 20px; }
+
+.page-controller {
+  float: right; }
+  .page-controller .page-item {
+    float: left;
+    border: 1px solid #000;
+    padding: 0 4px;
+    margin-right: 4px;
+    cursor: pointer; }
+
+header {
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.22); }
+  header ul li {
+    float: left;
+    height: 40px;
+    line-height: 40px; }
+  header ul .logo {
+    width: 100px;
+    font-size: 24px;
+    font-weight: 800; }
+  header ul .blank {
+    width: 500px; }
+  header ul .header-btn {
+    width: 60px;
+    font-size: 16px; }
+
+body {
+  background-color: #e2e2e2 !important;
+  height: 100%; }
+
+.post-layout .my-row {
+  height: 40px; }
+  .post-layout .my-row .post-title {
+    width: 400px;
+    float: left;
+    font-size: 24px; }
+  .post-layout .my-row .user-name {
+    float: left;
+    height: 40px;
+    line-height: 40px; }
+.post-layout .main-text {
+  border: 1px solid #000;
+  padding: 4px; }
+
+.response-list .response-layout {
+  margin-bottom: 4px;
+  padding: 4px; }
+  .response-list .response-layout .response-user {
+    font-size: 12px;
+    color: #778087; }
+  .response-list .response-layout .response-text {
+    padding-top: 4px; }
+
+.add-response #response-text {
+  width: 800px;
+  margin: 0 auto;
+  margin-bottom: 6px;
+  display: block; }
+.add-response button {
+  padding: 0 6px;
+  background-color: #eee;
+  color: #000;
+  display: block;
+  width: 80px;
+  text-align: center;
+  margin: 0 auto; }
+
+/*# sourceMappingURL=post.css.map */
+>>>>>>> ea5ca745681dc417b3667b0a61cb8460135f9f53

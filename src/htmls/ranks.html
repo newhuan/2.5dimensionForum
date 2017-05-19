@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,4 +82,89 @@
 <script src="../js/utility.js"></script>
 <script src="../js/ranks/ranks.js"></script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ranks</title>
+	<link rel="stylesheet" href="../css/ranks/ranks.css">
+	<link rel="stylesheet" href="../assets/plugins/css/bootstrap.min.css">
+</head>
+<body>
+<!--排行榜test-->
+<!--<a href="../index.html">主页</a>-->
+<header>
+	<div class="layout">
+		<ul>
+			<li class="logo">
+				<a href="../index.html">logo</a>
+			</li>
+			<li class="blank"></li>
+
+			<li class="header-btn">
+				<a href="headLine.html">头条</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="homePage.html">主区</a>
+			</li>
+
+			<li class="header-btn">
+				<a href="ranks.html">排行榜</a>
+			</li>
+
+			<li class="header-btn">
+				<button id = 'sign-in' class="btn btn-default">登录</button>
+				<em id="user-name-header" style="display: none; font-style: normal">
+				</em>
+			</li>
+
+			<li class="header-btn">
+				<button id = "sign-up" class="btn btn-default">注册</button>
+			</li>
+
+			<li class="header-btn">
+				<button style="display: none" class="btn btn-default" id = "sign-out">登出</button>
+			</li>
+		</ul>
+	</div>
+</header>
+<div class="line20"></div>
+
+<div class="layout">
+	<div class="title">
+		<h4>点击榜</h4>
+	</div>
+	<table class="table rankingList clickList">
+
+	</table>
+	<div class="title">
+		<h4>评论榜</h4>
+	</div>
+	<table class="table rankingList commentList">
+
+	</table>
+</div>
+
+
+<script type="text/template" id="tpl-ranks-click">
+	<tr>
+		<td class="num">{{ranking}}</td>
+		<td><a href="subject/subject.html?id={{subjectId}}&click={{clickNum}}">{{subName}}</a></td>
+	</tr>
+</script>
+
+<script type="text/template" id="tpl-ranks-comment">
+	<tr>
+		<td class="num">{{ranking}}</td>
+		<td><a href="subject/subject.html?id={{subjectId}}&comment={{commentNum}}">{{subName}}</a></td>
+	</tr>
+</script>
+<script src="../assets/plugins/jquery-3.1.0.min.js"></script>
+<script src="../assets/plugins/bootstrap.min.js"></script>
+<script src="../js/utility.js"></script>
+<script src="../js/ranks/ranks.js"></script>
+</body>
+>>>>>>> ea5ca745681dc417b3667b0a61cb8460135f9f53
 </html>

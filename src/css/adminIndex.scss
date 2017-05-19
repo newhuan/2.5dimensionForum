@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import "./_common";
 @import "./_header";
 
@@ -85,4 +86,93 @@ select{
   margin-top: 20px;
   line-height: 38px;
 
+=======
+@import "./_common";
+@import "./_header";
+
+.header-btn{
+  float: right;
+}
+.add-subject-layout{
+  #subject-title-add{
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .subject-text{
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .subject-ipt {
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .submit-btn{
+    padding: 0 6px;
+    background-color: #eee;
+    color: #000;
+    display: block;
+    width: 80px;
+    text-align: center;
+    margin:0 auto;
+
+  }
+}
+
+.layout{
+  .userManager-tip{
+
+  }
+  .searchPoints{
+    .search-item{
+
+    }
+  }
+}
+.tab-pane{
+  height: 450px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 10px;
+}
+.site-item{
+  width: 80px;
+  float: left;
+}
+.tip{
+  margin-bottom: 10px;
+  margin-left: 10px;
+  font-size: 18px;
+}
+label{
+  line-height: 34px;
+}
+select{
+  width: 66% !important;
+}
+.jurisdiction{
+  float: left;
+  width: 200px;
+}
+.user-name{
+  float: left;
+}
+.post-list{
+  padding-top: 16px;
+}
+.post-item{
+  margin-top: 8px;
+}
+
+.search-subject-tip{
+  border-top: 1px solid #666;
+  margin-top: 20px;
+  line-height: 38px;
+
+>>>>>>> ea5ca745681dc417b3667b0a61cb8460135f9f53
 }

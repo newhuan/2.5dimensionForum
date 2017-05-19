@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 header{
   background-color: white;
   border-bottom: 1px solid rgba(0, 0, 0, 0.22);
@@ -26,4 +27,34 @@ header{
 body{
   background-color: #e2e2e2!important;
   height: 100%;
+=======
+header{
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.22);
+  ul{
+    li{
+      float: left;
+      height: 40px;
+      line-height: 40px;
+    }
+    .logo{
+      //float: left;
+      width: 100px;
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .blank{
+      width: 500px;
+    }
+    .header-btn{
+      width: 60px;
+      font-size: 16px;
+    }
+
+  }
+}
+body{
+  background-color: #e2e2e2!important;
+  height: 100%;
+>>>>>>> ea5ca745681dc417b3667b0a61cb8460135f9f53
 }
