@@ -4,7 +4,7 @@
 
 // let $signIn = $('#sign-in');
 // let $signUp = $('#sign-up');
-let $2017 = $('#year-2017');
+
 let $subjectList = $('.subject-list');
 let $responses = $('.response');
 let $subjectTemplete = $('#subject-templete')[0];
@@ -140,6 +140,7 @@ $('window').ready(function () {
 
     $signUpSubmit.on('click', function () {
         console.log('as');
+
         let signUpPromise = new Promise(function (resolve, reject) {
             $.ajax({
                 type : 'get',
@@ -194,6 +195,24 @@ function setSignOut() {
     $signUp.show();
 }
 
+function signUp(user, password) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type:'post',
+            url: root + "api/signUp",
+            data: {
+                user,
+                password
+            },
+            success: function (res) {
+                resolve(res);
+            },
+            error: function (e) {
+                reject(e);
+            }
+        })
+    })
+}
 // $signIn.on('click',function () {
 //    // console.log(1) ;
 //     $.ajax({
@@ -224,7 +243,7 @@ function setSignOut() {
 //     })
 // });
 
-
+let $2017 = $('#year-2017');
 $2017.on('click', function () {
     console.log('2017-clicked');
     $.ajax({

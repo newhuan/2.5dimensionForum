@@ -179,72 +179,41 @@ app.get('/api/searchUser', function (req, res) {
     /*********** do some staff ***************/
     let userName = req.query.userName;
     let jurisdiction = req.query.jurisdiction;
-
+    let Model,condition;
     let users = [];
-    console.log(userName);
-    if(jurisdiction == 0) {
-        User.find({user: {$exists: true}}, function (err, doc) {
-            if(err) {
-                console.log('error', err);
-                res.json({
-                    state:0,
-                    msg: "search user error"
-                });
-                //db.close();
-            }else {
-                // console.log(doc);
-                for(let i = 0, len = doc.length; i < len; i++) {
-
-                    if(doc[i].user.indexOf(userName) >= 0) {
-                        users.push(doc[i]);
-                        if(i == len - 1) {
-                            // console.log("over");
-                            res.json({
-                                state: 1,
-                                res: users
-                            });
-                            //db.close();
-                        }
-                    }else {
-                        if(i == len - 1) {
-                            // console.log("over");
-                            res.json({
-                                state: 1,
-                                res: users
-                            });
-                            //db.close();
-                        }
-                    }
-                }
-            }
-
-        })
-    }else {
-        Admin.find({adminUser: {$exists: true}}, function (err, doc) {
-            if(err) {
-                console.log('error', err);
-                res.json({
-                    state:0,
-                    msg: "search user error"
-                });
-                //db.close();
-            }else {
-                for(let i = 0, len = doc.length; i < len; i++) {
-                    if(doc[i].adminUser.indexOf(userName) >= 0) {
-                        users.push(doc[i]);
-                        if(i == len - 1) {
-                            res.json({
-                                state: 1,
-                                res: users
-                            });
-                            //db.close();
-                        }
-                    }
-                }
-            }
-
-        })
+    if(jurisdiction == 0){
+        Model = User;
+        condition = {
+            user: userName
+        }
+    }else if (jurisdiction == 1){
+        Model = Admin;
+        condition = {
+            adminUser: {$exists: true}
+        }
     }
+    Model.find(condition, function (err, doc) {
+       if(err){
+           res.json({
+               "msg_id": -1,
+               "msg": "search user fail, database error"
+           })
+       } else {
+           // let key = Model === User ? "user" : "adminUser";
+           // console.log(key, doc);
+           // for(let i = 0, len = doc.length; i < len; i++) {
+           //     if(doc[i][key].indexOf(userName) >= 0) {
+           //         users.push(doc[i]);
+           //     }
+           //     if(i === len - 1) {
+                   res.json({
+                       state: 1,
+                       res: doc
+                   });
+               // }
+           // }
+       }
+    });
 });
 
 app.post('/api/deleteUser', function (req, res) {
@@ -357,7 +326,7 @@ app.post('/api/changeUserJurisdiction', function (req, res) {
                     msg: "invalid user"
                 });
             }else {
-                data = JSON.parse(JSON.stringify(doc));
+                data = doc;
                 model1.remove(condition1, function (err) {
                     if(err){
                         res.json({
@@ -379,11 +348,12 @@ app.post('/api/changeUserJurisdiction', function (req, res) {
                             lastUpdateTime: time
                         };
                         if(model2 === User){
-                            entity.user = data.user;
+                            entity.user = data.adminUser;
                         }else if(model2 === Admin) {
                             entity.adminUser = data.user;
                             entity.jurisdiction = 9;
                         }
+                        console.log(entity);
                         let model2Entity = new model2(entity);
                         model2Entity.save(function (err) {
                             if(err){
