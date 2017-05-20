@@ -83,11 +83,11 @@ for(let i = 0;i < 26; i++) {
 /***************************************/
 
 //sign up 注册
-app.get('/api/signUp',function (req,res) {
+app.post('/api/signUp',function (req,res) {
     console.log('signUp');
     //mongoose.connect(DB_CONN_STR);
     /*********** do some staff ***************/
-    User.find({user: req.query.user}, function (error, docs) {
+    User.find({user: req.body.user}, function (error, docs) {
         if(error) {
             console.log("error :" + error);
         } else {
@@ -100,9 +100,9 @@ app.get('/api/signUp',function (req,res) {
                 // return;
             }else{
                 let time = getTime();
-                let TestEntity = new User({
-                    user : req.query.user,
-                    password  : req.query.password,
+                let UserEntity = new User({
+                    user : req.body.user,
+                    password  : req.body.password,
                     responses: [],
                     posts: [],
                     photo: "",
@@ -112,8 +112,8 @@ app.get('/api/signUp',function (req,res) {
                     createTime: time,
                     lastUpdateTime: time
                 });
-                console.log('TestEntity::',TestEntity.user);
-                TestEntity.save(function(error,doc){
+                // console.log('TestEntity::',UserEntity.user);
+                UserEntity.save(function(error,doc){
                     if(error){
                         console.log("error :" + error);
                     }else{

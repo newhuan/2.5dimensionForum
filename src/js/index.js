@@ -10,7 +10,7 @@ let $responses = $('.response');
 let $subjectTemplete = $('#subject-templete')[0];
 let subjectTemplete = $subjectTemplete.innerHTML;
 let year = '2017';
-
+let regPwd = new RegExp('^[!"#$%&\'\(\)*+,-./0-9:;<=>?@A-Z[\\]^_`a-z{|}~]{8,16}$');
 // $subjectList.delegate('.title', 'click')
 
 $('window').ready(function () {
@@ -38,20 +38,7 @@ $('window').ready(function () {
         success : function (res) {
             console.log('getSucjectsWithYear', res);
             let subjects = res.res.subjects;
-            for(let i = 0, len = subjects.length; i < len; i++) {
-                if(subjects[i] == null) {
-                    continue;
-                }
-                let temp = subjectTemplete;
-                temp = temp.replace(/\{\{subName\}\}/g, subjects[i].subName);
-                temp = temp.replace(/\{\{clickNum\}\}/g, subjects[i].clickNum);
-                temp = temp.replace(/\{\{commentNum\}\}/g, subjects[i].commentNum);
-                temp = temp.replace(/\{\{id\}\}/g, subjects[i].id);
-                // console.log(temp)
-                let $subject = $(temp);
-                // console.log($subject);
-                $('.subject-list').append($subject);
-            }
+            showSubject(subjects);
         }
     });
 
@@ -140,31 +127,30 @@ $('window').ready(function () {
 
     $signUpSubmit.on('click', function () {
         console.log('as');
+        let user, password, repwd;
+        user = $('#user-in').val();
+        password = $('#pwd-in').val();
+        repwd = $('#rePwd-in').val();
+        if(checkEmpty(user, password, repwd)){
+            alert("请填写完整!");
+            return;
+        }
 
-        let signUpPromise = new Promise(function (resolve, reject) {
-            $.ajax({
-                type : 'get',
-                url : '/api/signUp',
-                data : {
-                    "user" : "newhuan",
-                    "password" : '123456'
-                },
-                success : function (res) {
-                    console.log(res.msg_id);
-                    resolve(res);
-                },
-                error: function (e) {
-                    reject(e);
-                }
-            });
+        if(password!== repwd){
+            alert("两次密码输入不一致，请重新输入！");
+        }
+        if(!regPwd.test(password)||/^\d{8,16}$/.test(password)){
+            alert("密码非法，请重新输入！");
+            return;
+        }
 
+        signUp(user,password).then(function (res) {
+           if(res.msg_id!==1){
+               alert("注册失败，请稍后重试！");
+           }else {
+               alert("注册成功！");
+           }
         });
-
-        signUpPromise.then(function (res) {
-            console.log('then',res);
-        }).catch(function (err) {
-            console.log('catch', err);
-        })
     });
 
 
@@ -213,35 +199,7 @@ function signUp(user, password) {
         })
     })
 }
-// $signIn.on('click',function () {
-//    // console.log(1) ;
-//     $.ajax({
-//         type : 'get',
-//         url : '/api/signIn',
-//         data : {
-//             "user" : "11111111111",
-//             "password" : '11111aa'
-//         },
-//         success : function (res) {
-//             console.log(res);
-//         }
-//     });
-//
-// });
-// $signUp.on('click',function () {
-//     console.log('signUp');
-//     $.ajax({
-//         type : 'get',
-//         url : '/api/signUp',
-//         data : {
-//             "user" : "newhuan",
-//             "password" : '123456'
-//         },
-//         success : function (res) {
-//             console.log(res.msg_id);
-//         }
-//     })
-// });
+
 
 let $2017 = $('#year-2017');
 $2017.on('click', function () {
@@ -276,25 +234,22 @@ $subjectList.delegate('li', 'click', function (e) {
     evt.stopPropagation();
 });
 
-//
-// $responses.on('click', function (e) {
-//    let evt = e || window.event;
-//    let id = $(this).attr('subjectid');
-//     console.log('comment:id', id);
-//     $.ajax({
-//         type: 'get',
-//         url: "/api/commentAdded",
-//         data: {
-//             subjectId: id
-//         },
-//         success: function (res) {
-//             console.log('res', res);
-//         }
-//     });
-//     evt.stopPropagation();
-// });
-
-
+function showSubject(subjects) {
+    for(let i = 0, len = subjects.length; i < len; i++) {
+        if(subjects[i] === null) {
+            continue;
+        }
+        let temp = subjectTemplete;
+        temp = temp.replace(/\{\{subName\}\}/g, subjects[i].subName);
+        temp = temp.replace(/\{\{clickNum\}\}/g, subjects[i].clickNum);
+        temp = temp.replace(/\{\{commentNum\}\}/g, subjects[i].commentNum);
+        temp = temp.replace(/\{\{id\}\}/g, subjects[i].id);
+        // console.log(temp)
+        let $subject = $(temp);
+        // console.log($subject);
+        $('.subject-list').append($subject);
+    }
+}
 
 
 
