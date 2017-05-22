@@ -60,6 +60,64 @@ a {
     margin-right: 4px;
     cursor: pointer; }
 
+.model-layout {
+  width: 500px;
+  height: 350px;
+  position: fixed;
+  z-index: 9;
+  left: 50%;
+  margin-left: -250px;
+  top: 50%;
+  margin-top: -150px;
+  background: white;
+  border: 1px solid #e2e2e2;
+  padding: 4px;
+  border-radius: 4px; }
+  .model-layout .model-container {
+    position: relative; }
+    .model-layout .model-container .close {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      margin-left: -10px;
+      background-color: white;
+      color: #000;
+      text-align: center;
+      border-radius: 50%;
+      cursor: pointer; }
+    .model-layout .model-container .my-row {
+      text-align: center;
+      margin-bottom: 10px;
+      width: 100%; }
+      .model-layout .model-container .my-row .col {
+        width: 50%;
+        text-align: center;
+        float: left; }
+    .model-layout .model-container .title {
+      width: 100%;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border-radius: 4px; }
+    .model-layout .model-container .active {
+      background-color: #334;
+      color: white; }
+    .model-layout .model-container .model {
+      transition: all 1s;
+      width: 500px;
+      float: left;
+      height: 300px;
+      background: white;
+      box-sizing: border-box;
+      padding: 40px; }
+    .model-layout .model-container .sign-in-model {
+      display: none; }
+
 /***************************/
 /***************************/
 /****** header  ************/
@@ -120,64 +178,6 @@ nav {
         border-radius: 4px; }
 
 /***************************/
-.model-layout {
-  width: 500px;
-  height: 350px;
-  position: fixed;
-  left: 50%;
-  margin-left: -250px;
-  top: 50%;
-  margin-top: -150px;
-  overflow: hidden;
-  background: white;
-  border: 1px solid #e2e2e2;
-  padding: 4px;
-  border-radius: 4px; }
-  .model-layout .model-container {
-    position: relative; }
-    .model-layout .model-container .close {
-      position: absolute;
-      top: -40px;
-      left: 50%;
-      width: 20px;
-      height: 20px;
-      line-height: 20px;
-      margin-left: -10px;
-      background-color: white;
-      color: #000;
-      text-align: center;
-      border-radius: 50%;
-      cursor: pointer; }
-    .model-layout .model-container .row {
-      text-align: center;
-      margin-bottom: 10px;
-      width: 100%; }
-      .model-layout .model-container .row .col {
-        width: 50%;
-        text-align: center;
-        float: left; }
-    .model-layout .model-container .title {
-      width: 100%;
-      height: 30px;
-      line-height: 30px;
-      text-align: center;
-      margin-bottom: 10px;
-      cursor: pointer;
-      border-radius: 4px; }
-    .model-layout .model-container .active {
-      background-color: #334;
-      color: white; }
-    .model-layout .model-container .model {
-      transition: all 1s;
-      width: 500px;
-      float: left;
-      height: 300px;
-      background: white;
-      box-sizing: border-box;
-      padding: 40px; }
-    .model-layout .model-container .sign-in-model {
-      display: none; }
-
 /*******************************/
 /****** article  ***************/
 /*******************************/

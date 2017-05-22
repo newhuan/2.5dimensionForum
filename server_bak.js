@@ -796,7 +796,7 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
                                         state: 1,
                                         res: resData
                                     });
-                                }, 10);
+                                }, 20);
                             }
 
                         }

@@ -19,6 +19,9 @@
 			<li class="header-btn">
 				<a href="../../index.html">首页</a>
 			</li>
+			<li class="header-btn">
+				<a href="../ranks.html">排行榜</a>
+			</li>
 
 			<li class="header-btn">
 				<button id = 'sign-in' class="btn btn-default">登录</button>
@@ -40,6 +43,111 @@
 
 <div class="layout">
 	<article style="padding: 10px;box-sizing: border-box">
+		<div class="model-layout" style="display: none;">
+			<div class="model-container">
+				<div class="close">×</div>
+				<div class="my-row title">
+					<div class="title col sign sign-in-tab active">
+						登陆
+					</div>
+					<div class="title sign sign-up-tab col">
+						注册
+					</div>
+				</div>
+
+				<div class="model sign-up-model">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label for="user-up" class="col-sm-2 control-label">用户名</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="user-up" placeholder="用户名">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="pwd-up" class="col-sm-2 control-label">密码</label>
+							<div class="col-sm-10">
+								<input type="password" class="form-control" id="pwd-up" placeholder="密码">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<div class="radio">
+									<label>
+										<input class="user-type radio" value="0" name="type" type="radio" checked>用户
+									</label>
+								</div>
+								<div class="radio">
+									<label>
+										<input class="user-type radio" value="0" name="type" type="radio">管理员
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="button" id="sign-in-submit" class="btn btn-default">登录</button>
+							</div>
+						</div>
+					</form>
+					<!--<div class="row">-->
+					<!--<label>用户名: <input type="text" id="user-up"></label>-->
+
+					<!--</div>-->
+					<!--<div class="row">-->
+					<!--<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-up"></label>-->
+					<!--</div>-->
+					<!--<div class="row">-->
+					<!--用户类型: <label><input class="user-type" value="0" name="type" type="radio" checked>用户</label>-->
+					<!--<label><input class="user-type" value="1" name="type" type="radio">管理员</label>-->
+					<!--</div>-->
+					<!--<div class="row">-->
+					<!--<button id="sign-in-submit">确认</button>-->
+					<!--</div>-->
+
+				</div>
+				<div class="model sign-in-model">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label for="user-in" class="col-sm-2 control-label">用户名</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="user-in" placeholder="用户名">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="pwd-in" class="col-sm-2 control-label">密码</label>
+							<div class="col-sm-10">
+								<input type="password" class="form-control" id="pwd-in" placeholder="密码">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="rePwd-in" class="col-sm-2 control-label" style="padding-left: 0;padding-right: 0;">确认密码</label>
+							<div class="col-sm-10">
+								<input type="password" class="form-control" id="rePwd-in" placeholder="确认密码">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="button" id="sign-up-submit" class="btn btn-default">注册</button>
+							</div>
+						</div>
+					</form>
+					<!--<div class="row">-->
+					<!--<label>用户名: <input type="text" id="user-in"></label>-->
+					<!--</div>-->
+					<!--<div class="row">-->
+					<!--<label>密&nbsp;&nbsp;&nbsp;码: <input type="text" id="pwd-in"></label>-->
+					<!--</div>-->
+					<!--<div class="row">-->
+					<!--<label>确认密码: <input type="text" id="rePwd-in"></label>-->
+					<!--</div>-->
+					<!--<div class="row">-->
+					<!--<button id="sign-up-submit">确认</button>-->
+					<!--</div>-->
+
+				</div>
+			</div>
+
+		</div>
 		<div class="layout" style="width: 100%">
 			<div class="post-layout">
 				<div class="my-row">
@@ -120,5 +228,7 @@
 <script src="../../assets/plugins/bootstrap.min.js"></script>
 <script src="../../js/utility.js"></script>
 <script src="../../js/post/post.js"></script>
+	<script src="../../js/checkLogin.js"></script>
+	<script src="../../js/loginForm.js"></script>
 </body>
 </html>

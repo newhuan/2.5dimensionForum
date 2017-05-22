@@ -1,6 +1,8 @@
-<<<<<<< HEAD
+
 @import "../_common";
 @import "../_header";
+@import "../_model";
+
 
 .post-layout{
   .my-row{
@@ -58,65 +60,5 @@
     margin:0 auto;
 
   }
-=======
-@import "../_common";
-@import "../_header";
 
-.post-layout{
-  .my-row{
-    height: 40px;
-    //border-bottom:1px solid #000;
-    .post-title{
-      width: 400px;
-      float: left;
-      font-size: 24px;
-    }
-    .user-name{
-      float: left;
-      height: 40px;
-      line-height: 40px;
-    }
-  }
-  .main-text{
-    border:1px solid #000;
-    padding: 4px;
-  }
-}
-
-.response-list{
-  .response-layout{
-    margin-bottom: 4px;
-    //border:1px solid #000;
-    padding:4px;
-    .response-user{
-      font-size: 12px;
-      //border-bottom:1px solid #000;
-      color: #778087;
-    }
-    .response-text{
-      padding-top:4px;
-      //font-size: 14px;
-    }
-  }
-}
-
-.add-response{
-  #response-text{
-    width: 800px;
-    margin: 0 auto;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  button{
-    padding: 0 6px;
-    background-color: #eee;
-    color: #000;
-    display: block;
-    width: 80px;
-    text-align: center;
-    margin:0 auto;
-
-  }
->>>>>>> ea5ca745681dc417b3667b0a61cb8460135f9f53
 }

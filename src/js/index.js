@@ -4,13 +4,13 @@
 
 // let $signIn = $('#sign-in');
 // let $signUp = $('#sign-up');
-
+const root = "http://localhost:3000/";
 let $subjectList = $('.subject-list');
 let $responses = $('.response');
 let $subjectTemplete = $('#subject-templete')[0];
 let subjectTemplete = $subjectTemplete.innerHTML;
 let year = '2017';
-let regPwd = new RegExp('^[!"#$%&\'\(\)*+,-./0-9:;<=>?@A-Z[\\]^_`a-z{|}~]{8,16}$');
+
 // $subjectList.delegate('.title', 'click')
 
 $('window').ready(function () {
@@ -131,7 +131,7 @@ $('window').ready(function () {
         user = $('#user-in').val();
         password = $('#pwd-in').val();
         repwd = $('#rePwd-in').val();
-        if(checkEmpty(user, password, repwd)){
+        if(!checkEmpty(user, password, repwd)){
             alert("请填写完整!");
             return;
         }
@@ -145,11 +145,17 @@ $('window').ready(function () {
         }
 
         signUp(user,password).then(function (res) {
-           if(res.msg_id!==1){
+            if(res.msg_id === "4"){
+                alert("此用户已存在，请重新输入用户名！");
+                return;
+            }
+           if(res.msg_id !== "1"){
                alert("注册失败，请稍后重试！");
            }else {
                alert("注册成功！");
+               $('.close').click();
            }
+
         });
     });
 
