@@ -9,7 +9,7 @@ let $subjectList = $('.subject-list');
 let $responses = $('.response');
 let $subjectTemplete = $('#subject-templete')[0];
 let subjectTemplete = $subjectTemplete.innerHTML;
-let year = '2017';
+let yearNow = '2017';
 
 // $subjectList.delegate('.title', 'click')
 
@@ -29,18 +29,7 @@ $('window').ready(function () {
     });
 
    // console.log('123')
-    $.ajax({
-        type : 'get',
-        url : '/api/getSucjectsWithYear',
-        data : {
-            "year" : year
-        },
-        success : function (res) {
-            console.log('getSucjectsWithYear', res);
-            let subjects = res.res.subjects;
-            showSubject(subjects);
-        }
-    });
+    initSubjectList();
 
 //    sign in up out models
     let $signs = $('.sign');
@@ -160,6 +149,41 @@ $('window').ready(function () {
     });
 
 
+    let $moreYears = $('#more-years');
+    $moreYears.on('click', function () {
+       $('.more-years').hide();
+       $('.years-container').show();
+       $('.years-more-btn').show();
+    });
+
+    let $concelBtn = $('#concel-year');
+    $concelBtn.on('click', function () {
+        $('.more-years').show();
+        $('.years-container').hide();
+        $('.years-more-btn').hide();
+    });
+
+    let $submitYearBtn = $('#submit-year');
+    $submitYearBtn.on('click', function () {
+       let year = $.trim($('#years').val());
+        refreshSUbjectListByYear(year);
+    });
+
+
+    //get subjects by year
+    let $years = $('.years');
+    $years.on('click', function () {
+        let year = $.trim($(this).html());
+        refreshSUbjectListByYear(year);
+        if($(this).hasClass('active')){
+            return;
+        }
+        $years.removeClass('active');
+        $(this).addClass('active');
+    });
+
+
+
     //ready end
 });
 //ce shi git
@@ -206,23 +230,6 @@ function signUp(user, password) {
     })
 }
 
-
-let $2017 = $('#year-2017');
-$2017.on('click', function () {
-    console.log('2017-clicked');
-    $.ajax({
-        type : 'get',
-        url : '/api/getSucjectsWithYear',
-        data : {
-            "year" : "2017"
-        },
-        success : function (res) {
-            console.log('getSucjectsWithYear', res, $subjectTemplete.innerHTML);
-            let subjects = res.subjects;
-        }
-    })
-});
-
 $subjectList.delegate('li', 'click', function (e) {
    let evt = e || window.event;
    let id = $(this).attr("subjectid");
@@ -234,13 +241,27 @@ $subjectList.delegate('li', 'click', function (e) {
            subjectId: id
        },
        success: function (res) {
-           console.log('res', res);
+           // console.log('res', res);
        }
    });
     evt.stopPropagation();
 });
 
+function initSubjectList() {
+    refreshSUbjectListByYear(yearNow);
+}
+
+function refreshSUbjectListByYear(year) {
+    getSubjectsByYear(year).then(function (subjects) {
+        clearSubjectList();
+        showSubject(subjects);
+    })
+}
+
 function showSubject(subjects) {
+    if(subjects.length === 0){
+        return;
+    }
     for(let i = 0, len = subjects.length; i < len; i++) {
         if(subjects[i] === null) {
             continue;
@@ -257,7 +278,27 @@ function showSubject(subjects) {
     }
 }
 
+function clearSubjectList() {
+    $('.subject-list').html("");
+}
 
+function getSubjectsByYear(year) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type : 'get',
+            url : root + 'api/getSucjectsWithYear',
+            data : {
+                year
+            },
+            success : function (res) {
+                resolve(res.res.subjects);
+            },
+            error:function (e) {
+                reject(e);
+            }
+        });
+    })
+}
 
 
 

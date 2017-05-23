@@ -55,13 +55,16 @@ nav{
       margin-bottom: 0!important;
       li{
         float: left;
+      }
+      .years{
+        float: left;
         width: 80px;
         height: 30px;
-        line-height: 30px;
-        font-size: 16px;
+        //line-height: 30px;
+        //font-size: 16px;
         text-align: center;
         cursor: pointer;
-        margin-right: 8px;
+        //margin-right: 8px;
 
         display: inline-block;
         font-size: 13px;
@@ -81,6 +84,9 @@ nav{
 
       }
       .years-container{
+        height: 30px;
+        line-height: 30px;
+        padding: 0 4px;
         label{
 
         }
@@ -89,6 +95,9 @@ nav{
 
           }
         }
+      }
+      .years-more-btn{
+        margin:0 4px;
       }
     }
   }

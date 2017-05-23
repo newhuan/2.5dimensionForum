@@ -119,6 +119,9 @@ $('window').ready(function () {
                 },
                 success: function (res) {
                     console.log(res);
+                    if(res.res.length === 0){
+                        return;
+                    }
                     jurisdictionBefore = res.res[0].user ? 0 : 1;
                     User = res.res[0].user ? res.res[0].user : res.res[0].adminUser;
                     showUsers(res.res);

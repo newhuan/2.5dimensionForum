@@ -61,14 +61,15 @@
 <nav>
 	<div class="layout">
 		<ul>
-			<li class="years active" id = 'year-2017'>
-				2017</li>
+			<li class="years active" id = 'year-2017'>2017</li>
 			<li class="years">2016</li>
 			<li class="years">2015</li>
 			<li class="years">2014</li>
 			<li class="years">2013</li>
 			<li class="years">2012</li>
-			<li class="years-container">
+			<li class="more-years">
+				<button type="button" class="btn btn-default" id="more-years">更多</button></li>
+			<li class="years-container" style="display: none;">
 				<label for="years"></label>
 				<select name="years" id="years">
 					<option value="2011">2011</option>
@@ -77,6 +78,10 @@
 					<option value="2008">2008</option>
 				</select>
 			</li>
+			<li style="display: none;" class="years-more-btn">
+				<button type="button" class="btn btn-default" id="submit-year">确定</button></li>
+			<li style="display: none;" class="years-more-btn">
+				<button type="button" class="btn btn-default" id="concel-year">取消</button></li>
 		</ul>
 	</div>
 </nav>

@@ -156,14 +156,13 @@ nav {
     nav .layout ul {
       margin-bottom: 0 !important; }
       nav .layout ul li {
+        float: left; }
+      nav .layout ul .years {
         float: left;
         width: 80px;
         height: 30px;
-        line-height: 30px;
-        font-size: 16px;
         text-align: center;
         cursor: pointer;
-        margin-right: 8px;
         display: inline-block;
         font-size: 13px;
         line-height: 17px;
@@ -176,6 +175,12 @@ nav {
         color: white;
         background-color: black;
         border-radius: 4px; }
+      nav .layout ul .years-container {
+        height: 30px;
+        line-height: 30px;
+        padding: 0 4px; }
+      nav .layout ul .years-more-btn {
+        margin: 0 4px; }
 
 /***************************/
 /*******************************/

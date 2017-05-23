@@ -38,7 +38,7 @@ $('window').ready(function () {
     });
 //    init end
 //    isLogin
-    isLogin(setLogin);
+//     isLogin(setLogin);
 
 //    add post
     let $submitBtn = $('#add-post');
@@ -179,7 +179,7 @@ function getSites(data) {
     })
 }
 
-function setLogin(status) {
-    console.log(status);
-}
+// function setLogin(status) {
+//     console.log(status);
+// }
 

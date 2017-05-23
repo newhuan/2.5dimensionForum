@@ -48,7 +48,7 @@ let connId = setInterval(function () {
         mongoose.connect(DB_CONN_STR);
     }, 2);
 
-}, 1000 * 20);
+}, 1000 * 200);
 /***************************************/
 
 let app = express();
@@ -567,8 +567,6 @@ function getTime() {
     return date.getTime();
 }
 
-console.log('getId', getId('test'));
-
 //add post
 app.post('/api/addPost',function (req, res) {
     let postId = getId('post');//get an id for this post
@@ -773,63 +771,32 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
             console.log('getSucjectsWithYear:SubjectIds:error', err);
         }else{
             console.log('SubjectIds', doc);
-            let subjectIds = doc.subjectIds;
-            let len = subjectIds.length;
-            for(let i = 0; i < len; i++) {
-                Subject.findOne({"id": subjectIds[i].id}, function (err, doc) {
-                    if(err) {
-                        console.log('getSucjectsWithYear:subject:error', err);
-                        res.json({
-                            state:0,
-                            res: []
-                        });
-                        //db.close();
-                    }else{
-                        // console.log('subject', doc);
-                        if(doc != null) {
-                            console.log(doc.subName);
-                            resData.subjects.push(doc);
-
-                            if(i == len - 1) {
-                                // console.log('resData',len, resData);
-                                setTimeout(function () {res.json({
-                                        state: 1,
-                                        res: resData
-                                    });
-                                }, 20);
-                            }
-
-                        }
-
-                        // let sites = doc.copyRights;
-                        // let siteLen = sites.length;
-                        // let copyRights = [];
-                        // for(let j = 0; j < siteLen; j++){
-                        //     Site.find({"id": sites[j].id}, function (err, doc) {
-                        //         if(err){
-                        //             console.log('getSucjectsWithYear:Site:error', err);
-                        //         }else {
-                        //             console.log('site', doc);
-                        //             copyRights.push(doc);
-                        //             if(i == len -1 && j == siteLen - 1) {
-                        //                 // setTimeout(function () {
-                        //                     //db.close();
-                        //                     res.json(resData);
-                        //                 // }, 10);
-                        //             }
-                        //         }
-                        //     });
-                        // }
-                        // //TODO:setTimeOut is just a compromise, must be change to 连表查询
-                        // // setTimeout(function () {
-                        //     doc.copyRights = copyRights;
-                        //     resData.subjects.push(doc);
-                        // }, 4);
-
-                    }
-                })
+            if(doc === null){
+                res.json({
+                    state: 1,
+                    res: resData
+                });
+                return;
             }
-
+            let subjectIdObjs = doc.subjectIds;
+            let subjectIds = [];
+            for(let i = 0, len = subjectIdObjs.length; i < len; i++) {
+                subjectIds.push(subjectIdObjs[i].id);
+            }
+            Subject.find({id:{$in:subjectIds}},function (err, doc) {
+                if(err){
+                    res.json({
+                        state:0,
+                        res:resData
+                    });
+                    return;
+                }
+                resData.subjects = resData.subjects.concat(doc);
+                res.json({
+                    state: 1,
+                    res: resData
+                })
+            });
         }
     });
 });
@@ -1166,31 +1133,24 @@ app.get('/api/getRankingList', function (req, res) {
     //mongoose.connect(DB_CONN_STR);
     /*****************************************************/
     let data = [[],[]];
-    for(let i = 0; i < 10; i++) {
-        clickRanking.find({"ranking": (i+1)}, function (err, doc) {
-            if(err) {
-                console.log('getRankingListError', err);
-                res.json(data)
-            } else {
-                data[0].push(doc[0]);
-            }
-        });
-        commentRanking.find({"ranking": (i+1)}, function (err, doc) {
-            if(err) {
-                console.log('getRankingListError', err);
-                res.json(data)
-            }  else {
-                data[1].push(doc[0]);
-                if(i == 9) {
-                    setTimeout(function () {
-                        //db.close();
-                        res.json(data);
-                    }, 1)
+    let rankings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    clickRanking.find({ranking:{$in:rankings}}, function (err, doc) {
+        if(err){
+            console.log('getRankingListError', err);
+            res.json(data)
+        }else {
+            data[0] = doc;
+            commentRanking.find({ranking:{$in:rankings}}, function (err, doc) {
+                if(err){
+                    console.log('getRankingListError', err);
+                    res.json(data)
+                }else {
+                    data[1] = doc;
+                    res.json(data);
                 }
-            }
-        })
-    }
-
+            });
+        }
+    });
 });
 
 //delete post
