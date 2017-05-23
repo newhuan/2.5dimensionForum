@@ -10,6 +10,16 @@ let $responses = $('.response');
 let $subjectTemplete = $('#subject-templete')[0];
 let subjectTemplete = $subjectTemplete.innerHTML;
 let yearNow = '2017';
+let pageMsg = {
+    numEvPage: 8,
+    currentPage: 1,
+    pageNum: 1
+};
+let subjectMsg = {
+    subjectList: [],
+    subjectNum: 0,
+    currentSubjectList: []
+};
 
 // $subjectList.delegate('.title', 'click')
 
@@ -78,6 +88,7 @@ $('window').ready(function () {
             password = $('#pwd-up').val(),
             type = $('.user-type:checked').val();
 
+        console.log("type",type);
         let signInPromise = new Promise(function (resolve, reject) {
             $.ajax({
                     type : 'get',
@@ -89,7 +100,7 @@ $('window').ready(function () {
                     },
                     success : function (res) {
                         console.log(res);
-                        resolve(res, type);
+                        resolve(res);
                     },
                     error: function (e) {
                         reject(e);
@@ -98,10 +109,14 @@ $('window').ready(function () {
         });
 
         signInPromise.then(function (res) {
+
             console.log('then',res.msg_id);//0 1 2
             if(res.msg_id == 1){
                 setSignIn(user, password, type);
                 $close.click();
+                if(type === "1"){
+                    window.location.href = "./adminIndex.html";
+                }
             }else if(res.msg_id == 0){
                 alert('密码错误，请重新输入！');
             }else {
@@ -166,7 +181,33 @@ $('window').ready(function () {
     let $submitYearBtn = $('#submit-year');
     $submitYearBtn.on('click', function () {
        let year = $.trim($('#years').val());
-        refreshSUbjectListByYear(year);
+        refreshSubjectListByYear(year);
+    });
+
+    //change page
+    let $pageController = $('#page-controller');
+    $pageController.delegate('.page-num', 'click', function () {
+        let pageNum = parseInt($(this).html());
+        if(pageNum === pageMsg.currentPage){
+            return;
+        }
+        changeToPage(pageNum);
+    });
+
+    $pageController.delegate('.page-prev', 'click', function () {
+        let pageNum = pageMsg.currentPage;
+        if(pageNum === 1){
+            return;
+        }
+        changeToPage(pageNum - 1);
+    });
+
+    $pageController.delegate('.page-next', 'click', function () {
+        let pageNum = pageMsg.currentPage;
+        if(pageNum === pageMsg.pageNum){
+            return;
+        }
+        changeToPage(pageNum + 1);
     });
 
 
@@ -174,7 +215,7 @@ $('window').ready(function () {
     let $years = $('.years');
     $years.on('click', function () {
         let year = $.trim($(this).html());
-        refreshSUbjectListByYear(year);
+        refreshSubjectListByYear(year);
         if($(this).hasClass('active')){
             return;
         }
@@ -248,10 +289,10 @@ $subjectList.delegate('li', 'click', function (e) {
 });
 
 function initSubjectList() {
-    refreshSUbjectListByYear(yearNow);
+    refreshSubjectListByYear(yearNow);
 }
 
-function refreshSUbjectListByYear(year) {
+function refreshSubjectListByYear(year) {
     getSubjectsByYear(year).then(function (subjects) {
         clearSubjectList();
         showSubject(subjects);
@@ -266,15 +307,7 @@ function showSubject(subjects) {
         if(subjects[i] === null) {
             continue;
         }
-        let temp = subjectTemplete;
-        temp = temp.replace(/\{\{subName\}\}/g, subjects[i].subName);
-        temp = temp.replace(/\{\{clickNum\}\}/g, subjects[i].clickNum);
-        temp = temp.replace(/\{\{commentNum\}\}/g, subjects[i].commentNum);
-        temp = temp.replace(/\{\{id\}\}/g, subjects[i].id);
-        // console.log(temp)
-        let $subject = $(temp);
-        // console.log($subject);
-        $('.subject-list').append($subject);
+        addSubjectToSubjectList(subjects[i]);
     }
 }
 
@@ -291,7 +324,10 @@ function getSubjectsByYear(year) {
                 year
             },
             success : function (res) {
-                resolve(res.res.subjects);
+                let subjectList = clearSubjectData(res.res.subjects);
+                setSubjectAndPageMsg(subjectList);
+                refershPageControl();
+                resolve(subjectMsg.currentSubjectList);
             },
             error:function (e) {
                 reject(e);
@@ -300,9 +336,64 @@ function getSubjectsByYear(year) {
     })
 }
 
+function addSubjectToSubjectList(subject) {
+    let temp = subjectTemplete;
+    temp = temp.replace(/\{\{subName\}\}/g, subject.subName);
+    temp = temp.replace(/\{\{clickNum\}\}/g, subject.clickNum);
+    temp = temp.replace(/\{\{commentNum\}\}/g, subject.commentNum);
+    temp = temp.replace(/\{\{id\}\}/g, subject.id);
+    // console.log(temp)
+    let $subject = $(temp);
+    // console.log($subject);
+    $('.subject-list').append($subject);
+}
 
+function clearSubjectData(subjects) {
+    let subjectList = [];
+    subjects.forEach(function (subject) {
+        if(subject !== null){
+            subjectList.push(subject);
+        }
+    });
+    return subjectList;
+}
 
+function getCurrentSubjectList() {
+    return subjectMsg.currentSubjectList;
+}
 
+function setSubjectAndPageMsg(subjectList) {
+    subjectMsg.subjectList = subjectList;
+    pageMsg.pageNum = parseInt(subjectList.length / pageMsg.numEvPage) + 1;
+    if(pageMsg.pageNum > 1){
+        subjectMsg.currentSubjectList = subjectMsg.subjectList.slice(0, pageMsg.numEvPage);
+    }else {
+        subjectMsg.currentSubjectList = subjectMsg.subjectList;
+    }
+}
+
+function refreshSubjectAndPageMsg(page) {
+    pageMsg.currentPage = page;
+    subjectMsg.currentSubjectList = subjectMsg.subjectList.slice((page - 1) * pageMsg.numEvPage, page * pageMsg.numEvPage);
+}
+
+function refershPageControl() {
+    if(pageMsg.pageNum === 1){
+        $('#page-controller').html($('#page-num-tpl-init').html());
+        return
+    }
+    let pageNumTpl = $('#page-num-tpl').html();
+    for(let i = 2; i <= pageMsg.pageNum; i++){
+        let $pageNum = pageNumTpl.replace('{{num}}', i);
+        $('.page-next').before($($pageNum));
+    }
+}
+
+function changeToPage(pageNum) {
+    clearSubjectList();
+    refreshSubjectAndPageMsg(pageNum);
+    showSubject(subjectMsg.currentSubjectList);
+}
 
 
 

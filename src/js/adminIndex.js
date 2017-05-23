@@ -2,6 +2,19 @@
  *
  * Created by huhanwen on 2017/5/1.
  */
+function checkAdmin(){
+    return localStorage.getItem('dem2p5_type') === '1';
+}
+
+let $window = $('window');
+$window.ready(function () {
+    if(!checkAdmin()){
+        document.write("404");
+    }
+});
+
+
+
 const root = 'http://localhost:3000/';
 let yearBefore;
 let subjectIdBefore;
@@ -9,11 +22,26 @@ let siteId;
 let userName;
 let jurisdictionBefore;
 let User;
-$('window').ready(function () {
+$window.ready(function () {
 
    // show sites
     getSites();
    // add subject
+    let formDataAdd = new FormData();
+    let formDataRefresh = new FormData();
+    let $imgAdd = $('#subject-img');
+    $imgAdd.on('change', function () {
+        $.each($(this)[0].files, function (i, file) {
+            formDataAdd.append('upload_img', file);
+        });
+    });
+    let $imgRefresh = $('#subject-img-search');
+    $imgRefresh.on('change', function () {
+        $.each($(this)[0].files, function (i, file) {
+            formDataRefresh.append('upload_img', file);
+        });
+    });
+
     let $addSubject = $('#add-subject');
     $addSubject.on('click', function () {
         let subName = $('#subject-title-add').val();
@@ -29,13 +57,17 @@ $('window').ready(function () {
                    sites.push($siteItems[i].getAttribute('id'));
                }
            }
+           formDataAdd.append('subName', subName);
+           formDataAdd.append('abstract', abstract);
+           formDataAdd.append('year', year);
+           formDataAdd.append('sites', sites);
 
             $.ajax({
                 type:'post',
                 url: root + 'api/addSubject',
-                data: {
-                    subName,abstract,year,sites
-                },
+                data: formDataAdd,
+                contentType: false,
+                processData: false,
                 success: function (res) {
                     console.log(res);
                 },
@@ -67,16 +99,15 @@ $('window').ready(function () {
         let abstract = $('#subject-abstract-search').val();
         let copyRights = getCheckedSites('site-list-search');
         console.log(subName, year, abstract, copyRights);
-        updateSubject({
-            subjectId: id,
-            subName,
-            year,
-            yearBefore,
-            abstract,
-            copyRights
-        }).then(function (res) {
+        formDataRefresh.append('subjectId', id);
+        formDataRefresh.append('subName', subName);
+        formDataRefresh.append('year', year);
+        formDataRefresh.append('yearBefore', yearBefore);
+        formDataRefresh.append('abstract', abstract);
+        formDataRefresh.append('copyRights', copyRights);
+        updateSubject(formDataRefresh).then(function (res) {
             console.log(res);
-            if(res.msg_id === '1') {
+            if(res.msg_id === 1) {
                 alert('修改成功！');
             }else {
                 alert('修改失败，请稍后再试！');
@@ -325,10 +356,13 @@ function showSubject(data) {
 }
 
 function updateSubject(data) {
+
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: 'post',
             data,
+            contentType: false,
+            processData: false,
             url: root + "api/updateSubject",
             success: function (res) {
                 resolve(res);
@@ -409,6 +443,7 @@ function refreshUserList() {
 function refreshUserSearch() {
 
 }
+
 function changeJurisdiction(user, jurisdiction, jurisdictionBefore) {
     return new Promise(function (resolve, reject) {
         $.ajax({

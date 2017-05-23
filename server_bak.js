@@ -9,6 +9,31 @@ let path = require('path');
 let express = require('express');
 let bodyParser = require('body-parser');
 let mongoose = require('./mongoose');
+let multer  = require('multer');
+// let upload = multer({ dest: './assests/imgs' });
+
+let createFolder = function(folder){
+    try{
+        fs.accessSync(folder);
+    }catch(e){
+        fs.mkdirSync(folder);
+    }
+};
+
+let uploadFolder = './src/assets/imgs/';
+
+createFolder(uploadFolder);
+
+let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadFolder);    // 保存的路径，备注：需要自己创建
+    },
+    filename: function (req, file, cb) {
+        // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
+        cb(null, file.fieldname + '-' + Date.now()+'.jpg');
+    }
+});
+let upload = multer({ storage: storage });
 
 mongoose.set('debug', true);
 const pageNum = '20';
@@ -656,8 +681,13 @@ app.post('/api/addResponse', function (req, res) {
 });
 
 //add subject
-app.post('/api/addSubject', function (req, res) {
+app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
     let subjectId = getId('subject');//get an id for this post
+    // console.log('WithImg', req.file.destination+req.file.filename);
+    let url = req.file.destination+req.file.filename;
+    url = "http://localhost:3000" + url.slice(1);
+    url = url.replace("/src","");
+    let urlList = [url];
     console.log('addSubject', subjectId, req.body.subName, req.body.abstract, req.body.year);
     let subName = req.body.subName;
     let abstract = req.body.abstract;
@@ -705,7 +735,7 @@ app.post('/api/addSubject', function (req, res) {
 
     let SubjectEntity = new Subject({
         id : subjectId,
-        picUrls: [],
+        picUrls: urlList,
         subName  : subName,
         abstract: abstract,
         year,
@@ -755,6 +785,16 @@ app.post('/api/addSubject', function (req, res) {
 
     });
 });
+
+//add subject with img
+// app.post('/api/addSubjectWithImg', upload.single('upload_img'), function (req, res) {
+//     console.log('WithImg', req.body.subName);
+//     console.log('WithImg', req.file.destination+req.file.filename);
+//     res.json({
+//         state:1
+//     });
+//     // destination
+// });
 
 //send subject messages when site open
 app.get('/api/getSucjectsWithYear', function (req, res) {
@@ -883,8 +923,14 @@ app.get('/api/getSubjectDetail', function (req, res) {
 });
 
 //update subject
-app.post('/api/updateSubject', function (req, res) {
+app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) {
    console.log('api/updateSubject',req.body.subName,req.body.year,req.body.abstract,req.body.copyRight);
+
+    let url = req.file.destination + req.file.filename;
+    url = "http://localhost:3000" + url.slice(1);
+    url = url.replace("/src","");
+    let urlList = [url];
+
    let subName = req.body.subName,
        year = req.body.year,
        yearBefore = req.body.yearBefore,
@@ -896,6 +942,7 @@ app.post('/api/updateSubject', function (req, res) {
         doc.year = year;
         doc.abstract = abstract;
         doc.copyRights = copyRights;
+        doc.picUrls = urlList;
         doc.save(function (err) {
             if(err){
                 res.json({

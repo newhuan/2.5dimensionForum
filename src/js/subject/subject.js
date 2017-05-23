@@ -2,6 +2,7 @@
  * Created by huhanwen on 2017/4/8.
  */
 const root = 'http://localhost:3000/';
+let search = "https://www.baidu.com/s?wd=site%3A(www.iqiyi.com)";
 $('window').ready(function () {
     let subjectId = getUrlParam('id');
     let postIdList = [];
