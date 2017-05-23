@@ -186,6 +186,7 @@ $('window').ready(function () {
 
     //change page
     let $pageController = $('#page-controller');
+
     $pageController.delegate('.page-num', 'click', function () {
         let pageNum = parseInt($(this).html());
         if(pageNum === pageMsg.currentPage){
@@ -223,8 +224,23 @@ $('window').ready(function () {
         $(this).addClass('active');
     });
 
-
-
+    //record(记录) click on subject
+    $subjectList.delegate('li', 'click', function (e) {
+        let evt = e || window.event;
+        let id = $(this).attr("subjectid");
+        console.log('click:id', id);
+        $.ajax({
+            type: "get",
+            url: "/api/subjectClicked",
+            data: {
+                subjectId: id
+            },
+            success: function (res) {
+                // console.log('res', res);
+            }
+        });
+        evt.stopPropagation();
+    });
     //ready end
 });
 //ce shi git
@@ -234,6 +250,9 @@ let $signOut = $('#sign-out');
 let $signIn = $('#sign-in');
 let $signUp = $('#sign-up');
 
+/**********************************/
+/****** sign in up out ************/
+/**********************************/
 function setSignIn(user, password, type) {
     setLocalStorageSignIn(user, password, type);
     $signIn.hide();
@@ -271,35 +290,78 @@ function signUp(user, password) {
     })
 }
 
-$subjectList.delegate('li', 'click', function (e) {
-   let evt = e || window.event;
-   let id = $(this).attr("subjectid");
-   console.log('click:id', id);
-   $.ajax({
-       type: "get",
-       url: "/api/subjectClicked",
-       data: {
-           subjectId: id
-       },
-       success: function (res) {
-           // console.log('res', res);
-       }
-   });
-    evt.stopPropagation();
-});
-
+/**********************************/
+/****** subjec list ***************/
+/**********************************/
 function initSubjectList() {
     refreshSubjectListByYear(yearNow);
 }
 
 function refreshSubjectListByYear(year) {
-    getSubjectsByYear(year).then(function (subjects) {
-        clearSubjectList();
-        showSubject(subjects);
+    getSubjectsByYear(year).then(function (subjectList) {
+        handleSubjectList(subjectList);
     })
 }
 
+//get and show subjects queryed by type and year
+//if year is undefined get all subjects in this type
+function refershSubjectListByTypeAndYear(type, year) {
+    getSubjectsByTypeAndYear(type, year).then(function (subjectList) {
+        handleSubjectList(subjectList);
+    }).catch(function (e) {
+        console.log("refershSubjectListByTypeAndYearError", e);
+    })
+}
+
+function handleSubjectList(subjectList) {
+    InitSubjectAndPageData(subjectList);
+    refershPageControl();
+    showSubject(subjectMsg.currentSubjectList);
+}
+
+//get subjects by year
+function getSubjectsByYear(year) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type : 'get',
+            url : root + 'api/getSucjectsWithYear',
+            data : {
+                year
+            },
+            success : function (res) {
+                resolve(res.res.subjects);
+            },
+            error:function (e) {
+                reject(e);
+            }
+        });
+    })
+}
+
+//get subjects by type and year
+//if year is undefined get all subjects in this type
+function getSubjectsByTypeAndYear(type, year) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type : 'get',
+            url : root + 'api/getSucjectsWithTypeAndYear',
+            data : {
+                year,
+                type
+            },
+            success : function (res) {
+                resolve(res.subjects);
+            },
+            error:function (e) {
+                reject(e);
+            }
+        });
+    })
+}
+
+//show subjects into page
 function showSubject(subjects) {
+    clearSubjectList();
     if(subjects.length === 0){
         return;
     }
@@ -311,31 +373,12 @@ function showSubject(subjects) {
     }
 }
 
+//clear all elements in subjectList
 function clearSubjectList() {
     $('.subject-list').html("");
 }
 
-function getSubjectsByYear(year) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type : 'get',
-            url : root + 'api/getSucjectsWithYear',
-            data : {
-                year
-            },
-            success : function (res) {
-                let subjectList = clearSubjectData(res.res.subjects);
-                setSubjectAndPageMsg(subjectList);
-                refershPageControl();
-                resolve(subjectMsg.currentSubjectList);
-            },
-            error:function (e) {
-                reject(e);
-            }
-        });
-    })
-}
-
+//create subject element and append it into subjectList
 function addSubjectToSubjectList(subject) {
     let temp = subjectTemplete;
     temp = temp.replace(/\{\{subName\}\}/g, subject.subName);
@@ -348,6 +391,39 @@ function addSubjectToSubjectList(subject) {
     $('.subject-list').append($subject);
 }
 
+/**********************************/
+/****** page and subject data *****/
+/**********************************/
+
+//change to pageNum
+function changeToPage(pageNum) {
+    clearSubjectList();
+    refreshSubjectAndPageMsg(pageNum);
+    showSubject(subjectMsg.currentSubjectList);
+}
+
+//reset subjectMsg and pageMsg by subjects
+//and pageController
+//set subjectMsg and pageMsg with a new subjectList
+//it can be used when
+// 1. change year
+// 2. change type and year
+// 3. search subject by subNum
+// 4. search subject by subNum and year
+// 5. search subject by type and year
+function InitSubjectAndPageData(subjects) {
+    let subjectList = clearSubjectData(subjects);
+    // setSubjectAndPageMsg(subjectList);
+    subjectMsg.subjectList = subjectList;
+    pageMsg.pageNum = parseInt(subjectList.length / pageMsg.numEvPage) + 1;
+    if(pageMsg.pageNum > 1){
+        subjectMsg.currentSubjectList = subjectMsg.subjectList.slice(0, pageMsg.numEvPage);
+    }else {
+        subjectMsg.currentSubjectList = subjectMsg.subjectList;
+    }
+}
+
+//delete invalid data in subjects
 function clearSubjectData(subjects) {
     let subjectList = [];
     subjects.forEach(function (subject) {
@@ -358,25 +434,7 @@ function clearSubjectData(subjects) {
     return subjectList;
 }
 
-function getCurrentSubjectList() {
-    return subjectMsg.currentSubjectList;
-}
-
-function setSubjectAndPageMsg(subjectList) {
-    subjectMsg.subjectList = subjectList;
-    pageMsg.pageNum = parseInt(subjectList.length / pageMsg.numEvPage) + 1;
-    if(pageMsg.pageNum > 1){
-        subjectMsg.currentSubjectList = subjectMsg.subjectList.slice(0, pageMsg.numEvPage);
-    }else {
-        subjectMsg.currentSubjectList = subjectMsg.subjectList;
-    }
-}
-
-function refreshSubjectAndPageMsg(page) {
-    pageMsg.currentPage = page;
-    subjectMsg.currentSubjectList = subjectMsg.subjectList.slice((page - 1) * pageMsg.numEvPage, page * pageMsg.numEvPage);
-}
-
+//refresh elements in page controller
 function refershPageControl() {
     if(pageMsg.pageNum === 1){
         $('#page-controller').html($('#page-num-tpl-init').html());
@@ -389,14 +447,11 @@ function refershPageControl() {
     }
 }
 
-function changeToPage(pageNum) {
-    clearSubjectList();
-    refreshSubjectAndPageMsg(pageNum);
-    showSubject(subjectMsg.currentSubjectList);
+//refresh subjectMsg and pageMsg with a new pageNum
+function refreshSubjectAndPageMsg(page) {
+    pageMsg.currentPage = page;
+    subjectMsg.currentSubjectList = subjectMsg.subjectList.slice((page - 1) * pageMsg.numEvPage, page * pageMsg.numEvPage);
 }
-
-
-
 
 
 

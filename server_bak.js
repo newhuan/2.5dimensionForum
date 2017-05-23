@@ -841,6 +841,23 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
     });
 });
 
+app.get('/api/getSucjectsWithTypeAndYear', function (req, res) {
+   let year = req.query.year;
+   let type = req.query.type;
+   console.log(year);
+   if(!year){
+       res.json({
+           "msg_id": 1,
+           subjects: []
+       });
+   }else{
+       res.json({
+           "msg_id": 1,
+           subjects: []
+       });
+   }
+});
+
 //add subject clickNum
 app.get('/api/subjectClicked', function (req, res) {
     console.log('subjectClicked', req.query.subjectId);
