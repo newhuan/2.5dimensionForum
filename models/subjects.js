@@ -20,6 +20,9 @@ SubjectSchema = new mongoose.Schema({
     year: {
       type: String
     },
+    type: {
+      type: String
+    },
     copyRights: {
         type: Array
     },

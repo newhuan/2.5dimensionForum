@@ -53,6 +53,7 @@ let clickRanking = require('./models/clickRankings');
 let commentRanking = require('./models/commentRankings');
 let Operation = require('./models/operation');
 let Jurisdiction = require('./models/jurisdiction');
+let Type = require('./models/type');
 /***************************************/
 
 
@@ -684,17 +685,23 @@ app.post('/api/addResponse', function (req, res) {
 app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
     let subjectId = getId('subject');//get an id for this post
     // console.log('WithImg', req.file.destination+req.file.filename);
-    let url = req.file.destination+req.file.filename;
-    url = "http://localhost:3000" + url.slice(1);
-    url = url.replace("/src","");
-    let urlList = [url];
+    let urlList;
+    if(!req.file){
+        urlList = [];
+    }else{
+        let url = req.file.destination+req.file.filename;
+        url = "http://localhost:3000" + url.slice(1);
+        url = url.replace("/src","");
+        urlList = [url];
+    }
     console.log('addSubject', subjectId, req.body.subName, req.body.abstract, req.body.year);
     let subName = req.body.subName;
     let abstract = req.body.abstract;
     let year = req.body.year;
     let sites = req.body.sites;
+    let type = req.body.type;
     let time = getTime();
-    console.log(sites);
+    console.log(sites,type);
     //mongoose.connect(DB_CONN_STR);
     let commentRankingEntity = new commentRanking({
         ranking:0,
@@ -739,6 +746,7 @@ app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
         subName  : subName,
         abstract: abstract,
         year,
+        type,
         copyRights: sites,
         clickNum: 0,
         commentNum: 0,
@@ -756,7 +764,6 @@ app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
         }else{
             console.log(year);
             SubjectIds.findOne({"year": year}, function (err, doc) {
-                console.log('SubjectEntitySave', doc);
                 doc.subjectIds.push({
                     id:subjectId
                 });
@@ -769,15 +776,33 @@ app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
                         })
                     }else {
                         console.log(doc);
-                        res.json({
-                            state: 1,
-                            msg: "subject add successful!"
-                        })
+                        Type.findOne({"type": type}, function (err, doc) {
+                   if(err){
+                       res.json({
+                           "state":-1,
+                           "msg":"database error"
+                       })
+                   }         else{
+                       console.log("type", doc);
+                       doc.subjectIds.push({
+                           id:subjectId
+                       });
+                       doc.save(function (err, doc) {
+                           if(err){
+                               res.json({
+                                   "state":-1,
+                                   "msg":"database error"
+                               })
+                           }else {
+                               res.json({
+                                   state: 1,
+                                   msg: "subject add successful!"
+                               })
+                           }
+                       })
+                   }
+                        });
                     }
-                    setTimeout(function () {
-                        //db.close();
-                    },0);
-
                 });
 
             });
@@ -786,17 +811,8 @@ app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
     });
 });
 
-//add subject with img
-// app.post('/api/addSubjectWithImg', upload.single('upload_img'), function (req, res) {
-//     console.log('WithImg', req.body.subName);
-//     console.log('WithImg', req.file.destination+req.file.filename);
-//     res.json({
-//         state:1
-//     });
-//     // destination
-// });
-
 //send subject messages when site open
+//年份 all
 app.get('/api/getSucjectsWithYear', function (req, res) {
     console.log('getSucjectsWithYear', req.query.year);
     //mongoose.connect(DB_CONN_STR);
@@ -841,22 +857,159 @@ app.get('/api/getSucjectsWithYear', function (req, res) {
     });
 });
 
+app.get('/api/searchSubjectWithYear', function (req, res) {
+   let subName = req.query.subName;
+   let year = req.query.year;
+    getSubjectListWithYear(year).then(function (subjectList) {
+        searchSubjectBysubNameInSubjectIdList(subName, subjectList).then(function (subjects) {
+            res.json({
+                "msg_id": 1,
+                subjects
+            })
+        })
+    }).catch(function (e) {
+        res.json({
+            "msg_id":-1,
+            subjects:[]
+        })
+    })
+});
+
+//all all
+app.get('/api/getAllSubjects', function (req, res) {
+   Subject.find({id:{$exists: true}}, function (err, doc) {
+       if(err){
+           res.json({
+               "msg_id":-1,
+               "msg":"database error"
+           })
+       }else{
+           res.json({
+               "msg_id": 1,
+               subjects: doc
+           })
+       }
+   })
+});
+
+app.get('/api/searchSubjectInAllSubjects', function (req, res) {
+    let subName = req.query.subName;
+   Subject.find({subName:{$exists: true}}, function (err, doc) {
+    if(err){
+        res.json({
+            "msg_id":-1,
+            subjects:[]
+        })
+    }else {
+        let subjects = [];
+        for(let i = 0, len = doc.length;i< len;i++){
+            if(!doc[i]){
+                continue;
+            }
+            if(doc[i].subName.indexOf(subName) >= 0){
+                subjects.push(doc[i]);
+            }
+        }
+        res.json({
+            "msg_id":1,
+            subjects
+        })
+    }
+   })
+});
+
+//all 分类
+app.get('/api/getSubjectsWithTypeInAllYear', function (req, res) {
+    let type = req.query.type;
+    getSubjectListWithType(type).then(function (subjectList) {
+        getSubjectsWithSubjectList(subjectList).then(function (subjects) {
+           res.json({
+               "msg_id": 1,
+               subjects
+           }) ;
+        })
+    }).catch(function (e) {
+        res.json({
+            "msg_id":-1,
+            subjects:[]
+        })
+    })
+});
+
+app.get('/api/serchSubjectInWithType', function (req, res) {
+   let subName = req.query.subName;
+   let type = req.query.type;
+    getSubjectListWithType(type).then(function (subjectList) {
+        searchSubjectBysubNameInSubjectIdList(subName, subjectList).then(function (subjects) {
+            res.json({
+                "msg_id": 1,
+                subjects
+            })
+        })
+    }).catch(function (e) {
+        res.json({
+            "msg_id":-1,
+            subjects:[]
+        })
+    })
+});
+
+//年份 分类
 app.get('/api/getSucjectsWithTypeAndYear', function (req, res) {
    let year = req.query.year;
    let type = req.query.type;
-   console.log(year);
-   if(!year){
-       res.json({
-           "msg_id": 1,
-           subjects: []
-       });
-   }else{
-       res.json({
-           "msg_id": 1,
-           subjects: []
-       });
-   }
+   console.log(year, type);
+    getSubjectListWithYearAndType(year, type).then(function (subjectList) {
+        getSubjectsWithSubjectList(subjectList).then(function (subjects) {
+            res.json({
+                "msg_id": 1,
+                subjects
+            });
+        })
+    }).catch(function (e) {
+        res.json({
+            "msg_id": 0,
+            subjects:[]
+        });
+    });
 });
+
+app.get('/api/searchSubjectWitheTypeAndYear', function (req, res) {
+   let subName = req.query.subName,
+       type = req.query.type,
+       year = req.query.year;
+    getSubjectListWithYearAndType(year, type).then(function (subjectList) {
+        searchSubjectBysubNameInSubjectIdList(subName, subjectList).then(function (subjects) {
+            res.json({
+                "msg_id": 1,
+                subjects
+            })
+        })
+    }).catch(function (e) {
+        res.json({
+            "msg_id":-1,
+            subjects:[]
+        })
+    })
+});
+
+// app.get('/api/getSubjectsWithYearAndSubName', function (req, res) {
+//     let year = req.query.year,
+//     subName = req.query.subName;
+//     getSubjectListWithYear(year).then(function (subjectList) {
+//         searchSubjectBysubNameInSubjectIdList(subName, subjectList).then(function (subjects) {
+//             res.json({
+//                 "msg_id":1,
+//                 subjects
+//             })
+//         })
+//     }).catch(function (e) {
+//         res.json({
+//             "msg_id":0,
+//             subjects:[]
+//         })
+//     })
+// });
 
 //add subject clickNum
 app.get('/api/subjectClicked', function (req, res) {
@@ -942,15 +1095,21 @@ app.get('/api/getSubjectDetail', function (req, res) {
 //update subject
 app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) {
    console.log('api/updateSubject',req.body.subName,req.body.year,req.body.abstract,req.body.copyRight);
-
-    let url = req.file.destination + req.file.filename;
-    url = "http://localhost:3000" + url.slice(1);
-    url = url.replace("/src","");
-    let urlList = [url];
+    let imgState = 1;
+   if(!req.file){
+       imgState = 0;//don't need to retrive picurl
+   }else{
+       let url = req.file.destination + req.file.filename;
+       url = "http://localhost:3000" + url.slice(1);
+       url = url.replace("/src","");
+       let urlList = [url];
+   }
 
    let subName = req.body.subName,
        year = req.body.year,
+       type = req.body.type,
        yearBefore = req.body.yearBefore,
+       typeBefore = req.body.typeBefore,
        abstract = req.body.abstract,
        copyRights = req.body.copyRights,
        subjectId = req.body.subjectId;
@@ -959,7 +1118,10 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
         doc.year = year;
         doc.abstract = abstract;
         doc.copyRights = copyRights;
-        doc.picUrls = urlList;
+        if(imgState){
+            doc.picUrls = urlList;
+        }
+        doc.type = type;
         doc.save(function (err) {
             if(err){
                 res.json({
@@ -967,13 +1129,13 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
                     "msg": "服务器错误!"
                 });
             }else {
-                if(yearBefore === year) {
-                    res.json({
-                        "msg_id": 1,
-                        "msg":"update success"
-                    });
-                    return;
-                }
+                // if(yearBefore === year) {
+                //     res.json({
+                //         "msg_id": 1,
+                //         "msg":"update success"
+                //     });
+                //     return;
+                // }
 
                 SubjectIds.findOne({year}, function (err, doc) {
                     if(err) {
@@ -1014,10 +1176,16 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
                                                     "msg": "服务器错误!"
                                                 });
                                             }else {
-                                                res.json({
-                                                    "msg_id": '1',
-                                                    "msg": "update success!"
+                                                //remove subject from type
+                                                removeSubjectFromType(subjectId, typeBefore).then(function () {
+                                  addSubjectToType(subjectId, type).then(function () {
+                                      res.json({
+                                          "msg_id": '1',
+                                          "msg": "update success!"
+                                      });
+                                  })                  
                                                 });
+                                                
                                             }
                                         });
                                     }
@@ -1032,10 +1200,158 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
     });
 });
 
+function addSubjectToType(subjectId, type) {
+    return new Promise(function (resolve, reject) {
+        Type.findOne({type}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+               doc.subjectIds.push({
+                   id: subjectId
+               });
+               doc.save(function (err, doc) {
+                   if(err){
+                       reject(err);
+                   }else{
+                       resolve();
+                   }
+               })
+            }
+        })
+    })
+}
+
+function removeSubjectFromType(subjectId, type) {
+    return new Promise(function (resolve, reject) {
+        Type.findOne({type}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+                doc.subjectIds.some(function (key,index) {
+                    if(key.id === subjectId) {
+                        doc.subjectIds.splice(index, 1);
+                        return true;
+                    }else {
+                        return false;
+                    }
+                });
+                doc.save(function (err, doc) {
+                    if(err){
+                        reject(err);
+                    }else{
+                        resolve();
+                    }
+                })
+            }
+        })
+    })
+}
+
+function removeSubjectFromRanking(subjectId) {
+    return new Promise(function (resolve, reject) {
+        clickRanking.remove({subjectId}, function (err) {
+            if(err){
+                reject(err);
+            }else {
+                commentRanking.remove({subjectId}, function (err) {
+                    if(err){
+                        reject(err);
+                    }else{
+                        resolve();
+                    }
+                })
+            }
+        })
+    })
+}
+
+function searchSubjectBysubNameInSubjectIdList(subName, subjects) {
+    return new Promise(function (resolve, reject) {
+        Subject.find({id:{$in:subjects}}, function (err, doc) {
+    if(err){
+        reject(err);
+    }        else{
+        let searchResult = [];
+        for(let i = 0, len = doc.length; i < len; i++){
+            if(!doc[i]){
+                continue;
+            }
+            if(doc[i].subName.indexOf(subName)>=0){
+                searchResult.push(doc[i]);
+            }
+        }
+        resolve(searchResult);
+    }
+        })
+    })
+}
+
+function getSubjectListWithType(type) {
+    return new Promise(function (resolve, reject) {
+        Type.findOne({type}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else {
+                if(!doc){
+                    resolve([]);
+                }else{
+                    resolve(doc.subjectIds);
+                }
+            }
+        })
+    })
+}
+
+function getSubjectListWithYear(year) {
+    return new Promise(function (resolve, reject) {
+        SubjectIds.findOne({year}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else {
+                if(!doc){
+                    resolve([]);
+                }else{
+                    resolve(doc.subjectIds);
+                }
+            }
+        })
+    })
+}
+
+function getSubjectListWithYearAndType(year, type) {
+    return new Promise(function (resolve, reject) {
+        getSubjectListWithYear(year).then(function (subjectIdList1) {
+            getSubjectListWithType(type).then(function (subjectIdList2) {
+                let subjectList = subjectIdList1.concat(subjectIdList2);
+                subjectList = Array.from(new Set(subjectList));
+                resolve(subjectList);
+            })
+        }).catch(function (e) {
+            reject(e);
+        })
+    })
+
+}
+
+function getSubjectsWithSubjectList(subjectList) {
+    return new Promise(function (resolve, reject) {
+        Subject.find({id:{$in:subjectList}}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+                resolve(doc);
+            }
+
+        })
+    })
+}
+
 //delete subject
 app.post('/api/deleteSubject', function (req, res) {
     let subjectId = req.body.subjectId,
-        year = req.body.year;
+        year = req.body.year,
+        type = req.body.type;
+    
     console.log('api/deleteSubject', subjectId, year);
     Subject.remove({id:subjectId}, function (err) {
         if(err) {
@@ -1066,9 +1382,19 @@ app.post('/api/deleteSubject', function (req, res) {
                                 "msg":"delete error,database errot"
                             });
                         }else{
-                            res.json({
-                                "msg_id": "1"
-                            })
+                            removeSubjectFromType(subjectId, type).then(function () {
+                                removeSubjectFromRanking(subjectId).then(function () {
+                                    res.json({
+                                        "msg_id": "1"
+                                    })
+                                });
+                            }).catch(function (e) {
+                                res.json({
+                                    "msg_id": "-1",
+                                    "msg":"delete error,database errot"
+                                });
+                            });
+                           
                         }
                     })
                 }

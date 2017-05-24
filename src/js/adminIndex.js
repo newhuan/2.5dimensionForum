@@ -17,18 +17,20 @@ $window.ready(function () {
 
 const root = 'http://localhost:3000/';
 let yearBefore;
+let typeBefore;
 let subjectIdBefore;
 let siteId;
 let userName;
 let jurisdictionBefore;
 let User;
+let formDataAdd = new FormData();
+let formDataRefresh = new FormData();
 $window.ready(function () {
 
    // show sites
     getSites();
    // add subject
-    let formDataAdd = new FormData();
-    let formDataRefresh = new FormData();
+
     let $imgAdd = $('#subject-img');
     $imgAdd.on('change', function () {
         $.each($(this)[0].files, function (i, file) {
@@ -47,7 +49,8 @@ $window.ready(function () {
         let subName = $('#subject-title-add').val();
         let abstract = $('#subject-abstract').val();
         let year = $('#subject-year').val();
-       if(!checkEmpty(subName,abstract,year)) {
+        let type = $('#subject-type').val();
+       if(!checkEmpty(subName,abstract,year, type)) {
            alert('请填写完整');
        }else {
            let sites = [];
@@ -57,10 +60,15 @@ $window.ready(function () {
                    sites.push($siteItems[i].getAttribute('id'));
                }
            }
+           $.each($("#subject-img")[0].files, function (i, file) {
+               formDataRefresh.append('upload_img', file);
+           });
+
            formDataAdd.append('subName', subName);
            formDataAdd.append('abstract', abstract);
            formDataAdd.append('year', year);
            formDataAdd.append('sites', sites);
+           formDataAdd.append('type', type);
 
             $.ajax({
                 type:'post',
@@ -70,6 +78,12 @@ $window.ready(function () {
                 processData: false,
                 success: function (res) {
                     console.log(res);
+                    if(res.state === 1){
+                        alert("添加成功！");
+                        initAddSubject();
+                    }else{
+                        alert("添加失败!");
+                    }
                 },
                 error: function (e) {
                     console.log('error', e);
@@ -98,6 +112,7 @@ $window.ready(function () {
         let year = $('#subject-year-search').val();
         let abstract = $('#subject-abstract-search').val();
         let copyRights = getCheckedSites('site-list-search');
+        let type = $('#subject-type').val();
         console.log(subName, year, abstract, copyRights);
         formDataRefresh.append('subjectId', id);
         formDataRefresh.append('subName', subName);
@@ -105,6 +120,20 @@ $window.ready(function () {
         formDataRefresh.append('yearBefore', yearBefore);
         formDataRefresh.append('abstract', abstract);
         formDataRefresh.append('copyRights', copyRights);
+        formDataRefresh.append('type', type);
+        let $subjectImgSearch = $('#subject-img-search');
+        if($subjectImgSearch[0].files.length === 0){
+            let imgState = 1;
+
+        }else{
+            $.each($subjectImgSearch[0].files, function (i, file) {
+                formDataRefresh.append('upload_img', file);
+            });
+            let imgState = 0;
+        }
+        formDataRefresh.append('imgState', imgState);
+
+
         updateSubject(formDataRefresh).then(function (res) {
             console.log(res);
             if(res.msg_id === 1) {
@@ -118,10 +147,10 @@ $window.ready(function () {
    // delete subject
     let $deleteSubject = $('#delete-subject');
     $deleteSubject.on('click', function () {
-        if(!subjectIdBefore||!yearBefore){
+        if(!subjectIdBefore||!yearBefore||!typeBefore){
             alert('请先确定要查找的主题id');
         }else {
-            deleteSubject(subjectIdBefore, yearBefore).then(function (res) {
+            deleteSubject(subjectIdBefore, yearBefore, typeBefore).then(function (res) {
                 if(res.msg_id === '1') {
                     alert('删除成功！');
                 }else {
@@ -344,8 +373,10 @@ function searchSubject(id) {
 function showSubject(data) {
     subjectIdBefore = data.id;
     yearBefore = data.year ? data.year : 2017;
+    typeBefore = data.type ? data.type : "热血";
     $('#subject-title-search').val(data.subName);
     $('#subject-year-search').val(yearBefore);
+    $('#subject-type-search').val(typeBefore);
     $('#subject-abstract-search').val(data.abstract);
     let $sites = $('#site-list-search');
     for(let i = 0, len = data.copyRights.length; i < len;i++) {
@@ -373,13 +404,14 @@ function updateSubject(data) {
     })
 }
 
-function deleteSubject(id, year) {
+function deleteSubject(id, year, type) {
     return new Promise(function (resolve, reject) {
         $.ajax({
             type:'post',
             data:{
                 subjectId:id,
-                year
+                year,
+                type
             },
             url:root+ 'api/deleteSubject',
             success: function (res) {
@@ -392,8 +424,12 @@ function deleteSubject(id, year) {
     })
 }
 
-function refreshSubject() {
+function initAddSubject() {
+    formDataAdd = new FormData();
+}
 
+function initSearchSubject() {
+    formDataRefresh = new FormData();
 }
 
 //Post
