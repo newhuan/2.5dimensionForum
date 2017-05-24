@@ -157,7 +157,7 @@ nav {
       margin-bottom: 0 !important; }
       nav .layout ul li {
         float: left; }
-      nav .layout ul .years {
+      nav .layout ul .years, nav .layout ul .type {
         float: left;
         width: 80px;
         height: 30px;
@@ -171,7 +171,9 @@ nav {
         border-radius: 3px;
         background-color: #334;
         color: #fff; }
-      nav .layout ul .active {
+      nav .layout ul .type {
+        width: 50px; }
+      nav .layout ul .active, nav .layout ul .type-active {
         color: white;
         background-color: black;
         border-radius: 4px; }
@@ -189,7 +191,7 @@ nav {
 article {
   background-color: #e2e2e2;
   height: 600px;
-  padding-top: 20px; }
+  border-top: 1px solid #e2e2e2; }
   article .layout {
     background-color: white;
     border-radius: 4px; }

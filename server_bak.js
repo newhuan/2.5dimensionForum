@@ -960,13 +960,21 @@ app.get('/api/getSucjectsWithTypeAndYear', function (req, res) {
    let type = req.query.type;
    console.log(year, type);
     getSubjectListWithYearAndType(year, type).then(function (subjectList) {
+        // console.log(subjectList);
         getSubjectsWithSubjectList(subjectList).then(function (subjects) {
+            // console.log(subjects);
             res.json({
                 "msg_id": 1,
                 subjects
             });
+        }).catch(function (e) {
+            res.json({
+                "msg_id": 0,
+                subjects:[]
+            });
         })
     }).catch(function (e) {
+        console.log(e);
         res.json({
             "msg_id": 0,
             subjects:[]
@@ -1295,7 +1303,13 @@ function getSubjectListWithType(type) {
                 if(!doc){
                     resolve([]);
                 }else{
-                    resolve(doc.subjectIds);
+                    // console.log("type",doc.subjectIds);
+                    let subjects = [];
+                    doc.subjectIds.forEach(function (key) {
+                        subjects.push(key.id);
+                    });
+                    console.log(type, subjects);
+                    resolve(subjects);
                 }
             }
         })
@@ -1311,7 +1325,12 @@ function getSubjectListWithYear(year) {
                 if(!doc){
                     resolve([]);
                 }else{
-                    resolve(doc.subjectIds);
+                    let subjects = [];
+                    doc.subjectIds.forEach(function (key) {
+                        subjects.push(key.id);
+                    });
+                    console.log(year, subjects);
+                    resolve(subjects);
                 }
             }
         })
@@ -1322,9 +1341,13 @@ function getSubjectListWithYearAndType(year, type) {
     return new Promise(function (resolve, reject) {
         getSubjectListWithYear(year).then(function (subjectIdList1) {
             getSubjectListWithType(type).then(function (subjectIdList2) {
-                let subjectList = subjectIdList1.concat(subjectIdList2);
-                subjectList = Array.from(new Set(subjectList));
-                resolve(subjectList);
+                let subjects = [];
+                subjectIdList1.forEach(function (key) {
+                   if(subjectIdList2.indexOf(key)>=0){
+                       subjects.push(key);
+                   }
+                });
+                resolve(subjects);
             })
         }).catch(function (e) {
             reject(e);
@@ -1335,6 +1358,11 @@ function getSubjectListWithYearAndType(year, type) {
 
 function getSubjectsWithSubjectList(subjectList) {
     return new Promise(function (resolve, reject) {
+        console.log(subjectList);
+        // let subjects = [];
+        // subjectList.forEach(function (key) {
+        //     subjects.push(key.id);
+        // });
         Subject.find({id:{$in:subjectList}}, function (err, doc) {
             if(err){
                 reject(err);

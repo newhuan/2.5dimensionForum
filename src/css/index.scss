@@ -56,7 +56,7 @@ nav{
       li{
         float: left;
       }
-      .years{
+      .years,.type{
         float: left;
         width: 80px;
         height: 30px;
@@ -75,7 +75,11 @@ nav{
         background-color: #334;
         color: #fff;
       }
-      .active{
+      .type{
+        width: 50px;
+      }
+      .active, .type-active{
+
         color: white;
         background-color: black;
         border-radius: 4px;
@@ -110,7 +114,8 @@ nav{
 article{
   background-color: #e2e2e2;
   height: 600px;
-  padding-top: 20px;
+  //padding-top: 20px;
+  border-top: 1px solid #e2e2e2;
   .layout{
     background-color: white;
     border-radius: 4px;

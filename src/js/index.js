@@ -20,6 +20,11 @@ let subjectMsg = {
     subjectNum: 0,
     currentSubjectList: []
 };
+let searchMsg = {
+    year:'2017',
+    type:'全部',
+    subName:""
+};
 
 // $subjectList.delegate('.title', 'click')
 
@@ -212,16 +217,50 @@ $('window').ready(function () {
     });
 
 
+
     //get subjects by year
     let $years = $('.years');
     $years.on('click', function () {
         let year = $.trim($(this).html());
-        refreshSubjectListByYear(year);
+        searchMsg.year = year;
+        refreshSubjectList();
+        // refreshSubjectListByYear(year);
         if($(this).hasClass('active')){
             return;
         }
         $years.removeClass('active');
         $(this).addClass('active');
+    });
+
+    let $subName = $('#subName-search');
+    $subName.on('change', function () {
+        searchMsg.subName = $(this).val();
+    });
+
+    //search
+    let $search = $('#search-submit');
+    $search.on('click', function () {
+       searchMsg.subName = $subName.val();
+       refreshSubjectList();
+    });
+    //concel
+    let $concel = $('#search-concel');
+    $concel.on('click', function () {
+        $subName.val("");
+        searchMsg.subName = "";
+        refreshSubjectList();
+    });
+
+    //change type
+    let $type = $('.type');
+    $type.on('click', function () {
+       searchMsg.type = $.trim($(this).html());
+        refreshSubjectList();
+        if($(this).hasClass('type-active')){
+            return;
+        }
+        $type.removeClass('type-active');
+        $(this).addClass('type-active');
     });
 
     //record(记录) click on subject
@@ -297,6 +336,72 @@ function initSubjectList() {
     refreshSubjectListByYear(yearNow);
 }
 
+function refreshSubjectList() {
+    let url = "";
+    let data = {},
+        year = searchMsg.year,
+        type = searchMsg.type,
+        subName = searchMsg.subName;
+    if(searchMsg.year === "全部"){
+        if(searchMsg.type === "全部"){
+            if(searchMsg.subName === ""){
+                url = "api/getAllSubjects";
+            }else{
+                url = "api/searchSubjectInAllSubjects";
+                data = {
+                    subName
+                };
+            }
+        }else{
+            if(searchMsg.subName === ""){
+                url = "api/getSubjectsWithTypeInAllYear";
+                data = {
+                    type
+                };
+            }else{
+                url = "api/serchSubjectInWithType";
+                data = {
+                    subName,
+                    type
+                }
+            }
+        }
+    }else{
+        if(searchMsg.type === "全部"){
+            if(searchMsg.subName === ""){
+                url = "api/getSucjectsWithYear";
+                data = {
+                    year
+                }
+            }else{
+                url = "api/searchSubjectWithYear";
+                data = {
+                    year,
+                    subName
+                }
+            }
+        }else{
+            if(searchMsg.subName === ""){
+                url = "api/getSucjectsWithTypeAndYear";
+                data = {
+                    year,
+                    type
+                }
+            }else{
+                url = "api/searchSubjectWitheTypeAndYear";
+                data = {
+                    year,
+                    type,
+                    subName
+                }
+            }
+        }
+    }
+    searchSubject(url, data).then(function (subjectList) {
+        handleSubjectList(subjectList);
+    })
+}
+
 function refreshSubjectListByYear(year) {
     getSubjectsByYear(year).then(function (subjectList) {
         handleSubjectList(subjectList);
@@ -310,6 +415,26 @@ function refershSubjectListByTypeAndYear(type, year) {
         handleSubjectList(subjectList);
     }).catch(function (e) {
         console.log("refershSubjectListByTypeAndYearError", e);
+    })
+}
+
+function searchSubject(url, data) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: "get",
+            url: root + url,
+            data,
+            success:function (res) {
+                if(url === "api/getSucjectsWithYear"){
+                    resolve(res.res.subjects);
+                    return;
+                }
+                resolve(res.subjects);
+            },
+            error: function (e) {
+                reject(e);
+            }
+        })
     })
 }
 
@@ -426,6 +551,8 @@ function InitSubjectAndPageData(subjects) {
 //delete invalid data in subjects
 function clearSubjectData(subjects) {
     let subjectList = [];
+    console.log(subjects)
+    subjects = Array.from(subjects);
     subjects.forEach(function (subject) {
         if(subject !== null){
             subjectList.push(subject);
@@ -436,8 +563,8 @@ function clearSubjectData(subjects) {
 
 //refresh elements in page controller
 function refershPageControl() {
+    $('#page-controller').html($('#page-num-tpl-init').html());
     if(pageMsg.pageNum === 1){
-        $('#page-controller').html($('#page-num-tpl-init').html());
         return
     }
     let pageNumTpl = $('#page-num-tpl').html();
