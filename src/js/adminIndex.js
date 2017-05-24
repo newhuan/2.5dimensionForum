@@ -50,6 +50,8 @@ $window.ready(function () {
         let abstract = $('#subject-abstract').val();
         let year = $('#subject-year').val();
         let type = $('#subject-type').val();
+        let video = $('#subject-video').val();
+        let comment = $('#subject-comment').val();
        if(!checkEmpty(subName,abstract,year, type)) {
            alert('请填写完整');
        }else {
@@ -69,6 +71,8 @@ $window.ready(function () {
            formDataAdd.append('year', year);
            formDataAdd.append('sites', sites);
            formDataAdd.append('type', type);
+           formDataAdd.append('video', video);
+           formDataAdd.append('comment', comment);
 
             $.ajax({
                 type:'post',
@@ -112,7 +116,9 @@ $window.ready(function () {
         let year = $('#subject-year-search').val();
         let abstract = $('#subject-abstract-search').val();
         let copyRights = getCheckedSites('site-list-search');
-        let type = $('#subject-type').val();
+        let type = $('#subject-type-search').val();
+        let video = $('#subject-video-search').val();
+        let comment = $('#subject-comment-search').val();
         console.log(subName, year, abstract, copyRights);
         formDataRefresh.append('subjectId', id);
         formDataRefresh.append('subName', subName);
@@ -121,6 +127,8 @@ $window.ready(function () {
         formDataRefresh.append('abstract', abstract);
         formDataRefresh.append('copyRights', copyRights);
         formDataRefresh.append('type', type);
+        formDataRefresh.append('video', video);
+        formDataRefresh.append('comment', comment);
         let $subjectImgSearch = $('#subject-img-search');
         if($subjectImgSearch[0].files.length === 0){
             let imgState = 1;
@@ -378,6 +386,8 @@ function showSubject(data) {
     $('#subject-year-search').val(yearBefore);
     $('#subject-type-search').val(typeBefore);
     $('#subject-abstract-search').val(data.abstract);
+    $('#subject-video-search').val(data.video);
+    $('#subject-comment-search').val(data.comment);
     let $sites = $('#site-list-search');
     for(let i = 0, len = data.copyRights.length; i < len;i++) {
         $sites.children().find('#'+data.copyRights[i]).attr({

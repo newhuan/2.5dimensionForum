@@ -1,7 +1,6 @@
 {
   "type": "热血",
-  "subjectIds": [{
-    "id": "subjectId"}
+  "subjectIds": [
   ],
   "createTime":"1493724404544",
   "lastUpdateTime": "1493724404544"

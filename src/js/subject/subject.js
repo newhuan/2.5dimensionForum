@@ -2,7 +2,8 @@
  * Created by huhanwen on 2017/4/8.
  */
 const root = 'http://localhost:3000/';
-let search = "https://www.baidu.com/s?wd=site%3A(www.iqiyi.com)";
+let search = "https://www.baidu.com/s?wd=site%3A({{domainName}}){{subName}}";
+let subName;
 $('window').ready(function () {
     let subjectId = getUrlParam('id');
     let postIdList = [];
@@ -132,6 +133,7 @@ function setAbstract(data) {
     $subName.html(data.subName);
     $title.html(data.subName);
     $abstractText.html(data.abstract);
+    subName = data.subName;
 }
 
 function setPostList(postList) {
@@ -159,6 +161,9 @@ function setSites(data) {
         }
         let site = siteTpl.replace('{{id}}', data[i].id);
         site = site.replace('{{name}}', data[i].name);
+        let url = search.replace("{{domainName}}", data[i].domainName);
+        url = url.replace("{{subName}}",subName);
+        site = site.replace("{{url}}", url);
         $siteList.append($(site));
     }
 }

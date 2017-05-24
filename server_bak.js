@@ -700,6 +700,8 @@ app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
     let year = req.body.year;
     let sites = req.body.sites;
     let type = req.body.type;
+    let video = req.body.video;
+    let comment = req.body.comment;
     let time = getTime();
     console.log(sites,type);
     //mongoose.connect(DB_CONN_STR);
@@ -747,6 +749,8 @@ app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
         abstract: abstract,
         year,
         type,
+        video,
+        comment,
         copyRights: sites,
         clickNum: 0,
         commentNum: 0,
@@ -1120,7 +1124,9 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
        typeBefore = req.body.typeBefore,
        abstract = req.body.abstract,
        copyRights = req.body.copyRights,
-       subjectId = req.body.subjectId;
+       subjectId = req.body.subjectId,
+       video = req.body.video,
+       comment = req.body.comment;
     Subject.findOne({"id": subjectId}, function (err, doc) {
         doc.subName = subName;
         doc.year = year;
@@ -1130,6 +1136,8 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
             doc.picUrls = urlList;
         }
         doc.type = type;
+        doc.video = video;
+        doc.comment = comment;
         doc.save(function (err) {
             if(err){
                 res.json({

@@ -23,6 +23,12 @@ SubjectSchema = new mongoose.Schema({
     type: {
       type: String
     },
+    video: {
+      type: String
+    },
+    comment: {
+      type: String
+    },
     copyRights: {
         type: Array
     },
