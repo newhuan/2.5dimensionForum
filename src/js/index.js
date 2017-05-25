@@ -186,6 +186,7 @@ $('window').ready(function () {
     let $submitYearBtn = $('#submit-year');
     $submitYearBtn.on('click', function () {
        let year = $.trim($('#years').val());
+        searchMsg.year = year;
         refreshSubjectListByYear(year);
     });
 
@@ -438,6 +439,7 @@ function searchSubject(url, data) {
     })
 }
 
+//封装从获取数据到渲染页面包含分页操作
 function handleSubjectList(subjectList) {
     InitSubjectAndPageData(subjectList);
     refershPageControl();
@@ -510,6 +512,11 @@ function addSubjectToSubjectList(subject) {
     temp = temp.replace(/\{\{clickNum\}\}/g, subject.clickNum);
     temp = temp.replace(/\{\{commentNum\}\}/g, subject.commentNum);
     temp = temp.replace(/\{\{id\}\}/g, subject.id);
+    temp = temp.replace(/\{\{year\}\}/g, subject.year);
+    temp = temp.replace(/\{\{type\}\}/g, subject.type);
+    temp = temp.replace(/\{\{comment\}\}/g, subject.comment);
+    temp = temp.replace(/\{\{abstract\}\}/g, subject.abstract);
+    temp = temp.replace(/\{\{pic\}\}/g, subject.picUrls[0]);
     // console.log(temp)
     let $subject = $(temp);
     // console.log($subject);
@@ -536,11 +543,18 @@ function changeToPage(pageNum) {
 // 3. search subject by subNum
 // 4. search subject by subNum and year
 // 5. search subject by type and year
+//根据获取的主题数据刷新主题数据和分页数据
 function InitSubjectAndPageData(subjects) {
     let subjectList = clearSubjectData(subjects);
     // setSubjectAndPageMsg(subjectList);
     subjectMsg.subjectList = subjectList;
-    pageMsg.pageNum = parseInt(subjectList.length / pageMsg.numEvPage) + 1;
+    let len = subjectList.length;
+    if(len % pageMsg.numEvPage === 0){
+        pageMsg.pageNum = parseInt(len / pageMsg.numEvPage)
+    }else {
+        pageMsg.pageNum = parseInt(len / pageMsg.numEvPage) + 1;
+    }
+
     if(pageMsg.pageNum > 1){
         subjectMsg.currentSubjectList = subjectMsg.subjectList.slice(0, pageMsg.numEvPage);
     }else {

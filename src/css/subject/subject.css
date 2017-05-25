@@ -139,6 +139,40 @@ body {
     .model-layout .model-container .sign-in-model {
       display: none; }
 
+dl {
+  margin: 0;
+  box-shadow: rgba(0, 0, 0, 0.37) 0px 0px 7px;
+  padding: 12px 7px; }
+  dl dt {
+    float: left;
+    width: 184px;
+    height: 270px;
+    margin-right: 20px; }
+    dl dt img {
+      display: block;
+      width: 100%;
+      height: 100%; }
+  dl dd {
+    width: 668px;
+    height: 270px;
+    float: left; }
+    dl dd .title {
+      height: 46px;
+      line-height: 26px;
+      font-size: 26px;
+      font-weight: 600; }
+    dl dd .line {
+      height: 24px;
+      width: 668px;
+      font-size: 14px; }
+      dl dd .line b {
+        float: left; }
+      dl dd .line p {
+        float: left;
+        padding-left: 10px;
+        margin: 0;
+        width: 600px; }
+
 .layout {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -162,6 +196,10 @@ article {
   .row-my div {
     height: 30px;
     line-height: 30px; }
+  .row-my .site-tip {
+    float: left; }
+  .row-my .site-list {
+    float: left; }
   .row-my .subject-name {
     color: black;
     font-size: 18px;
@@ -180,6 +218,12 @@ article {
   font-size: 14px;
   float: left;
   padding: 4px; }
+  .site-item a {
+    line-height: 33px;
+    vertical-align: middle;
+    display: inline-block;
+    height: 30px;
+    margin-top: -12px; }
 
 .line20 {
   width: 100%;

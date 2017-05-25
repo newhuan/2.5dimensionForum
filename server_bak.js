@@ -698,7 +698,7 @@ app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {
     let subName = req.body.subName;
     let abstract = req.body.abstract;
     let year = req.body.year;
-    let sites = req.body.sites;
+    let sites = req.body.sites.split(',');
     let type = req.body.type;
     let video = req.body.video;
     let comment = req.body.comment;
@@ -1108,13 +1108,14 @@ app.get('/api/getSubjectDetail', function (req, res) {
 app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) {
    console.log('api/updateSubject',req.body.subName,req.body.year,req.body.abstract,req.body.copyRight);
     let imgState = 1;
+    let urlList;
    if(!req.file){
        imgState = 0;//don't need to retrive picurl
    }else{
        let url = req.file.destination + req.file.filename;
        url = "http://localhost:3000" + url.slice(1);
        url = url.replace("/src","");
-       let urlList = [url];
+       urlList = [url];
    }
 
    let subName = req.body.subName,
@@ -1123,11 +1124,21 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
        yearBefore = req.body.yearBefore,
        typeBefore = req.body.typeBefore,
        abstract = req.body.abstract,
-       copyRights = req.body.copyRights,
+       copyRights = req.body.copyRights.split(','),
        subjectId = req.body.subjectId,
        video = req.body.video,
        comment = req.body.comment;
+   console.log(subjectId);
     Subject.findOne({"id": subjectId}, function (err, doc) {
+        if(err){
+            console.log("111", err);
+            res.json({
+                "msg_id": -1,
+                "msg": "服务器错误!"
+            });
+            return;
+        }
+        console.log("Subject",doc);
         doc.subName = subName;
         doc.year = year;
         doc.abstract = abstract;
@@ -1145,14 +1156,6 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
                     "msg": "服务器错误!"
                 });
             }else {
-                // if(yearBefore === year) {
-                //     res.json({
-                //         "msg_id": 1,
-                //         "msg":"update success"
-                //     });
-                //     return;
-                // }
-
                 SubjectIds.findOne({year}, function (err, doc) {
                     if(err) {
                         res.json({
@@ -1452,7 +1455,16 @@ app.get('/api/getPostList', function (req, res) {
             console.log('getPostListErrorAtGetSubject', err);
             //db.close();
         } else {
+            if(doc === null){
+                res.json({
+                    total: 0,
+                    postList:[]
+
+                });
+                return;
+            }
             let list = doc.postList;
+
             let listNum = list.length;
             let resData = {
                 total: listNum,
@@ -1460,24 +1472,26 @@ app.get('/api/getPostList', function (req, res) {
             };
             let start = (page - 1) * pageNum;
             let later = page * pageNum;
+            let currentList = [];
             let end = later > listNum ? listNum : later;
             for(let i = start; i < end; i++) {
-                Post.findOne({"id": list[i].id}, function (err, doc) {
-                    if(err){
-                        console.log('getPostListErrorAtGetPost', err);
-                        //db.close();
-                        res.json(resData);
-                    }else {
-                        resData.postList.push(doc);
-                        if(i == end - 1) {
-                            setTimeout(function () {
-                                //db.close();
-                                res.json(resData);
-                            }, 0);
-                        }
-                    }
-                })
+                if(!list[i]){
+                    continue;
+                }
+                currentList.push(list[i].id);
             }
+
+            Post.find({"id": {$in:currentList}}, function (err, doc) {
+                if(err){
+                    console.log('getPostListErrorAtGetPost', err);
+                    res.json(resData);
+                }else {
+                    resData.postList.push(...Array.from(doc));
+                        setTimeout(function () {
+                            res.json(resData);
+                        }, 0);
+                }
+            })
         }
     });
 

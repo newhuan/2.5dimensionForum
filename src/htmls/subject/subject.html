@@ -150,15 +150,26 @@
 		</div>
 		<div class="layout" >
 			<div class="abstract-layout" id="section-des">
-				<div class="row-my">
-					<img src="" alt="" class="avatar" id="avatar">
-					<div class="subject-name" id="subject-name"></div>
-				</div>
-				<div class="row-my">
-					<div class="abstract" id="abstract"></div>
-				</div>
-				<div class="row-my">
-					<div class="site-list" style="height: 30px">
+				<dl class = "clearHei">
+					<dt>
+						<img id="avatar" src="" alt="">
+					</dt>
+					<dd>
+						<div class="title" id="subject-name">
+							{{subName}}
+						</div>
+						<div class="line" ><b>年份：</b><p id="year"></p></div>
+						<div class="line"><b>类型：</b><p id="type"></p></div>
+						<div class="line" ><b>外评：</b><p id="other-comment"></p></div>
+						<div class="line"><b>点击：</b><p id="click-num"></p></div>
+						<div class="line"><b>简介：</b><p id="abstract"></p></div>
+
+					</dd>
+				</dl>
+
+				<div class="row-my clearHei">
+					<div class="site-tip">版权所属：</div>
+					<div class="site-list link-style" style="height: 30px">
 
 					</div>
 					<script type="text/template" id="site-tpl">
@@ -169,6 +180,16 @@
 
 					</script>
 				</div>
+				<div class="row-my clearHei">
+					<div class="site-tip">观看PV：</div>
+					<div class=" link-style" style="height: 30px">
+						<div  class="site-item" >
+							<a id="pv-link" href="" target="_blank">点击观看PV</a>
+
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 

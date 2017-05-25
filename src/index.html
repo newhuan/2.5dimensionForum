@@ -9,16 +9,29 @@
 <body>
 <script type='text/templete' id = 'subject-templete'>
 	<li class="subject-container" subjectid = "{{id}}">
-				<!--<div class="avatar">{{avatar}}</div>-->
-				<div class="title">
+		<dl class = "clearHei">
+			<dt>
+				<img src="{{pic}}" alt="">
+			</dt>
+			<dd>
+					<div class="title">
 					<a href="htmls/subject/subject.html?id={{id}}&click={{clickNum}}&comment={{commentNum}}">{{subName}}</a>
 				</div>
-				<div class="click-num">
-					<span>{{clickNum}}</span>
-				</div>
-				<div class="comment-num">
-					<span>{{commentNum}}</span>
-				</div>
+				<div class="line"><b>年份：</b>{{year}}</div>
+				<div class="line"><b>类型：</b>{{type}}</div>
+				<div class="line"><b>外评：</b>{{comment}}</div>
+				<div class="line"><b>点击：</b>{{clickNum}}</div>
+				<div class="line"><b>简介：</b>{{abstract}}</div>
+
+			</dd>
+		</dl>
+
+				<!--<div class="click-num">-->
+					<!--<span>{{clickNum}}</span>-->
+				<!--</div>-->
+				<!--<div class="comment-num">-->
+					<!--<span>{{commentNum}}</span>-->
+				<!--</div>-->
 	</li>
 </script>
 <header>
@@ -218,7 +231,7 @@
 
 	</div>
 
-	<div class="layout" style="height: 568px;">
+	<div class="layout" style="height: 2568px;">
 		<ul class="subject-list">
 			<!--<li class="subject-container" subjectid = "subjectId">-->
 			<!--<div class="avatar">avatar</div>-->

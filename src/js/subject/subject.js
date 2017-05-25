@@ -130,10 +130,18 @@ function setAbstract(data) {
     if(data.picUrls[0]){
         $avatar.attr('src', data.picUrls[0]);
     }
+    if(data.video){
+        $('#pv-link').attr('href', data.video);
+    }
     $subName.html(data.subName);
     $title.html(data.subName);
-    $abstractText.html(data.abstract);
+    $abstractText.html(data.abstract.slice(0,200)+"...");
     subName = data.subName;
+    $('#year').html(data.year);
+    console.log(data.year)
+    $('#type').html(data.type);
+    $('#other-comment').html(data.comment);
+    $('#click-num').html(data.clickNum);
 }
 
 function setPostList(postList) {

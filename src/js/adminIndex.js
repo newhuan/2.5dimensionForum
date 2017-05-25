@@ -33,16 +33,17 @@ $window.ready(function () {
 
     let $imgAdd = $('#subject-img');
     $imgAdd.on('change', function () {
+        console.log('change');
         $.each($(this)[0].files, function (i, file) {
             formDataAdd.append('upload_img', file);
         });
     });
-    let $imgRefresh = $('#subject-img-search');
-    $imgRefresh.on('change', function () {
-        $.each($(this)[0].files, function (i, file) {
-            formDataRefresh.append('upload_img', file);
-        });
-    });
+    // let $imgRefresh = $('#subject-img-search');
+    // $imgRefresh.on('change', function () {
+    //     $.each($(this)[0].files, function (i, file) {
+    //         formDataRefresh.append('upload_img', file);
+    //     });
+    // });
 
     let $addSubject = $('#add-subject');
     $addSubject.on('click', function () {
@@ -62,9 +63,13 @@ $window.ready(function () {
                    sites.push($siteItems[i].getAttribute('id'));
                }
            }
-           $.each($("#subject-img")[0].files, function (i, file) {
-               formDataRefresh.append('upload_img', file);
-           });
+           // let $subjectImg = $("#subject-img");
+           // if($subjectImg[0].files.length !== 0){
+           //     $.each($subjectImg[0].files, function (i, file) {
+           //         formDataAdd.append('upload_img', file);
+           //     });
+           // }
+
 
            formDataAdd.append('subName', subName);
            formDataAdd.append('abstract', abstract);
@@ -88,9 +93,12 @@ $window.ready(function () {
                     }else{
                         alert("添加失败!");
                     }
+                    initForm();
                 },
                 error: function (e) {
                     console.log('error', e);
+                    alert("添加失败！");
+                    initForm();
                 }
             })
        }
@@ -127,28 +135,32 @@ $window.ready(function () {
         formDataRefresh.append('abstract', abstract);
         formDataRefresh.append('copyRights', copyRights);
         formDataRefresh.append('type', type);
+        formDataRefresh.append('typeBefore', typeBefore);
         formDataRefresh.append('video', video);
         formDataRefresh.append('comment', comment);
         let $subjectImgSearch = $('#subject-img-search');
+        let imgState;
         if($subjectImgSearch[0].files.length === 0){
-            let imgState = 1;
+            imgState = 1;
 
         }else{
             $.each($subjectImgSearch[0].files, function (i, file) {
                 formDataRefresh.append('upload_img', file);
             });
-            let imgState = 0;
+            imgState = 0;
         }
         formDataRefresh.append('imgState', imgState);
 
 
         updateSubject(formDataRefresh).then(function (res) {
             console.log(res);
-            if(res.msg_id === 1) {
+            if(res.msg_id === '1') {
                 alert('修改成功！');
+
             }else {
                 alert('修改失败，请稍后再试！');
             }
+            initForm();
         })
     });
 
@@ -164,6 +176,7 @@ $window.ready(function () {
                 }else {
                     alert('删除失败，请稍后重试！');
                 }
+                initForm();
             });
         }
 
@@ -435,11 +448,16 @@ function deleteSubject(id, year, type) {
 }
 
 function initAddSubject() {
-    formDataAdd = new FormData();
+    // formDataAdd = new FormData();
 }
 
 function initSearchSubject() {
     formDataRefresh = new FormData();
+}
+
+//form
+function initForm() {
+    window.location.reload();
 }
 
 //Post
