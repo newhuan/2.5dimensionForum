@@ -153,6 +153,7 @@ function setAbstract(data) {
 }
 
 function setPostList(postList) {
+
     let postTpl = $('#post-tpl').html();
     let $postList = $('#post-list');
     $postList.html("");
@@ -161,9 +162,11 @@ function setPostList(postList) {
             continue;
         }
         console.log("id", postList[i].id);
+        let subjectId = getUrlParam('id');
         let postStr = postTpl.replace('{{userName}}', postList[i].userName);
         postStr = postStr.replace('{{postTitle}}', postList[i].title);
         postStr = postStr.replace('{{postId}}',postList[i].id);
+        postStr = postStr.replace('{{subjectId}}', subjectId);
         $postList.append($(postStr));
     }
 }

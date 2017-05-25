@@ -611,25 +611,56 @@ app.post('/api/addPost',function (req, res) {
     });
     PostEntity.save(function(error,doc){
         if(error){
-            console.log("error :" + error);
+            res.json({
+                "msg_id":-1,
+                "msg": "database error"
+            })
+            // console.log("error :" + error);
         }else{
-            console.log('PostEntitySave', doc);
+            // console.log('PostEntitySave', doc);
             User.update({user: req.body.userName}, {"$push": {'posts': {"id": postId,"title": title}}}, function (error, docs) {
                 if (error) {
-                    console.log("error :" + error);
+                    // console.log("error :" + error);
+                    res.json({
+                        "msg_id":-1,
+                        "msg": "database error"
+                    })
                 } else {
-                    console.log('User', docs); //
-                    Subject.update({id: req.body.subjectId}, {"$push": {'postList': {"id": postId}}}, function (err, docs) {
-                        if(err) {
-                            console.log("error :" + error);
-                        } else {
-                            console.log('subject', docs);
-                            //db.close();
-                            res.json({
-                                "postId" : postId,
-                            });
-                        }
+                    // console.log('User', docs); //
+                    Subject.findOne({id: req.body.subjectId}, function (err, doc) {
+                       if(err){
+                           res.json({
+                               "msg_id":-1,
+                               "msg": "database error"
+                           })
+                       } else {
+                           doc.postList.push({
+                               id: postId
+                           });
+                           doc.commentNum++;
+                           doc.save(function (err) {
+                               if(err){
+                                   res.json({
+                                       "msg_id":-1,
+                                       "msg": "database error"
+                                   })
+                               }else {
+                                   res.json({
+                                       "postId" : postId,
+                                   });
+                               }
+                           })
+                       }
                     });
+                    // Subject.update({id: req.body.subjectId}, {"$push": {'postList': {"id": postId}}}, function (err, docs) {
+                    //     if(err) {
+                    //         console.log("error :" + error);
+                    //     } else {
+                    //         console.log('subject', docs);
+                    //         //db.close();
+                    //
+                    //     }
+                    // });
 
                 }
             });
@@ -645,6 +676,7 @@ app.post('/api/addResponse', function (req, res) {
     console.log('addResponse', responseId, req.body.userName, req.body.postId, req.body.mainText);
     //mongoose.connect(DB_CONN_STR);
     let time = getTime();
+    let subjectId = req.body.subjectId;
     let ResponseEntity = new Response({
         id : responseId,
         user  : req.body.userName,
@@ -654,23 +686,40 @@ app.post('/api/addResponse', function (req, res) {
     });
     ResponseEntity.save(function(error,doc){
         if(error){
-            console.log("error :" + error);
+            // console.log("error :" + error);
+            res.json({
+                "msg_id":-1,
+                "msg": "database error"
+            })
         }else{
-            console.log('ResponseEntitySave', doc);
+            // console.log('ResponseEntitySave', doc);
             User.update({user: req.body.userName}, {"$push": {'responses': {"id": responseId}}}, function (error, docs) {
                 if (error) {
-                    console.log("error :" + error);
+                    // console.log("error :" + error);
+                    res.json({
+                        "msg_id":-1,
+                        "msg": "database error"
+                    })
                 } else {
-                    console.log('User', docs); //
+                    // console.log('User', docs); //
                     Post.update({id: req.body.postId}, {"$push": {'responses': {"id": responseId}}}, function (err, docs) {
                         if(err) {
-                            console.log("error :" + error);
-                        } else {
-                            console.log('response', docs);
-                            //db.close();
                             res.json({
-                                "responseId" : responseId,
-                            });
+                                "msg_id":-1,
+                                "msg": "database error"
+                            })
+                        } else {
+                            addCommentNum(subjectId, 1).then(function () {
+                                res.json({
+                                    "responseId" : responseId,
+                                });
+
+                            }).catch(function (err) {
+                                res.json({
+                                    "msg_id":-1,
+                                    "msg": "database error"
+                                })
+                            })
                         }
                     });
 
@@ -680,6 +729,26 @@ app.post('/api/addResponse', function (req, res) {
         }
     });
 });
+
+function addCommentNum(subjectId, num) {
+    return new Promise(function (resolve, reject) {
+        Subject.findOne({id: subjectId}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+                doc.commentNum =  parseInt(doc.commentNum) + num;
+                doc.save(function (err) {
+                    if(err){
+                        reject(err);
+                    }else {
+                        resolve();
+                    }
+                })
+            }
+
+        })
+    })
+}
 
 //add subject
 app.post('/api/addSubject', upload.single('upload_img'), function (req, res) {

@@ -230,10 +230,17 @@ $window.ready(function () {
                     userName, jurisdiction
                 },
                 success:function (res) {
-                    console.log(res)
+                    console.log(res);
+                    if(res.state===1){
+                        alert("删除成功！");
+                    }else{
+                        alert("删除失败！");
+                    }
+
                 },
                 error: function (err) {
                     console.log('error', err);
+                    alert("删除失败！");
                 }
             })
         }
@@ -295,10 +302,16 @@ $window.ready(function () {
             },
             success: function (res) {
                 console.log(res);
+                if(res.state === 1){
+                    alert("删除成功！");
+                }else{
+                    alert("删除失败");
+                }
                 // showPosts(res);
             },
             error: function (e) {
                 console.log(e);
+                alert("删除失败");
             }
         })
     });
@@ -320,10 +333,16 @@ $window.ready(function () {
                 },
                 success: function (res) {
                     console.log(res);
+                    if(res.state === 1){
+                        alert("添加成功！");
+                    }else{
+                        alert("添加失败！");
+                    }
                     // showPosts(res);
                 },
                 error: function (e) {
                     console.log(e);
+                    alert("添加失败！");
                 }
             })
         }

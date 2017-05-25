@@ -56,13 +56,15 @@ $('window').ready(function () {
             alert('请填写完整再提交');
             return;
         }
+        let subjectId = getUrlParam('subjectId');
         $.ajax({
             type: 'post',
             url: root + 'api/addResponse',
             data: {
                 userName,
                 mainText,
-                postId
+                postId,
+                subjectId
             },
             success: function (res) {
                 console.log(res);
