@@ -10,6 +10,7 @@ let $responses = $('.response');
 let $subjectTemplete = $('#subject-templete')[0];
 let subjectTemplete = $subjectTemplete.innerHTML;
 let yearNow = '2017';
+let regPwd = new RegExp('^[!"#$%&\'\(\)*+,-./0-9:;<=>?@A-Z[\\]^_`a-z{|}~]{8,16}$');
 let pageMsg = {
     numEvPage: 8,
     currentPage: 1,

@@ -3,7 +3,7 @@
  * Created by huhanwen on 2017/5/1.
  */
 function checkAdmin(){
-    return localStorage.getItem('dem2p5_type') === '1';
+    return localStorage.getItem('dem2p5_type') === '1'&&localStorage.getItem('dem2p5_status') === '1';
 }
 
 let $window = $('window');
