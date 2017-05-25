@@ -46,7 +46,7 @@ $('window').ready(function () {
     let $submitBtn = $('#add-post');
     $submitBtn.on('click', function (e) {
         let status = localStorage.getItem('dem2p5_status');
-        if(!status){
+        if(status === "0"){
             alert('请先登陆');
             return;
         }
@@ -70,9 +70,17 @@ $('window').ready(function () {
             },
             success: function (res) {
                 console.log(res);
+                if(res.postId){
+                    alert("发帖成功！");
+                    window.location.reload();
+                }else{
+                    alert("发帖失败！");
+                }
             },
             error: function (e) {
                 console.log(e);
+                alert("发帖失败！");
+                window.location.reload();
             }
         })
     });

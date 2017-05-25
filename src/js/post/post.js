@@ -44,7 +44,7 @@ $('window').ready(function () {
     let $submitBtn = $('#add-response');
     $submitBtn.on('click', function (e) {
         let status = localStorage.getItem('dem2p5_status');
-        if(!status){
+        if(status === "0"){
             alert('请先登陆');
             return;
         }
@@ -66,9 +66,16 @@ $('window').ready(function () {
             },
             success: function (res) {
                 console.log(res);
+                if(res.responseId){
+                    alert("回复成功！");
+                    window.location.reload();
+                }else{
+                    alert('回复失败！');
+                }
             },
             error: function (e) {
                 console.log(e);
+                alert('回复失败！');
             }
         })
     })
