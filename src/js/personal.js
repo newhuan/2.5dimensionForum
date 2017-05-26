@@ -38,6 +38,20 @@ $('window').ready(function () {
 
     });
 
+    let $update = $('#update');
+    $update.on('click', function () {
+        let tel = $('#tel').val(),
+            address = $('#address').val(),
+            email = $('#email').val();
+        changeMsg(tel, address, email).then(function (res) {
+            if(res.msg_id === 1){
+                alert("修改成功！");
+            }else {
+                alert("修改失败！");
+            }
+        })
+    });
+
     function changePwd(oldPassword, newPassword) {
         return new Promise(function (resolve, reject) {
             let userName = localStorage.getItem("dem2p5_user");
@@ -50,6 +64,32 @@ $('window').ready(function () {
                     newPassword,
                     userName,
                     type
+                },
+                success: function (res) {
+                    resolve(res);
+                },
+                error: function (e) {
+                    reject(e);
+                }
+            })
+        })
+    }
+
+    function changeMsg(tel, address, email) {
+        return new Promise(function (resolve, reject) {
+            let userName = localStorage.getItem("dem2p5_user");
+            let password = localStorage.getItem('dem2p5_pwd');
+            let type = localStorage.getItem("dem2p5_type");
+            $.ajax({
+                type: 'post',
+                url: root + "api/updateUserMsg",
+                data: {
+                    tel,
+                    address,
+                    email,
+                    userName,
+                    type,
+                    password
                 },
                 success: function (res) {
                     resolve(res);

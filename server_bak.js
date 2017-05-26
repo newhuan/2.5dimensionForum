@@ -274,6 +274,75 @@ app.post('/api/changePassword', function (req, res) {
 
 });
 
+app.post('/api/updateUserMsg', function (req, res) {
+   let tel = req.body.tel,
+       address = req.body.address,
+       email = req.body.email,
+       userName = req.body.userName,
+       type = req.body.type,
+       password = req.body.password;
+   if(type === "0"){
+       checkUser(userName, password).then(function (id) {
+           if(id === 1){
+               changeUserMsg(userName,{
+                   tel,
+                   address,
+                   email
+               }).then(function (id) {
+                   if(id === 1){
+                       res.json({
+                           msg_id:1
+                       })
+                   }else {
+                       res.json({
+                           msg_id:0
+                       })
+                   }
+               }).catch(function (e) {
+                   res.json({
+                       msg_id: -1
+                   })
+               })
+           }
+       }).catch(function (e) {
+           res.json({
+               msg_id: -1
+           })
+       })
+   }else if( type === "1"){
+       checkAdminUser(userName, password).then(function (id) {
+           changeAdminUserMsg(userName,{
+               tel,
+               address,
+               email
+           }).then(function (id) {
+               if(id === 1){
+                   res.json({
+                       msg_id:1
+                   })
+               }else {
+                   res.json({
+                       msg_id:0
+                   })
+               }
+           }).catch(function (e) {
+               res.json({
+                   msg_id: -1
+               })
+           })
+       }).catch(function (e) {
+           res.json({
+               msg_id: -1
+           })
+       })
+   }else{
+       res.json({
+           msg_id: -1
+       })
+   }
+
+});
+
 function checkUser(user, password) {
     return new Promise(function (resolve, reject) {
        User.findOne({user}, function (err, doc) {
@@ -300,6 +369,28 @@ function changeUserPassword(user, password){
                 reject(err);
             }else {
                 doc.password = password;
+                doc.save(function (err) {
+                    if(err){
+                        reject(err)
+                    }else{
+                        resolve(1);
+                    }
+                })
+            }
+        })
+
+    })
+}
+
+function changeUserMsg(user, msg) {
+    return new Promise(function (resolve, reject) {
+        User.findOne({user}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else {
+                doc.tel = msg.tel;
+                doc.address = msg.address;
+                doc.email = msg.email;
                 doc.save(function (err) {
                     if(err){
                         reject(err)
@@ -350,6 +441,29 @@ function changeAdminUserPassword(adminUser, password) {
        })
     })
 }
+
+function changeAdminUserMsg(adminUser, msg) {
+    return new Promise(function (resolve, reject) {
+        Admin.findOne({adminUser}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else {
+                doc.tel = msg.tel;
+                doc.address = msg.address;
+                doc.email = msg.email;
+                doc.save(function (err) {
+                    if(err){
+                        reject(err)
+                    }else{
+                        resolve(1);
+                    }
+                })
+            }
+        })
+
+    })
+}
+
 //search user
 app.get('/api/searchUser', function (req, res) {
     console.log('api/searchUser');
