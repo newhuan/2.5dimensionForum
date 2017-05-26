@@ -38,6 +38,17 @@ $('window').ready(function () {
 
     });
 
+    $msg = $('#personal-msg');
+    $msg.on('click', function () {
+        getMsg().then(function (res) {
+            if(res.msg_id === 1){
+                showMsg(res.userMsg);
+            }else{
+            //    error handler
+            }
+        })
+    });
+
     let $update = $('#update');
     $update.on('click', function () {
         let tel = $('#tel').val(),
@@ -99,6 +110,36 @@ $('window').ready(function () {
                 }
             })
         })
+    }
+
+    function getMsg() {
+        return new Promise(function (resolve, reject) {
+            let userName = localStorage.getItem("dem2p5_user");
+            let password = localStorage.getItem('dem2p5_pwd');
+            let type = localStorage.getItem("dem2p5_type");
+            $.ajax({
+                type: "get",
+                url: root + "api/getUserMsg",
+                data: {
+                    userName,
+                    password,
+                    type
+                },
+                success: function (res) {
+                    resolve(res);
+                },
+                error: function (e) {
+                    reject(e);
+                }
+            })
+
+        })
+    }
+
+    function showMsg(msg) {
+        $('#tel').val(msg.tel ? msg.tel : "");
+        $('#address').val(msg.address ? msg.address : "");
+        $('#email').val(msg.email ? msg.email : "");
     }
 
 });

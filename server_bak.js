@@ -343,6 +343,71 @@ app.post('/api/updateUserMsg', function (req, res) {
 
 });
 
+app.get('/api/getUserMsg', function (req, res) {
+   let userName = req.query.userName,
+       type = req.query.type,
+       password = req.query.password;
+   if(type === "0"){
+       checkUser(userName, password).then(function (id) {
+           if(id === 1){
+               getUserMsg(userName).then(function (doc) {
+                   res.json({
+                       msg_id: 1,
+                       userMsg: {
+                           tel: doc.tel,
+                           address: doc. address,
+                           email: doc.email
+                       }
+                   });
+               }).catch(function () {
+                   res.json({
+                       msg_id: -1
+                   });
+               })
+           }else {
+               res.json({
+                   msg_id: -1
+               });
+           }
+       }).catch(function () {
+           res.json({
+               msg_id: -1
+           })
+       })
+   }else if(type === "1"){
+       checkAdminUser(userName, password).then(function (id) {
+           if(id === 1){
+               getAdminUserMsg(userName).then(function (doc) {
+                   res.json({
+                       msg_id: 1,
+                       userMsg: {
+                           tel: doc.tel,
+                           address: doc. address,
+                           email: doc.email
+                       }
+                   });
+               }).catch(function () {
+                   res.json({
+                       msg_id: -1
+                   });
+               })
+           }else {
+               res.json({
+                   msg_id: -1
+               });
+           }
+       }).catch(function () {
+           res.json({
+               msg_id: -1
+           })
+       })
+   }else{
+       res.json({
+           msg_id: -1
+       })
+   }
+});
+
 function checkUser(user, password) {
     return new Promise(function (resolve, reject) {
        User.findOne({user}, function (err, doc) {
@@ -462,6 +527,32 @@ function changeAdminUserMsg(adminUser, msg) {
         })
 
     })
+}
+
+function getUserMsg(user) {
+    return new Promise(function (resolve, reject) {
+        User.findOne({user}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+                resolve(doc);
+            }
+        })
+    })
+}
+
+function getAdminUserMsg(adminUser) {
+    return new Promise(function (resolve, reject) {
+        Admin.findOne({adminUser}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+                resolve(doc);
+            }
+
+        })
+    });
+
 }
 
 //search user
