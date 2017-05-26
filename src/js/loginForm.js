@@ -99,6 +99,7 @@ $('window').ready(function () {
 
         if(password!== repwd){
             alert("两次密码输入不一致，请重新输入！");
+            return;
         }
         if(!regPwd.test(password)||/^\d{8,16}$/.test(password)){
             alert("密码非法，请重新输入！");
@@ -129,6 +130,7 @@ function setSignIn(user, password, type) {
 
 function signUp(user, password) {
     return new Promise(function (resolve, reject) {
+
         $.ajax({
             type:'post',
             url: root + "api/signUp",

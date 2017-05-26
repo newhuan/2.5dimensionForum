@@ -198,6 +198,158 @@ app.get('/api/signIn', function (req,res) {
     // return;
 });
 
+//change password
+app.post('/api/changePassword', function (req, res) {
+   let oldPassword = req.body.oldPassword,
+       newPassword = req.body.newPassword,
+       userName = req.body.userName,
+       type = req.body.type;
+   if(type === "0"){//user
+        checkUser(userName, oldPassword).then(function (id) {
+            if(id === 0){
+                res.json({
+                    "msg_id": 3,
+                    "msg": "不存在此用户"
+                })
+            }else if(id === 2){
+                res.json({
+                    "msg_id":2,
+                    "msg": "密码错误"
+                })
+            }else {//修改密码
+                changeUserPassword(userName, newPassword).then(function (id) {
+                    if(id === 1){
+                        res.json({
+                            "msg_id":1,
+                            "msg":"修改成功"
+                        })
+                    }
+                }).catch(function (e) {
+                    res.json({
+                        "msg_id":-1,
+                        "msg": "database error"
+                    })
+                })
+            }
+        }).catch(function (e) {
+            res.json({
+                "msg_id":-1,
+                "msg": "database error"
+            })
+        })
+   }else if(type === "1"){//admin
+       checkAdminUser(userName, oldPassword).then(function (id) {
+           if(id === 0){
+               res.json({
+                   "msg_id": 3,
+                   "msg": "不存在此用户"
+               })
+           }else if(id === 2){
+               res.json({
+                   "msg_id":2,
+                   "msg": "密码错误"
+               })
+           }else {//修改密码
+               changeAdminUserPassword(userName, newPassword).then(function (id) {
+                   if(id === 1){
+                       res.json({
+                           "msg_id":1,
+                           "msg":"修改成功"
+                       })
+                   }
+               }).catch(function (e) {
+                   res.json({
+                       "msg_id":-1,
+                       "msg": "database error"
+                   })
+               })
+           }
+       }).catch(function (e) {
+           res.json({
+               "msg_id":-1,
+               "msg": "database error"
+           })
+       })
+   }
+
+});
+
+function checkUser(user, password) {
+    return new Promise(function (resolve, reject) {
+       User.findOne({user}, function (err, doc) {
+           if(err){
+               reject(err);
+           }else {
+               if(doc === null){
+                   resolve(0);
+               }else if(doc.password === password){
+                   resolve(1);
+               }else {
+                   resolve(2);
+               }
+
+           }
+       })
+    })
+}
+
+function changeUserPassword(user, password){
+    return new Promise(function (resolve, reject) {
+        User.findOne({user}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else {
+                doc.password = password;
+                doc.save(function (err) {
+                    if(err){
+                        reject(err)
+                    }else{
+                        resolve(1);
+                    }
+                })
+            }
+        })
+
+    })
+}
+
+function checkAdminUser(adminUser, password) {
+    return new Promise(function (resolve, reject) {
+       Admin.findOne({adminUser}, function (err, doc) {
+           if(err){
+               reject(err);
+           }else {
+               if(doc === null){
+                   resolve(0);
+               }else if(doc.password === password){
+                   resolve(1);
+               }else {
+                   resolve(2);
+               }
+           }
+
+       })
+    })
+}
+
+function changeAdminUserPassword(adminUser, password) {
+    return new Promise(function (resolve, reject) {
+       Admin.findOne({adminUser}, function (err, doc) {
+           if(err){
+               reject(err);
+           }else {
+               doc.password = password;
+               doc.save(function (err) {
+                   if(err){
+                       reject(err)
+                   }else{
+                       resolve(1);
+                   }
+               })
+           }
+       })
+    })
+}
 //search user
 app.get('/api/searchUser', function (req, res) {
     console.log('api/searchUser');
