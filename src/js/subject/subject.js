@@ -157,6 +157,14 @@ function setPostList(postList) {
     let postTpl = $('#post-tpl').html();
     let $postList = $('#post-list');
     $postList.html("");
+    let sortedPostList = [];
+    //- : a在b前
+    //0 : 相对位置不变
+    //+ : a在b后
+    //1 - 2 : 升序
+    postList.sort(function (post1, post2) {
+       return  post2.responses.length - post1.responses.length;
+    });
     for(let i = 0, len = postList.length;i < len; i++) {
         if(postList[i] === null){
             continue;
@@ -164,7 +172,7 @@ function setPostList(postList) {
         console.log("id", postList[i].id);
         let subjectId = getUrlParam('id');
         let postStr = postTpl.replace('{{userName}}', postList[i].userName);
-        postStr = postStr.replace('{{postTitle}}', postList[i].title);
+        postStr = postStr.replace('{{postTitle}}', postList[i].title + "(" + postList[i].responses.length + ")");
         postStr = postStr.replace('{{postId}}',postList[i].id);
         postStr = postStr.replace('{{subjectId}}', subjectId);
         $postList.append($(postStr));
