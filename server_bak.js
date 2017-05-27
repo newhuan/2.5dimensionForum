@@ -2129,6 +2129,7 @@ app.get('/api/searchPosts', function (req, res) {
                     msg_id: -2,
                     msg: "database error"
                 });
+                return;
             }else {
                 res.json({
                     msg_id: 1,
@@ -2170,7 +2171,7 @@ app.get('/api/searchPosts', function (req, res) {
                         msg: "subject not exist!"
                     });
                 }else {
-                    console.log(doc);
+                    // console.log(doc);
                     let postIdList = doc.postList;
                     let idList = [];
                     for(let i = 0, len = postIdList.length; i < len; i++) {
@@ -2185,36 +2186,70 @@ app.get('/api/searchPosts', function (req, res) {
                                 msg: "database error!"
                             });
                         } else {
-                            if(!title&&!userName) {
+                            if(!title && !userName) {
+                                console.log(1);
                                 res.json({
                                     msg_id: 1,
-                                    postList:doc
+                                    postList: doc
                                 });
                                 return;
                             }
+                            let list1 = [],
+                                list2 = [];
                             for(let i = 0, len = doc.length; i < len; i++) {
-                                if(title && doc[i].title.indexOf(title)>=0 || userName && doc[i].userName.indexOf(userName) >= 0){
-                                    console.log(userName);
-                                    postList_1.push(doc[i]);
-                                    if(i == len-1) {
-                                        setTimeout(function () {
-                                            res.json({
-                                                msg_id: 1,
-                                                postList: postList_1
-                                            });
-                                        }, 2);
-                                    }
-                                }else {
-                                    if(i == len-1) {
-                                        setTimeout(function () {
-                                            res.json({
-                                                msg_id: 1,
-                                                postList: postList_1
-                                            });
-                                        }, 2);
-                                    }
+
+                                if(!title || doc[i].title.indexOf(title)>=0){
+                                    list1.push(doc[i]);
+                                }
+                                // console.log(!userName);
+                                if(!userName || doc[i].userName.indexOf(userName) >= 0){
+
+                                    list2.push(doc[i]);
+                                }
+                                // if(title && doc[i].title.indexOf(title)>=0 || userName && doc[i].userName.indexOf(userName) >= 0){
+                                //     console.log(userName);
+                                //     postList_1.push(doc[i]);
+                                //     if(i == len-1) {
+                                //         setTimeout(function () {
+                                //             res.json({
+                                //                 msg_id: 1,
+                                //                 postList: postList_1
+                                //             });
+                                //         }, 2);
+                                //     }
+                                // }else {
+                                //     if(i == len-1) {
+                                //         setTimeout(function () {
+                                //             res.json({
+                                //                 msg_id: 1,
+                                //                 postList: postList_1
+                                //             });
+                                //         }, 2);
+                                //     }
+                                // }
+                            }
+                            let result = [];
+                            // console.log("l1",list1);
+                            // console.log("l2", list2);
+                            for(let i = 0, len = list1.length; i < len; i++){
+                                // console.log(list1.length, i,list2.length);
+                                for(let j = 0, len2 = list2.length; j < len2; j++){
+                                    console.log(list1[i].id === list2[j].id);
+                                   if(list1[i].id === list2[j].id) {
+                                       result.push(list1[i]);
+                                       break;
+                                   }
                                 }
                             }
+                            console.log(2);
+                            setTimeout(function () {
+                                res.json({
+                                    msg_id: 1,
+                                    postList: result
+                                });
+                            },100);
+
+
 
                         }
                     })

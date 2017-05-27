@@ -96,7 +96,7 @@ $('window').ready(function () {
        postTitle = postTitle ? postTitle : "";
        postUser = postUser ? postUser : "";
        // console.log(postTitle, postUser);
-       if(postTitle || postUser) {
+       // if(postTitle || postUser) {
            console.log('why');
            let searchPostPromise = new Promise(function (resolve, reject) {
                // resolve(1);
@@ -123,7 +123,9 @@ $('window').ready(function () {
            }).catch(function (e) {
                console.log(e);
            })
-       }
+       // }else{
+       //     refresh();
+       // }
 
 
     });
