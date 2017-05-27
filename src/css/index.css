@@ -130,7 +130,7 @@ header {
     height: 40px;
     line-height: 40px; }
   header ul .logo {
-    width: 100px;
+    width: 170px;
     font-size: 24px;
     font-weight: 800; }
   header ul .blank {
@@ -190,9 +190,8 @@ nav {
 /*******************************/
 article {
   background-color: #e2e2e2;
-  height: 600px;
   border-top: 1px solid #e2e2e2;
-  height: 2568px; }
+  height: 1584px; }
   article .layout {
     background-color: white;
     border-radius: 4px; }

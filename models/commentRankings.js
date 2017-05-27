@@ -14,7 +14,7 @@ commentRankingsSchema = new mongoose.Schema({
     subName: {
         type: String,
     },
-    clickNum: {
+    commentNum: {
         type: String
     },
     createTime: {

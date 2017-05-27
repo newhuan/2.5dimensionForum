@@ -12,7 +12,7 @@ let subjectTemplete = $subjectTemplete.innerHTML;
 let yearNow = '2017';
 let regPwd = new RegExp('^[!"#$%&\'\(\)*+,-./0-9:;<=>?@A-Z[\\]^_`a-z{|}~]{8,16}$');
 let pageMsg = {
-    numEvPage: 8,
+    numEvPage: 5,
     currentPage: 1,
     pageNum: 1
 };

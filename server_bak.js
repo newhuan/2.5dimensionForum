@@ -838,32 +838,32 @@ app.get('/api/getSites', function (req, res) {
     //mongoose.connect(DB_CONN_STR);
     /*********** do some staff ***************/
     let sites = req.query.sites;
+    let siteIds = [];
     let sitesRes = [];
     for(let i = 0, len = sites.length; i < len; i++) {
         if(!sites[i]) {
             continue;
         }
-        Site.findOne({id: sites[i]}, function (err, doc) {
-            if(err) {
-                console.log('get sitesError', err);
-                res.json({
-                    state:0,
-                    msg: "get sites fail"
-                });
-                //db.close();
-            }else {
-                sitesRes.push(doc);
-                if(i == len - 1) {
-                    res.json( {
-                        state: 1,
-                        res: sitesRes
-                    });
-                    // //db.close();
-                }
-            }
-
-        })
+        siteIds.push(sites[i]);
     }
+    Site.find({id: {$in: siteIds}}, function (err, doc) {
+        if(err) {
+            console.log('get sites Error', err);
+            res.json({
+                state:0,
+                msg: "get sites fail"
+            });
+            //db.close();
+        }else {
+            sitesRes.push(...Array.from(doc));
+                res.json( {
+                    state: 1,
+                    res: sitesRes
+                });
+                // //db.close();
+        }
+
+    })
 
 });
 
@@ -1530,9 +1530,10 @@ app.get('/api/getSubjectDetail', function (req, res) {
     /***************************************/
 });
 
+
 //update subject
 app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) {
-   console.log('api/updateSubject',req.body.subName,req.body.year,req.body.abstract,req.body.copyRight);
+   console.log('api/updateSubject',req.body.subName,req.body.year,req.body.abstract,req.body.copyRights);
     let imgState = 1;
     let urlList;
    if(!req.file){
@@ -1555,95 +1556,140 @@ app.post('/api/updateSubject', upload.single('upload_img'), function (req, res) 
        video = req.body.video,
        comment = req.body.comment;
    console.log(subjectId);
-    Subject.findOne({"id": subjectId}, function (err, doc) {
-        if(err){
-            console.log("111", err);
-            res.json({
-                "msg_id": -1,
-                "msg": "服务器错误!"
-            });
-            return;
-        }
-        console.log("Subject",doc);
-        doc.subName = subName;
-        doc.year = year;
-        doc.abstract = abstract;
-        doc.copyRights = copyRights;
-        if(imgState){
-            doc.picUrls = urlList;
-        }
-        doc.type = type;
-        doc.video = video;
-        doc.comment = comment;
-        doc.save(function (err) {
+   // console.log(typeof changeSubNameInRankings);
+    changeSubNameInRankings(subjectId, subName).then(function (flag) {
+        console.log(flag);
+        Subject.findOne({"id": subjectId}, function (err, doc) {
             if(err){
+                console.log("111", err);
                 res.json({
                     "msg_id": -1,
                     "msg": "服务器错误!"
                 });
-            }else {
-                SubjectIds.findOne({year}, function (err, doc) {
-                    if(err) {
-                        res.json({
-                            "msg_id": -1,
-                            "msg": "服务器错误!"
-                        });
-                    }else {
-                        doc.subjectIds.push({
+                return;
+            }
+            console.log("Subject",doc);
+            doc.subName = subName;
+            doc.year = year;
+            doc.abstract = abstract;
+            doc.copyRights = copyRights;
+            if(imgState){
+                doc.picUrls = urlList;
+            }
+            doc.type = type;
+            doc.video = video;
+            doc.comment = comment;
+            doc.save(function (err) {
+                if(err){
+                    res.json({
+                        "msg_id": -1,
+                        "msg": "服务器错误!"
+                    });
+                }else {
+                    SubjectIds.findOne({year}, function (err, doc) {
+                        if(err) {
+                            res.json({
+                                "msg_id": -1,
+                                "msg": "服务器错误!"
+                            });
+                        }else {
+                            doc.subjectIds.push({
                                 id: subjectId
-                        });
-                        doc.save(function (err) {
+                            });
+                            doc.save(function (err) {
+                                if(err){
+                                    res.json({
+                                        "msg_id": -1,
+                                        "msg": "服务器错误!"
+                                    });
+                                }else {
+                                    SubjectIds.findOne({year:yearBefore}, function (err, doc) {
+                                        if(err) {
+                                            res.json({
+                                                "msg_id": -1,
+                                                "msg": "服务器错误!"
+                                            });
+                                        }else {
+                                            doc.subjectIds.some(function (key,index) {
+                                                if(key.id === subjectId) {
+                                                    doc.subjectIds.splice(index,1);
+                                                    return true;
+                                                }else {
+                                                    return false;
+                                                }
+                                            });
+                                            doc.save(function (err) {
+                                                if(err) {
+                                                    res.json({
+                                                        "msg_id": -1,
+                                                        "msg": "服务器错误!"
+                                                    });
+                                                }else {
+                                                    //remove subject from type
+                                                    removeSubjectFromType(subjectId, typeBefore).then(function () {
+                                                        addSubjectToType(subjectId, type).then(function () {
+                                                            res.json({
+                                                                "msg_id": '1',
+                                                                "msg": "update success!"
+                                                            });
+                                                        })
+                                                    });
+
+                                                }
+                                            });
+                                        }
+
+                                    });
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        });
+    }).catch(function (err) {
+        res.json({
+            "msg_id": -1,
+            "msg": "服务器错误!"
+        });
+    })
+
+});
+
+function changeSubNameInRankings(subjectId, subName) {
+    return new Promise(function (resolve, reject) {
+        clickRanking.findOne({subjectId}, function (err, doc) {
+            if(err){
+                reject(err);
+            } else {
+                doc.subName = subName;
+                doc.save(function (err) {
+                    if(err){
+                        reject(err);
+                    }else{
+                        commentRanking.findOne({subjectId}, function (err, doc) {
                             if(err){
-                                res.json({
-                                    "msg_id": -1,
-                                    "msg": "服务器错误!"
-                                });
-                            }else {
-                                SubjectIds.findOne({year:yearBefore}, function (err, doc) {
-                                    if(err) {
-                                        res.json({
-                                            "msg_id": -1,
-                                            "msg": "服务器错误!"
-                                        });
-                                    }else {
-                                        doc.subjectIds.some(function (key,index) {
-                                            if(key.id === subjectId) {
-                                                doc.subjectIds.splice(index,1);
-                                                return true;
-                                            }else {
-                                                return false;
-                                            }
-                                        });
-                                        doc.save(function (err) {
-                                            if(err) {
-                                                res.json({
-                                                    "msg_id": -1,
-                                                    "msg": "服务器错误!"
-                                                });
-                                            }else {
-                                                //remove subject from type
-                                                removeSubjectFromType(subjectId, typeBefore).then(function () {
-                                  addSubjectToType(subjectId, type).then(function () {
-                                      res.json({
-                                          "msg_id": '1',
-                                          "msg": "update success!"
-                                      });
-                                  })                  
-                                                });
-                                                
-                                            }
-                                        });
+                                reject(err);
+                            }else{
+                                doc.subName = subName;
+                                doc.save(function (err) {
+                                    if(err){
+                                        reject(err)
+                                    }else{
+                                        resolve(1);
                                     }
 
-                                });
+                                })
                             }
+
                         })
                     }
+
                 })
             }
-        })
-    });
-});
+        });
+    })
+}
 
 function addSubjectToType(subjectId, type) {
     return new Promise(function (resolve, reject) {
@@ -2249,7 +2295,7 @@ function setClickRankings() {
         if(err) {
             console.log('setClickRankingsError', err);
         } else {
-            let data = [...doc];
+            let data = [...Array.from(doc)];
             data.sort(function (a, b) {
                 // console.log(b.clickNum, a.clickNum);
                 return b.clickNum - a.clickNum
@@ -2286,6 +2332,17 @@ function setCommentRankings() {
             data.sort(function (a, b) {
                 return b.commentNum - a.commentNum
             });
+            // let ids =[];
+            // data.forEach(function (key) {
+            //     ids.push(key.id);
+            // });
+            // commentRanking.find({subjectId:{$in: ids}}, function (err, doc) {
+            //     if(err){
+            //
+            //     }else {
+            //
+            //     }
+            // });
             // console.log(data);
             for(let i = 0, len = data.length; i < len; i++) {
                 commentRanking.findOne({"subjectId": data[i].id}, function (err, doc) {
