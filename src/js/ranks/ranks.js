@@ -185,7 +185,7 @@ function initPageSelect() {
         let tpl = $('#page-value').html();
         tpl = tpl.replace('{{val}}', i);
         tpl = tpl.replace('{{num1}}', (i-1)*rankingMsg.numEvPage+1);
-        tpl = tpl.replace('{{num2}}',i === len ? i*rankingMsg.numEvPage:rankingMsg.totalPages);
+        tpl = tpl.replace('{{num2}}',i < len ? i*rankingMsg.numEvPage:rankingMsg.clickList.length);
         $('#page-num-comment').append($(tpl));
         $('#page-num-click').append($(tpl));
     }
@@ -200,6 +200,7 @@ function clickChangeToPage(pageNum) {
     clearClickRankingList();
     setClickList(rankingMsg.currentClickList);
     $('#page-num-click').val(pageNum);
+    window.scroll(0, 0);
 }
 
 function commentChangeToPage(pageNum) {
