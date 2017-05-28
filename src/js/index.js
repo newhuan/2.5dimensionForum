@@ -445,6 +445,7 @@ function handleSubjectList(subjectList) {
     InitSubjectAndPageData(subjectList);
     refershPageControl();
     showSubject(subjectMsg.currentSubjectList);
+    changeToPage(1);
 }
 
 //get subjects by year
@@ -532,6 +533,9 @@ function addSubjectToSubjectList(subject) {
 function changeToPage(pageNum) {
     clearSubjectList();
     refreshSubjectAndPageMsg(pageNum);
+    let $pageNums = $('.page-num');
+    $pageNums.removeClass('page-active');
+    $($pageNums[pageNum - 1]).addClass('page-active');
     showSubject(subjectMsg.currentSubjectList);
 }
 
@@ -566,12 +570,15 @@ function InitSubjectAndPageData(subjects) {
 //delete invalid data in subjects
 function clearSubjectData(subjects) {
     let subjectList = [];
-    console.log(subjects)
+    console.log(subjects);
     subjects = Array.from(subjects);
     subjects.forEach(function (subject) {
         if(subject !== null){
             subjectList.push(subject);
         }
+    });
+    subjectList.sort(function (s1, s2) {
+        return s2.clickNum - s1.clickNum;
     });
     return subjectList;
 }
@@ -587,6 +594,7 @@ function refershPageControl() {
         let $pageNum = pageNumTpl.replace('{{num}}', i);
         $('.page-next').before($($pageNum));
     }
+    $($('.page-num')[0]).addClass('page-active');
 }
 
 //refresh subjectMsg and pageMsg with a new pageNum

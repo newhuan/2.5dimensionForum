@@ -572,7 +572,7 @@ app.get('/api/searchUser', function (req, res) {
     }else if (jurisdiction == 1){
         Model = Admin;
         condition = {
-            adminUser: {$exists: true}
+            adminUser: userName
         }
     }
     Model.find(condition, function (err, doc) {
@@ -1857,6 +1857,21 @@ function getSubjectsWithSubjectList(subjectList) {
     })
 }
 
+app.get('/api/getRankingSubjects', function (req, res) {
+   let subjectList = req.query.subjectList;
+   getSubjectsWithSubjectList(subjectList).then(function (doc) {
+        res.json({
+            msg_id: 1,
+            subjects: doc
+        })
+   }).catch(function (err) {
+       res.json({
+           msg_id: -1,
+           subjects: []
+       })
+   })
+});
+
 //delete subject
 app.post('/api/deleteSubject', function (req, res) {
     let subjectId = req.body.subjectId,
@@ -2046,13 +2061,13 @@ app.get('/api/getRankingList', function (req, res) {
     /*****************************************************/
     let data = [[],[]];
     let rankings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    clickRanking.find({ranking:{$in:rankings}}, function (err, doc) {
+    clickRanking.find({ranking:{$exists: true}}, function (err, doc) {
         if(err){
             console.log('getRankingListError', err);
             res.json(data)
         }else {
             data[0] = doc;
-            commentRanking.find({ranking:{$in:rankings}}, function (err, doc) {
+            commentRanking.find({ranking:{$exists: true}}, function (err, doc) {
                 if(err){
                     console.log('getRankingListError', err);
                     res.json(data)
@@ -2082,34 +2097,38 @@ app.post('/api/deletePost', function (req, res) {
             //db.close();
         }else {
             console.log('delete post successful');
-            User.findOne({user:userName}, function (err, doc) {
-                if(err){
-                    //db.close();
-                    return
-                }
-                for(let i = 0, len = doc.posts.length; i < len; i++) {
-                    if(doc.posts[i].id == id) {
-                        doc.posts.splice(i, 1);
-                        break;
-                    }
-                }
-                doc.save(function (err) {
-
-                    if(err){
-                        res.json({
-                            state:0,
-                            msg:"delete fail"
-                        })
-                    }else {
-                        res.json({
-                            state:1,
-                            msg:"delete successful"
-                        });
-
-                    }
-                    //db.close();
-                })
+            res.json({
+                state:1,
+                msg:"delete successful"
             });
+            // User.findOne({user:userName}, function (err, doc) {
+            //     if(err){
+            //         //db.close();
+            //         return
+            //     }
+            //     for(let i = 0, len = doc.posts.length; i < len; i++) {
+            //         if(doc.posts[i].id == id) {
+            //             doc.posts.splice(i, 1);
+            //             break;
+            //         }
+            //     }
+            //     doc.save(function (err) {
+            //
+            //         if(err){
+            //             res.json({
+            //                 state:0,
+            //                 msg:"delete fail"
+            //             })
+            //         }else {
+            //             res.json({
+            //                 state:1,
+            //                 msg:"delete successful"
+            //             });
+            //
+            //         }
+            //         //db.close();
+            //     })
+            // });
 
         }
     })

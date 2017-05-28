@@ -154,4 +154,15 @@ h4 {
 .layout {
   border-radius: 4px; }
 
+.rankingList dl dt {
+  margin-right: 14px;
+  width: 64px;
+  height: 72px;
+  border: 1px solid #eee;
+  float: left; }
+  .rankingList dl dt img {
+    display: block;
+    width: 100%;
+    height: 100%; }
+
 /*# sourceMappingURL=ranks.css.map */

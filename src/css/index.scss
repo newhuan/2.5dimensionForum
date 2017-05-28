@@ -111,6 +111,11 @@ nav{
 /*******************************/
 /****** article  ***************/
 /*******************************/
+.page-active{
+  background: black;
+  color: white;
+}
+.btn:active{}
 article{
   background-color: #e2e2e2;
   //height: 600px;

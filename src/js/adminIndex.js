@@ -25,6 +25,7 @@ let jurisdictionBefore;
 let User;
 let formDataAdd = new FormData();
 let formDataRefresh = new FormData();
+let postList = [];
 $window.ready(function () {
 
    // show sites
@@ -278,6 +279,7 @@ $window.ready(function () {
             },
             success: function (res) {
                 console.log(res);
+                postList = res.postList;
                 showPosts(res.postList);
             },
             error: function (e) {
@@ -292,7 +294,13 @@ $window.ready(function () {
         console.log('$postDeleteBtnClicked');
 
         let postId = $(this).parent().find('.post-id-ipt').val();
-        let userName = $(this).parent().parent().parent().find('#post-user-name').val();
+        let userName;
+        postList.forEach(function (post) {
+            if(post.id === postId){
+                userName = post.userName;
+            }
+        });
+        // let userName = $(this).parent().parent().parent().find('#post-user-name').val();
         console.log(postId);
         $.ajax({
             type:'post',

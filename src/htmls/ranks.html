@@ -161,28 +161,83 @@
 		<table class="table rankingList clickList">
 
 		</table>
+		<div class="layout" style="padding-left: 40px;">
+			<button class="btn btn-default page-prev-click" style="float:left;" type="button">上一页</button>
+			<div id="page-controller1" class="col-sm-2" style="float:left;">
+				<select type="select" class="form-control col-sm-1" name="" id="page-num-click">
+					<option value="1">1-10</option>
+				</select>
+			</div>
+			<button class="btn btn-default page-next-click" style="float:left;" type="button">下一页</button>
+		</div>
+
 		<div class="title">
 			<h4>评论榜</h4>
 		</div>
 		<table class="table rankingList commentList">
 
 		</table>
+		<div class="layout" style="padding-left: 40px;">
+			<button class="btn btn-default page-prev-comment" style="float:left;" type="button">上一页</button>
+			<div id="page-controller2" class="col-sm-2" style="float:left;">
+				<select type="select" class="form-control col-sm-1" name="" id="page-num-comment">
+					<option value="1">1-10</option>
+				</select>
+			</div>
+			<button class="btn btn-default page-next-comment" style="float:left;" type="button">下一页</button>
+		</div>
 	</div>
 </article>
 
+<!-- page tpl-->
 
+	<script type="text/template" id="page-value">
+		<option value="{{val}}">{{num1}}-{{num2}}</option>
+</script>
+
+	<script  type="text/template" id="page-num-tpl-init1">
+		<button class="btn btn-default page-prev">上一页</button>
+		<button class="btn btn-default page-num">1</button>
+		<button class="btn btn-default page-next">下一页</button>
+	</script>
+
+	<script  type="text/template" id="page-num-tpl-init2">
+		<button class="btn btn-default page-prev">上一页</button>
+		<button class="btn btn-default page-num">1</button>
+		<button class="btn btn-default page-next">下一页</button>
+	</script>
+
+	<script type="text/template" id="page-num-tpl">
+		<button class="btn btn-default page-num">{{num}}</button>
+	</script>
+<!-- page tpl end -->
 
 <script type="text/template" id="tpl-ranks-click">
 	<tr>
 		<td class="num">{{ranking}}</td>
-		<td><a href="subject/subject.html?id={{subjectId}}&click={{clickNum}}">{{subName}}</a></td>
+		<td>
+			<dl>
+				<dt><img src="{{picurl}}" alt=""></dt>
+				<dd><a href="subject/subject.html?id={{subjectId}}&click={{clickNum}}">{{subName}}</a></dd>
+				<dd>点击数：{{clickNum}}</dd>
+				<dd>{{comment}}</dd>
+			</dl>
+
+		</td>
 	</tr>
 </script>
 
 <script type="text/template" id="tpl-ranks-comment">
 	<tr>
 		<td class="num">{{ranking}}</td>
-		<td><a href="subject/subject.html?id={{subjectId}}&comment={{commentNum}}">{{subName}}</a></td>
+		<td>
+			<dl>
+				<dt><img src="{{picurl}}" alt=""></dt>
+				<dd><a href="subject/subject.html?id={{subjectId}}&comment={{commentNum}}">{{subName}}</a></dd>
+				<dd>评论数：{{commentNum}}</dd>
+				<dd>{{comment}}</dd>
+			</dl>
+			</td>
 	</tr>
 </script>
 <script src="../assets/plugins/jquery-3.1.0.min.js"></script>
