@@ -12,8 +12,6 @@ $('window').ready(function () {
     $signOut.on('click', function () {
         setSignOut();
     });
-
-
 });
 function setSignOut() {
     let $userName = $('#user-name-header');

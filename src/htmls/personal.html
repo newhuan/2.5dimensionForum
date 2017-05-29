@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>个人中心</title>
     <link rel="stylesheet" href="../css/ranks/ranks.css">
     <link rel="stylesheet" href="../assets/plugins/css/bootstrap.min.css">
 </head>
@@ -154,13 +155,14 @@
         </div>
         <div class="layout">
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">修改密码</a></li>
+                <li role="presentation" class="active"><a href="#responses" aria-controls="responses" role="tab" data-toggle="tab">最近回复</a></li>
+                <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">修改密码</a></li>
                 <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" id="personal-msg">个人信息</a></li>
 
             </ul>
 
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="home" style="height: 400px;padding-top: 40px;">
+                <div role="tabpanel" class="tab-pane " id="home" style="height: 400px;padding-top: 40px;">
                     <form class="form-horizontal">
                         <div class="form-group">
                             <label for="origial-pwd" class="col-sm-4 control-label">原密码</label>
@@ -214,6 +216,21 @@
                             </div>
                         </div>
                     </form>
+                </div>
+                <div role="tabpanel" class="tab-pane active" id="responses" style="height: 400px;padding-top: 40px;">
+                    <ul id="response-list" style="margin-bottom: 50px;">
+
+                    </ul>
+                    <script type="text/template" id="response-tpl">
+                    <li>
+                            <p>
+                                <a href="javascript:void(0);" id="{{postId}}">{{postTitle}}</a>
+                            </p>
+                        <p>
+                            {{user}} 回复：{{responseText}}
+                        </p>
+                    </li>
+</script>
                 </div>
             </div>
         </div>

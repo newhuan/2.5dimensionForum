@@ -11,6 +11,12 @@ ResponsesSchema = new mongoose.Schema({
     user: { // 用户名
         type: String
     },
+    postId: {
+        type: String
+    },
+    responses: {
+        type: Array
+    },
     text: {
         type: String,
     },

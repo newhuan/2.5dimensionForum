@@ -63,6 +63,29 @@ $('window').ready(function () {
         })
     });
 
+    getUserResponses().then(function (res) {
+        console.log(res);
+        showResponses(res.userResponses);
+    });
+    $('#sign-out').on('click', function () {
+        window.location.href = "../index.html";
+    });
+
+    $('#response-list').delegate('a', 'click', function () {
+        let postId = $(this).attr('id');
+
+        $.ajax({
+            type: 'get',
+            url: root + "api/getSubIdByPost",
+            data: {
+                id: postId
+            },success: function (res) {
+                window.location.href = "./post/post.html?id=" + postId +"&subjectId=" + res.subId;
+            }
+        })
+
+    });
+
     function changePwd(oldPassword, newPassword) {
         return new Promise(function (resolve, reject) {
             let userName = localStorage.getItem("dem2p5_user");
@@ -142,4 +165,41 @@ $('window').ready(function () {
         $('#email').val(msg.email ? msg.email : "");
     }
 
+    function getUserResponses() {
+        return new Promise(function (resolve, reject) {
+            let userName = localStorage.getItem("dem2p5_user");
+            let password = localStorage.getItem('dem2p5_pwd');
+            let type = localStorage.getItem("dem2p5_type");
+            $.ajax({
+                type: "get",
+                url: root + "api/getUserResponses",
+                data: {
+                    userName,
+                    password,
+                    type
+                },
+                success: function (res) {
+                    resolve(res);
+                },
+                error: function (e) {
+                    reject(e);
+                }
+            })
+        });
+
+    }
+
+    function showResponses(responses) {
+        responses.forEach(function (resp) {
+            resp.responses.forEach(function (item) {
+                let tpl = $('#response-tpl').html();
+                tpl = tpl.replace('{{postId}}',resp.postId);
+                tpl = tpl.replace('{{postTitle}}',resp.postTitle);
+                tpl = tpl.replace('{{responseText}}',item.text);
+                tpl = tpl.replace('{{user}}',item.user);
+             $('#response-list').append($(tpl));
+            })
+
+        })
+    }
 });

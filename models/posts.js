@@ -11,6 +11,9 @@ PostsSchema = new mongoose.Schema({
     userName: { // 密码
         type: String
     },
+    subjectId: {
+        type: String
+    },
     title: {
         type: String,
     },

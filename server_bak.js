@@ -408,6 +408,136 @@ app.get('/api/getUserMsg', function (req, res) {
    }
 });
 
+app.get('/api/getUserResponses', function (req, res) {
+    let userName = req.query.userName,
+        type = req.query.type,
+        password = req.query.password;
+    if(type === "0"){
+        checkUser(userName, password).then(function (id) {
+            if(id === 1){
+                getUserResponses(userName, type).then(function (doc) {
+                    res.json({
+                        msg_id: 1,
+                        userResponses: doc
+                    });
+                }).catch(function () {
+                    res.json({
+                        msg_id: -1
+                    });
+                })
+            }else {
+                res.json({
+                    msg_id: -1
+                });
+            }
+        }).catch(function () {
+            res.json({
+                msg_id: -1
+            })
+        })
+    }else if(type === "1"){
+        checkAdminUser(userName, password).then(function (id) {
+            if(id === 1){
+                getUserResponses(userName, type).then(function (doc) {
+                    doc.forEach(function (key, index) {
+                       if(key.responses.length === 0){
+                           doc.splice(index, 1);
+                       }
+                    });
+                    res.json({
+                        msg_id: 1,
+                        userResponses: doc
+                    });
+                }).catch(function () {
+                    res.json({
+                        msg_id: -1
+                    });
+                })
+            }else {
+                res.json({
+                    msg_id: -1
+                });
+            }
+        }).catch(function () {
+            res.json({
+                msg_id: -1
+            })
+        })
+    }else{
+        res.json({
+            msg_id: -1
+        })
+    }
+
+});
+
+function getUserResponses(user, type) {
+    return new Promise(function (resolve, reject) {
+        let responses = [];
+        let postIds = [];
+        let responseIds = [];
+        let condition = {};
+        let Model;
+        if(type === "0"){
+            Model = User;
+            condition = {user}
+        }else {
+            Model = Admin;
+            condition = {adminUser:user};
+        }
+        Model.findOne(condition, function (err, doc) {
+            if(err){
+                reject(err)
+            }else{
+                doc.posts.forEach(function (post) {
+                    responses.push({
+                        postId: post.id,
+                        postTitle: post.title,
+                        responses: []
+                    });
+                    postIds.push(post.id);
+                })
+            }
+            console.log(postIds);
+            //above is all right;
+            Post.find({id : {$in : postIds}}, function (err, doc) {
+                if(err){
+                    reject(err);
+                }else{
+                    doc.forEach(function (post) {
+                        post.responses.forEach(function (item) {
+                                       responseIds.push(item.id);
+                                    });
+                    });
+                //    foreach end
+                    console.log("respId", responseIds);
+                    Response.find({id  :{$in : responseIds}}, function (err, doc) {
+                        if(err){
+                            reject(err);
+                        }else{
+                            console.log(doc.length);
+                            doc.forEach(function (key) {
+                                responses.some(function (resp) {
+                                    if(resp.postId === key.postId){
+                                        resp.responses.push(key);
+                                        return true;
+                                    }
+                                //    some end
+                                })
+                            //    each end
+                            });
+                            resolve(responses);
+                        }
+
+                    })
+
+                }
+            })
+
+        })
+    })
+}
+
 function checkUser(user, password) {
     return new Promise(function (resolve, reject) {
        User.findOne({user}, function (err, doc) {
@@ -956,10 +1086,13 @@ app.post('/api/addPost',function (req, res) {
     console.log('addPost', postId, req.body.userName, req.body.title, req.body.mainText);
     //mongoose.connect(DB_CONN_STR);
     let title =  req.body.title;
+    let user = req.body.userName,
+        type = req.body.type;
     let time = getTime();
     let PostEntity = new Post({
         id : postId,
-        userName  : req.body.userName,
+        userName  : user,
+        subjectId: req.body.subjectId,
         title: title,
         mainText: req.body.mainText,
         responses: [],
@@ -975,7 +1108,19 @@ app.post('/api/addPost',function (req, res) {
             // console.log("error :" + error);
         }else{
             // console.log('PostEntitySave', doc);
-            User.update({user: req.body.userName}, {"$push": {'posts': {"id": postId,"title": title}}}, function (error, docs) {
+            let condition, Model;
+            if(type === "0"){
+                Model = User;
+                condition = {
+                    user
+                }
+            }else {
+                Model = Admin;
+                condition = {
+                    adminUser: user
+                }
+            }
+            Model.update(condition, {"$push": {'posts': {"id": postId,"title": title}}}, function (error, docs) {
                 if (error) {
                     // console.log("error :" + error);
                     res.json({
@@ -1037,6 +1182,8 @@ app.post('/api/addResponse', function (req, res) {
     let ResponseEntity = new Response({
         id : responseId,
         user  : req.body.userName,
+        postId: req.body.postId,
+        responses: [],
         text: req.body.mainText,
         createTime: time,
         lastUpdateTime: time
@@ -1085,6 +1232,20 @@ app.post('/api/addResponse', function (req, res) {
 
         }
     });
+});
+
+app.get('/api/getSubIdByPost', function (req,res) {
+   Post.findOne({id:req.query.id}, function (err,doc) {
+       if(err){
+           res.json({
+               subId:""
+           })
+       }else {
+           res.json({
+               subId:doc.subjectId
+           })
+       }
+   })
 });
 
 function addCommentNum(subjectId, num) {

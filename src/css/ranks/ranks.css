@@ -154,6 +154,18 @@ h4 {
 .layout {
   border-radius: 4px; }
 
+#response-list li {
+  float: left;
+  width: 800px;
+  height: 76px;
+  margin: 0 auto;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.37) 0px 0px 7px;
+  margin-left: 40px;
+  padding: 10px;
+  margin-bottom: 10px; }
+
 .rankingList dl dt {
   margin-right: 14px;
   width: 64px;

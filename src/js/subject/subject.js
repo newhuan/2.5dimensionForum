@@ -53,6 +53,7 @@ $('window').ready(function () {
 
         let mainText = $('#post-text').val();
         let userName = localStorage.getItem('dem2p5_user');
+        let type = localStorage.getItem('dem2p5_type');
         let title = $('#post-title-add').val();
         let subjectId = getUrlParam('id');
         if(!checkEmpty(mainText, userName , title, subjectId)) {
@@ -64,6 +65,7 @@ $('window').ready(function () {
             url: root + 'api/addPost',
             data: {
                 userName,
+                type,
                 title,
                 mainText,
                 subjectId
