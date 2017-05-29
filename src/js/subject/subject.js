@@ -4,6 +4,13 @@
 const root = 'http://localhost:3000/';
 let search = "https://www.baidu.com/s?wd=site%3A({{domainName}}){{subName}}";
 let subName;
+let postMsg = {
+    posts:[],
+    currentPosts:[],
+    numEvPage: 5,
+    currentPage: 0,
+    totalPages: 1
+};
 $('window').ready(function () {
     let subjectId = getUrlParam('id');
     let postIdList = [];
@@ -32,7 +39,10 @@ $('window').ready(function () {
                     //TODO:set page controller
 
                     console.log(res);
-                    setPostList(res.postList);
+                    initPostMsg(res.postList);
+                    refreshPageController();
+                    changeToPage(1);
+                    // setPostList(res.postList);
                     // postIdList = data.postList;
                 }
             });
@@ -131,7 +141,57 @@ $('window').ready(function () {
 
 
     });
+
+    let $pageControler = $('#page-container');
+    $pageControler.delegate('.prev','click',function () {
+        changeToPage(postMsg.currentPage - 1);
+    });
+    $pageControler.delegate('.next','click', function () {
+        changeToPage(postMsg.currentPage + 1);
+    });
+    $pageControler.delegate('.num','click', function () {
+       changeToPage($(this).html());
+    })
 });
+
+function changeToPage(pageNum) {
+    if(pageNum <= 0||pageNum > postMsg.totalPages||pageNum === postMsg.currentPage){
+        return;
+    }
+    postMsg.currentPage = pageNum;
+    postMsg.currentPosts = postMsg.posts.slice((pageNum-1) * postMsg.numEvPage, pageNum * postMsg.numEvPage);
+    clearPostList();
+    setPostList(postMsg.currentPosts);
+    let $num = $('.num');
+    $num.removeClass('active');
+    $($num.get(pageNum - 1)).addClass('active');
+}
+
+function initPostMsg(postList) {
+    postList.sort(function (post1, post2) {
+        return  post2.lastUpdateTime - post1.lastUpdateTime;
+    });
+    postMsg.posts = postList;
+    postMsg.currentPosts = postList.slice(0, postMsg.numEvPage);
+    postMsg.totalPages = postList.length % postMsg.numEvPage === 0 ? parseInt(postList.length / postMsg.numEvPage) : parseInt(postList.length / postMsg.numEvPage) + 1;
+}
+
+function refreshPageController() {
+    if(postMsg.totalPages === 1){
+        initPageController();
+    }else{
+        for(let i = 2; i <= postMsg.totalPages; i++){
+            let tpl = $('#page-tpl').html();
+            // console.log(tpl);
+            tpl = tpl.replace('{{num}}', i);
+            $($('.next').get(0)).before($(tpl));
+        }
+    }
+}
+
+function initPageController() {
+    $('#page-container').html($('#page-tpl-init').html());
+}
 
 function setAbstract(data) {
     let $avatar = $('#avatar');
@@ -156,6 +216,10 @@ function setAbstract(data) {
     $('#click-num').html(data.clickNum);
 }
 
+function clearPostList() {
+    $('#post-list').html("");
+}
+
 function setPostList(postList) {
 
     let postTpl = $('#post-tpl').html();
@@ -173,7 +237,7 @@ function setPostList(postList) {
         if(postList[i] === null){
             continue;
         }
-        console.log("id", postList[i].id);
+        // console.log("id", postList[i].id);
         let subjectId = getUrlParam('id');
         let postStr = postTpl.replace('{{userName}}', postList[i].userName + "     发布于：" + formatDate(postList[i].createTime));
         postStr = postStr.replace('{{postTitle}}', "(" + postList[i].responses.length + ")" + postList[i].title);

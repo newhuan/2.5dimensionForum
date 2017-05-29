@@ -68,6 +68,7 @@ $('window').ready(function () {
         // sortResponses(res.userResponses)
         showResponses( sortResponses(res.userResponses));
     });
+
     $('#sign-out').on('click', function () {
         window.location.href = "../index.html";
     });
