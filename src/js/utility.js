@@ -99,3 +99,14 @@ function refresh() {
     window.location.reload(true);
 
 }
+
+function formatDate(time) {
+    let date = new Date(parseInt(time));
+    let month = date.getMonth();
+    let day = date.getDate();
+    let hour = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    // console.log(date,time);
+    return "" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
+}

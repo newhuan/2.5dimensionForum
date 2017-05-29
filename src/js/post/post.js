@@ -17,6 +17,7 @@ $('window').ready(function () {
         success: function (res) {
             // let data = JSON.parse(res);
             console.log(res);
+            $('title').html(res.title);
             setPostLayout(res);
             let url = root + 'api/getResponseList';
             $.ajax({
@@ -95,8 +96,11 @@ function setPostLayout(data) {
 function setResponseList(responseList) {
     let resTpl = $('#response-tpl').html();
     let $responseList = $('.response-list');
+    responseList.sort(function (resp1,resp2) {
+        return resp1.createTime - resp2.createTime;
+    });
     for(let i = 0, len = responseList.length;i < len; i++) {
-        let resSTR = resTpl.replace('{{userName}}', responseList[i].user);
+        let resSTR = resTpl.replace('{{userName}}', responseList[i].user + "     发布于：" + formatDate(responseList[i].createTime));
         resSTR = resSTR.replace('{{text}}', responseList[i].text);
         $responseList.append($(resSTR));
     }

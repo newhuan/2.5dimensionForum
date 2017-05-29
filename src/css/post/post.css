@@ -153,14 +153,18 @@ body {
   border: 1px solid #000;
   padding: 4px; }
 
-.response-list .response-layout {
-  margin-bottom: 4px;
-  padding: 4px; }
-  .response-list .response-layout .response-user {
-    font-size: 12px;
-    color: #778087; }
-  .response-list .response-layout .response-text {
-    padding-top: 4px; }
+.response-list {
+  border: 1px solid #aaa;
+  padding: 10px;
+  border-radius: 10px; }
+  .response-list .response-layout {
+    margin-bottom: 4px;
+    padding: 4px; }
+    .response-list .response-layout .response-user {
+      font-size: 12px;
+      color: #778087; }
+    .response-list .response-layout .response-text {
+      padding-top: 4px; }
 
 .add-response #response-text {
   width: 800px;

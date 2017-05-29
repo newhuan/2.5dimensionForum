@@ -1214,9 +1214,29 @@ app.post('/api/addResponse', function (req, res) {
                             })
                         } else {
                             addCommentNum(subjectId, 1).then(function () {
-                                res.json({
-                                    "responseId" : responseId,
+                                Post.findOne({id: req.body.postId}, function (err, doc) {
+                                    if(err){
+                                        res.json({
+                                            "msg_id":-1,
+                                            "msg": "database error"
+                                        })
+                                    }else{
+                                        doc.lastUpdateTime = getTime();
+                                        doc.save(function (err) {
+                                            if(err){
+                                                res.json({
+                                                    "msg_id":-1,
+                                                    "msg": "database error"
+                                                })
+                                            }else{
+                                                res.json({
+                                                    "responseId" : responseId,
+                                                });
+                                            }
+                                        })
+                                    }
                                 });
+
 
                             }).catch(function (err) {
                                 res.json({

@@ -230,9 +230,12 @@ article {
   height: 20px; }
 
 .post-list .post-item {
-  border-bottom: 1px solid #ccc;
   box-sizing: border-box;
-  padding: 2px 10px; }
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.37) 0px 0px 7px;
+  padding: 10px;
+  margin-bottom: 9px; }
   .post-list .post-item .user-name {
     color: #778087; }
   .post-list .post-item .post-title a {
