@@ -102,11 +102,12 @@ function refresh() {
 
 function formatDate(time) {
     let date = new Date(parseInt(time));
-    let month = date.getMonth();
-    let day = date.getDate();
-    let hour = date.getHours();
-    let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
+    let month = date.getMonth() + 1;
+    let day = date.getDate()<10 ? "0" + date.getDate() : date.getDate();
+
+    let hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+    let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
     // console.log(date,time);
     return "" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
 }

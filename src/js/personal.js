@@ -65,7 +65,8 @@ $('window').ready(function () {
 
     getUserResponses().then(function (res) {
         console.log(res);
-        showResponses(res.userResponses);
+        // sortResponses(res.userResponses)
+        showResponses( sortResponses(res.userResponses));
     });
     $('#sign-out').on('click', function () {
         window.location.href = "../index.html";
@@ -191,15 +192,33 @@ $('window').ready(function () {
 
     function showResponses(responses) {
         responses.forEach(function (resp) {
-            resp.responses.forEach(function (item) {
+            // resp.responses.forEach(function (item) {
                 let tpl = $('#response-tpl').html();
                 tpl = tpl.replace('{{postId}}',resp.postId);
                 tpl = tpl.replace('{{postTitle}}',resp.postTitle);
-                tpl = tpl.replace('{{responseText}}',item.text);
-                tpl = tpl.replace('{{user}}',item.user);
+                tpl = tpl.replace('{{responseText}}',resp.text);
+                tpl = tpl.replace('{{user}}',resp.user);
+                tpl = tpl.replace('{{time}}',formatDate(resp.createTime));
+
              $('#response-list').append($(tpl));
-            })
+            // })
 
         })
+    }
+
+    function sortResponses(responses) {
+        let respes = [];
+        responses.forEach(function (resp) {
+            resp.responses.forEach(function (item) {
+                item.postId = resp.postId;
+                item.postTitle = resp.postTitle;
+                respes.push(item);
+            })
+        });
+        respes.sort(function (resp1, resp2) {
+            return resp2.createTime - resp1.createTime;
+        });
+        console.log(respes);
+        return respes;
     }
 });
