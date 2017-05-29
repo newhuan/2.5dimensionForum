@@ -131,7 +131,10 @@ $('window').ready(function () {
            });
            searchPostPromise.then(function (res) {
                console.log(res);
-               setPostList(res.postList);
+               initPostMsg(res.postList);
+               refreshPageController();
+               changeToPage(1);
+               // setPostList(res.postList);
            }).catch(function (e) {
                console.log(e);
            })
@@ -172,6 +175,7 @@ function initPostMsg(postList) {
         return  post2.lastUpdateTime - post1.lastUpdateTime;
     });
     postMsg.posts = postList;
+    postMsg.currentPage = 0;
     postMsg.currentPosts = postList.slice(0, postMsg.numEvPage);
     postMsg.totalPages = postList.length % postMsg.numEvPage === 0 ? parseInt(postList.length / postMsg.numEvPage) : parseInt(postList.length / postMsg.numEvPage) + 1;
 }
