@@ -200,12 +200,22 @@
 		<div class="line20"></div>
 		<div class="layout" style="width: 100%">
 			<div class="page-controller">
-				<div style="float:right;">
-					<button class="btn btn-default">上一页</button>
-					<button class="btn btn-default">1</button>
-					<button class="btn btn-default">下一页</button>
+				<div id="page-container" style="float:right;">
+					<button class="btn btn-default prev">上一页</button>
+					<button class="btn btn-default num">1</button>
+					<button class="btn btn-default next">下一页</button>
 				</div>
+				<script type="text/template" id="page-tpl">
+					<button class="btn btn-default num">{{num}}</button>
+				</script>
+				<script type="text/template" id="page-tpl-init">
+					<button class="btn btn-default prev">上一页</button>
+					<button class="btn btn-default">1</button>
+					<button class="btn btn-default next">下一页</button>
+				</script>
+
 			</div>
+
 		</div>
 
 		<div class="line20"></div>

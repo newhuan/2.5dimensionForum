@@ -5,6 +5,11 @@
     <title>个人中心</title>
     <link rel="stylesheet" href="../css/ranks/ranks.css">
     <link rel="stylesheet" href="../assets/plugins/css/bootstrap.min.css">
+    <style>
+        .num{
+            width: 36px;
+        }
+    </style>
 </head>
 <body>
     <!--排行榜test-->
@@ -226,13 +231,13 @@
                             <div style="float:right;padding-right: 40px;
     padding-bottom: 20px;" id="page-container">
                                 <button class="btn btn-default prev">上一页</button>
-                                <button class="btn btn-default">1</button>
+                                <button class="btn btn-default num">1</button>
                                 <button class="btn btn-default next">下一页</button>
                             </div>
                         </div>
                     </div>
                     <script type="text/template" id="page-tpl">
-                        <button class="btn btn-default">{{num}}</button>
+                        <button class="btn btn-default num">{{num}}</button>
 </script>
                     <script type="text/template" id="page-tpl-init">
                         <button class="btn btn-default prev">上一页</button>
