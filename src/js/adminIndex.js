@@ -397,7 +397,30 @@ $window.ready(function () {
                 refreshSiteSearch();
             }
         })
-    })
+    });
+
+//    Responses
+    let $searchResp = $('#search-response');
+    $searchResp.on('click', function () {
+        let postId = $('#postId').val();
+        getResponses(postId).then(function (resps) {
+            clearRespList();
+            showResps(resps);
+        })
+    });
+
+   $('#response-list').delegate('button','click', function () {
+       console.log($(this).attr('id'));
+       deleteResp($(this).attr('id')).then(function (flag) {
+           if(flag){
+               alert("删除成功！");
+           }else{
+               alert("删除失败！");
+           }
+           // window.location.reload();
+       })
+   })
+
 });
 //subject
 function searchSubject(id) {
@@ -670,3 +693,63 @@ function getCheckedSites(listID) {
     return copyRights;
 }
 
+//Response
+function getResponses(postId) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: "get",
+            url: root + "api/getResponses",
+            data: {
+                postId
+            },
+            success:function (res) {
+                if(res.msg_id === 1){
+                    resolve(res.responses);
+                }else{
+                    reject();
+                }
+            },
+            error: function () {
+                reject();
+            }
+        })
+
+    })
+}
+
+function showResps(resps) {
+    let tpl = $('#response-tpl').html();
+    let $respList = $('#response-list');
+    resps.forEach(function (item) {
+        let subTpl = tpl.replace("{{text}}", item.text);
+        subTpl = subTpl.replace("{{responseId}}", item.id);
+        $respList.append($(subTpl));
+    })
+}
+
+function clearRespList() {
+    $('#response-list').html("");
+}
+
+function deleteResp(id) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: "post",
+            url: root + "api/deleteResponse",
+            data: {
+                id
+            },
+            success: function (res) {
+                if(res.msg_id === 1){
+                    resolve(true);
+                }else{
+                    resolve(false);
+                }
+            },
+            error: function () {
+                reject();
+            }
+        })
+
+    })
+}

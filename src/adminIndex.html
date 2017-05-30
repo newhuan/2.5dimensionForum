@@ -64,6 +64,7 @@
 			<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">用户管理</a></li>
 			<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">帖子管理</a></li>
 			<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">版权网站管理</a></li>
+			<li role="presentation"><a href="#resp" aria-controls="resp" role="tab" data-toggle="tab">回复管理</a></li>
 		</ul>
 		<!-- Tab panes -->
 		<div class="tab-content">
@@ -337,6 +338,22 @@
 </script>
 
 			</div>
+
+			<div role="tabpanel" class="tab-pane" id="resp">
+				<div class="userManager-tip tip">回复管理</div>
+				<label><input class="search-item form-control" id="postId" type="text" placeholder="postId"></label>
+				<button class="btn btn-default" type="button" id="search-response">确定</button>
+				<ul id="response-list">
+
+				</ul>
+				<script type="text/template" id="response-tpl">
+				<li>
+					<p class="response-item">{{text}}</p>
+					<button class="btn btn-default" type="button" id="{{responseId}}">删除</button>
+				</li>
+</script>
+			</div>
+
 		</div>
 	</div>
 

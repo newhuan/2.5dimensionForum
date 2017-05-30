@@ -1254,6 +1254,135 @@ app.post('/api/addResponse', function (req, res) {
     });
 });
 
+//get Responses
+app.get('/api/getResponses', function (req, res) {
+    let id = req.query.postId;
+    getResponseWithPostId(id).then(function (doc) {
+        res.json({
+            msg_id: 1,
+            responses: doc
+        })
+    }).catch(function (err) {
+        res.json({
+            msg_id : -1,
+            responses: []
+        })
+    })
+});
+
+function getResponseWithPostId(id) {
+    return new Promise(function (resolve, reject) {
+        Post.findOne({id}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+                if(!doc){
+                    resolve([]);
+                }else{
+                    let responseIds = [];
+                    doc.responses.forEach(function (key) {
+                        responseIds.push(key.id);
+                    });
+                    Response.find({id: {$in: responseIds}}, function (err, doc) {
+                        if(err){
+                            reject(err);
+                        }else{
+                            resolve(doc);
+                        }
+                    })
+                }
+
+            }
+        })
+    })
+}
+
+//delete response
+app.post('/api/deleteResponse', function (req, res) {
+    let id = req.body.id;
+    // let postId = req.body.postId;
+    console.log(id);
+    if(!id){
+        res.json({
+            msg_id: -2,
+            msg: "缺少信息，删除失败!"
+        })
+    }else{
+        deleteResponse2(id).then(function () {
+            res.json({
+                msg_id: 1,
+                msg: "删除成功!"
+            })
+        }).catch(function (err) {
+            res.json({
+                msg_id: -1,
+                msg: "database error!"
+            })
+        })
+    }
+
+});
+
+function getPostId(responseId) {
+    return new Promise(function (resolve, reject) {
+        Response.findOne({id: responseId}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+                resolve(doc.postId ? doc.postId : "");
+            }
+        })
+    })
+}
+
+function deleteResponse2(id) {
+    return new Promise(function (resolve, reject) {
+        Response.findOne({id}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else{
+                console.log(doc);
+                doc.text = "此评论已被删除！";
+                doc.save(function (err) {
+                    if(err){
+                        reject(err)
+                    }else{
+                        resolve();
+                    }
+                });
+                // resolve(doc.postId ? doc.postId : "");
+            }
+        })
+    })
+}
+
+function deleteResponse(responseId, postId) {
+    return new Promise(function (resolve, reject) {
+        Post.findOne({id: postId}, function (err, doc) {
+            if(err){
+                reject(err);
+            }else {
+                for(let i = 0, len = doc.responses.length; i < len; i++){
+                    if(doc.responses[i].id === responseId){
+                        doc.responses.splice(i ,1);
+                        break;
+                    }
+                }
+                doc.save(function (err) {
+                    if(err){
+                        reject(err);
+                    }else{
+                        resolve();
+
+                    }
+                })
+            }
+
+        })
+    });
+
+}
+
 app.get('/api/getSubIdByPost', function (req,res) {
    Post.findOne({id:req.query.id}, function (err,doc) {
        if(err){
